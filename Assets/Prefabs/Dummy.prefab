@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 102458165177905625}
   - component: {fileID: 8706233658372441741}
   - component: {fileID: 4542114547846512820}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Dummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,6 +55,11 @@ MonoBehaviour:
   maxSpeed: 5
   jumpStrength: 0
   jumpBuffer: 1
+  fastFallAcceleration: -10
+  maxFastFallSpeed: -10
+  maxAirJumps: 2
+  airJumps: 0
+  wasOnGound: 0
   timeLastJumpPressed: 0
 --- !u!212 &955274732367071491
 SpriteRenderer:
