@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
             }
         } else
         {
-            animator.SetBool("isMoving", false);
+            animator.SetBool("IsMoving", false);
 
         }
 
@@ -85,7 +85,13 @@ public class PlayerController : MonoBehaviour
             OnLand();
         }
 
+        if (wasOnGound && !IsOnGround())
+        {
+            OnLeaveGround();
+        }
 
+
+        animator.SetBool("IsFalling", (rb2D.velocity.y < -0.1));
 
 
 
@@ -109,8 +115,13 @@ public class PlayerController : MonoBehaviour
     private void OnLand()
     {
         airJumps = maxAirJumps;
-        animator.SetBool("isJumping", false);
+        animator.SetBool("IsJumping", false);
+        animator.SetBool("IsInAir", false);
+    }
 
+    private void OnLeaveGround()
+    {
+        animator.SetBool("IsInAir", true);
     }
     private void Move(float amount)
     {
@@ -121,14 +132,14 @@ public class PlayerController : MonoBehaviour
 
             if (IsOnGround())
             {
-                animator.SetBool("isMoving", true);
+                animator.SetBool("IsMoving", true);
             }
         }
     }
 
     private void Jump() {
         rb2D.velocity = Vector2.up * jumpStrength + rb2D.velocity * Vector2.right;
-        animator.SetBool("isJumping", true);
+        animator.SetBool("IsJumping", true);
     }
 
     private void AirJump()
