@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public Controls controls;
     [SerializeField] BoxCollider2D groundDetectionHitbox;
     [SerializeField] Rigidbody2D rb2D;
+    [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Animator animator;
 
     [SerializeField] float moveAcceleration = 10;
@@ -65,12 +66,27 @@ public class PlayerController : MonoBehaviour
             {
                 FastFall();
             }
+            if (controls.Player.Move.ReadValue<Vector2>().x > 0)
+            {
+                spriteRenderer.flipX = false;
+            }
+            if (controls.Player.Move.ReadValue<Vector2>().x < 0)
+            {
+                spriteRenderer.flipX = true;
+            }
+        } else
+        {
+            animator.SetBool("isMoving", false);
+
         }
 
         if (!wasOnGound && IsOnGround()) 
         {
             OnLand();
         }
+
+
+
 
 
         EndFrame();
@@ -102,6 +118,11 @@ public class PlayerController : MonoBehaviour
         {
             rb2D.velocity += new Vector2(amount, 0);
             Debug.Log("trymover" + amount);
+
+            if (IsOnGround())
+            {
+                animator.SetBool("isMoving", true);
+            }
         }
     }
 
