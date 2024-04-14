@@ -14,7 +14,10 @@ public class CameraTrackPlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        FindPlayer();
+        if (player == null)
+        {
+            FindPlayer();
+        }
     }
 
     public void FindPlayer()

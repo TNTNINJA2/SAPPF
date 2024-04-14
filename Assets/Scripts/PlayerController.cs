@@ -15,6 +15,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float maxSpeed = 1;
     [SerializeField] float jumpStrength = 10;
     [SerializeField] float jumpBuffer = 0.1f;
+    [SerializeField] float fastFallAcceleration = -10f;
+    [SerializeField] float maxFastFallSpeed = -10f;
+    [SerializeField] int maxAirJumps = 2;
+    [SerializeField] int airJumps;
+    [SerializeField] bool wasOnGound;
 
     public float timeLastJumpPressed;
     
@@ -26,7 +31,19 @@ public class PlayerController : MonoBehaviour
 
         controls.Player.Jump.performed += ctx =>
         {
-            timeLastJumpPressed = Time.time;
+            if (IsOnGround())
+            {
+                Jump();
+            }
+            else if (airJumps > 0)
+            {
+                AirJump();
+                airJumps -= 1;
+            }
+            else
+            {
+                timeLastJumpPressed = Time.time;
+            }
         };
 
     }
@@ -42,9 +59,40 @@ public class PlayerController : MonoBehaviour
         if (controls.Player.Move.IsPressed())
         {
             Move(moveAcceleration * controls.Player.Move.ReadValue<Vector2>().x * Time.deltaTime);
+
+            if (controls.Player.Move.ReadValue<Vector2>().y < 0 && !IsOnGround())
+            {
+                FastFall();
+            }
+        }
+
+        if (!wasOnGound && IsOnGround()) 
+        {
+            OnLand();
+        }
+
+
+        EndFrame();
+    }
+
+    private void EndFrame()
+    {
+        wasOnGound = IsOnGround();
+    }
+
+    private void FastFall()
+    {
+        float amount = fastFallAcceleration * Time.deltaTime;
+        if (!(rb2D.velocity.y * amount > 0 && (rb2D.velocity.y + amount) < maxFastFallSpeed))
+        {
+            rb2D.velocity += new Vector2(0, amount);
         }
     }
 
+    private void OnLand()
+    {
+        airJumps = maxAirJumps;
+    }
     private void Move(float amount)
     {
         if (!(rb2D.velocity.x * amount > 0 && Mathf.Abs(rb2D.velocity.x + amount) > maxSpeed))
@@ -56,6 +104,11 @@ public class PlayerController : MonoBehaviour
 
     private void Jump() {
         rb2D.velocity = Vector2.up * jumpStrength + rb2D.velocity * Vector2.right;
+    }
+
+    private void AirJump()
+    {
+        Jump();
     }
 
     private bool IsOnGround()
