@@ -149,7 +149,9 @@ Animation:
   m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: 88295b2512089c2469119dd265df8426, type: 2}
-  m_Animations: []
+  m_Animations:
+  - {fileID: 7400000, guid: 8ae4ff7415fbc8a4182d28594bf72c15, type: 2}
+  - {fileID: 7400000, guid: 5c1f128dfab18664aa814528886ed07e, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
@@ -323,8 +325,8 @@ TrailRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.0056818193
-        value: 0.19230777
+        time: 0
+        value: 0.04487188
         inSlope: 0
         outSlope: 0
         tangentMode: 0
