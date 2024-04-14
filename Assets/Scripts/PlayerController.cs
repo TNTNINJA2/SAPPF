@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public Controls controls;
     [SerializeField] BoxCollider2D groundDetectionHitbox;
     [SerializeField] Rigidbody2D rb2D;
+    [SerializeField] Animator animator;
 
     [SerializeField] float moveAcceleration = 10;
     [SerializeField] float maxSpeed = 1;
@@ -92,6 +93,8 @@ public class PlayerController : MonoBehaviour
     private void OnLand()
     {
         airJumps = maxAirJumps;
+        animator.SetBool("isJumping", false);
+
     }
     private void Move(float amount)
     {
@@ -104,6 +107,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump() {
         rb2D.velocity = Vector2.up * jumpStrength + rb2D.velocity * Vector2.right;
+        animator.SetBool("isJumping", true);
     }
 
     private void AirJump()
