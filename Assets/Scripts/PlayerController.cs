@@ -3,15 +3,18 @@ using System.Runtime.InteropServices;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
 
     public Controls controls;
     [SerializeField] BoxCollider2D groundDetectionHitbox;
+    [SerializeField] Collider2D attackHitbox;
     [SerializeField] Rigidbody2D rb2D;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Animator animator;
+    [SerializeField] LayerMask playerLayer;
 
     [SerializeField] float moveAcceleration = 10;
     [SerializeField] float maxSpeed = 1;
@@ -48,6 +51,11 @@ public class PlayerController : MonoBehaviour
             }
         };
 
+        controls.Player.LightAttack.performed += ctx =>
+        {
+            Punch();
+        };
+
     }
 
     private void Update()
@@ -68,11 +76,11 @@ public class PlayerController : MonoBehaviour
             }
             if (controls.Player.Move.ReadValue<Vector2>().x > 0)
             {
-                spriteRenderer.flipX = false;
+                transform.localScale = new Vector3(1, 1, 1);
             }
             if (controls.Player.Move.ReadValue<Vector2>().x < 0)
             {
-                spriteRenderer.flipX = true;
+                transform.localScale = new Vector3(-1, 1, 1);
             }
         } else
         {
@@ -93,8 +101,6 @@ public class PlayerController : MonoBehaviour
 
         animator.SetBool("IsFalling", (rb2D.velocity.y < -0.1));
 
-
-
         EndFrame();
     }
 
@@ -112,6 +118,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void HitEnemy(Collider2D collision)
+    {
+        collision.gameObject.transform.position += new Vector3(0, 10, 0);
+    }
+
+    private void Punch()
+    {
+        animator.SetTrigger("Punch");
+        Debug.Log("Punch");
+    }
+
     private void OnLand()
     {
         airJumps = maxAirJumps;
@@ -127,8 +144,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!(rb2D.velocity.x * amount > 0 && Mathf.Abs(rb2D.velocity.x + amount) > maxSpeed))
         {
-            rb2D.velocity += new Vector2(amount, 0);
-            Debug.Log("trymover" + amount);
+            rb2D.velocity = rb2D.velocity + new Vector2(amount, 0);
 
             if (IsOnGround())
             {
@@ -140,6 +156,7 @@ public class PlayerController : MonoBehaviour
     private void Jump() {
         rb2D.velocity = Vector2.up * jumpStrength + rb2D.velocity * Vector2.right;
         animator.SetBool("IsJumping", true);
+        animator.SetTrigger("IsJumping");
     }
 
     private void AirJump()
