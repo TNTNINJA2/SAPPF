@@ -59,6 +59,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  leftClickAttack: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
   moveAcceleration: 20
   maxSpeed: 5
   jumpStrength: 10

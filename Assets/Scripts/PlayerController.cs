@@ -13,8 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Collider2D attackHitbox;
     [SerializeField] Rigidbody2D rb2D;
     [SerializeField] SpriteRenderer spriteRenderer;
-    [SerializeField] Animator animator;
+    [SerializeField] public Animator animator;
     [SerializeField] LayerMask playerLayer;
+    [SerializeField] Attack leftClickAttack;
 
     [SerializeField] float moveAcceleration = 10;
     [SerializeField] float maxSpeed = 1;
@@ -53,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
         controls.Player.LightAttack.performed += ctx =>
         {
-            Punch();
+            LeftClickAttack();
         };
 
     }
@@ -123,10 +124,9 @@ public class PlayerController : MonoBehaviour
         collision.gameObject.transform.position += new Vector3(0, 10, 0);
     }
 
-    private void Punch()
+    private void LeftClickAttack()
     {
-        animator.SetTrigger("Punch");
-        Debug.Log("Punch");
+        leftClickAttack.StartAttack(this);
     }
 
     private void OnLand()

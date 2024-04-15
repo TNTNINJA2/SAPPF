@@ -18,7 +18,7 @@ public class AttackHitboxDetector : MonoBehaviour
     {
         if (hitbox.enabled)
         {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y) + hitbox.offset, hitbox.radius, targetLayers);
+            Collider2D[] hits = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), hitbox.radius, targetLayers);
             foreach (Collider2D hit in hits)
             {
                 if (hit.gameObject != gameObject && hit.gameObject != transform.parent.gameObject)
