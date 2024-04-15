@@ -617,7 +617,7 @@ PrefabInstance:
     - target: {fileID: 8132642714137174195, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
       propertyPath: downlight
       value: 
-      objectReference: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
+      objectReference: {fileID: 11400000, guid: fab22ab566724d84d9d37c7c8dce770e, type: 2}
     - target: {fileID: 8132642714137174195, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
       propertyPath: sidelight
       value: 
