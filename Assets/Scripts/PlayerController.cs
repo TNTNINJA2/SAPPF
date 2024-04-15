@@ -15,7 +15,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] public Animator animator;
     [SerializeField] LayerMask playerLayer;
-    [SerializeField] Attack leftClickAttack;
+    [SerializeField] Attack uplight;
+    [SerializeField] Attack downlight;
+    [SerializeField] Attack sidelight;
+
 
     [SerializeField] float moveAcceleration = 10;
     [SerializeField] float maxSpeed = 1;
@@ -26,6 +29,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int maxAirJumps = 2;
     [SerializeField] int airJumps;
     [SerializeField] bool wasOnGound;
+    [SerializeField] float joystickBuffer = 0.15f;
 
     public float timeLastJumpPressed;
     
@@ -54,7 +58,23 @@ public class PlayerController : MonoBehaviour
 
         controls.Player.LightAttack.performed += ctx =>
         {
-            LeftClickAttack();
+            if (controls.Player.Move.ReadValue<Vector2>().y > joystickBuffer && IsOnGround())
+            {
+                UpLight();
+            }
+            else if (controls.Player.Move.ReadValue<Vector2>().y < -joystickBuffer && IsOnGround())
+            {
+                DownLight();
+            }
+            else if (controls.Player.Move.ReadValue<Vector2>().x == 0 && IsOnGround())
+            {
+                UpLight();
+            }
+            else
+            {
+                SideLight();
+            }
+           
         };
 
     }
@@ -124,11 +144,18 @@ public class PlayerController : MonoBehaviour
         collision.gameObject.transform.position += new Vector3(0, 10, 0);
     }
 
-    private void LeftClickAttack()
+    private void UpLight()
     {
-        leftClickAttack.StartAttack(this);
+        uplight.StartAttack(this);
     }
-
+    private void DownLight()
+    {
+        downlight.StartAttack(this);
+    }
+    private void SideLight()
+    {
+        sidelight.StartAttack(this);
+    }
     private void OnLand()
     {
         airJumps = maxAirJumps;

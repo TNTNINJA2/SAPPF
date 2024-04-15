@@ -610,6 +610,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8132642714137174195, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
+      propertyPath: uplight
+      value: 
+      objectReference: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
+    - target: {fileID: 8132642714137174195, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
+      propertyPath: downlight
+      value: 
+      objectReference: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
+    - target: {fileID: 8132642714137174195, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
+      propertyPath: sidelight
+      value: 
+      objectReference: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
     - target: {fileID: 8252381614973913596, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
       propertyPath: m_Enabled
       value: 0
