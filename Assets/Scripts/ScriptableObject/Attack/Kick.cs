@@ -7,6 +7,7 @@ public class Kick : Attack
 {
     public override void StartAttack(PlayerController player)
     {
+        base.StartAttack(player);
         player.animator.SetTrigger("Kick");
 
     }

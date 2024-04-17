@@ -6,5 +6,6 @@ public class Attack : ScriptableObject
 {
     public virtual void StartAttack(PlayerController player)
     {
+        player.animator.SetTrigger("Attack");
     }
 }

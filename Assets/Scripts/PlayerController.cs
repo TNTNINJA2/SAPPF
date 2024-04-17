@@ -4,14 +4,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
 public class PlayerController : MonoBehaviour
 {
 
     public Controls controls;
+    [SerializeField] BoxCollider2D collistionsHitbox;
     [SerializeField] BoxCollider2D groundDetectionHitbox;
-    [SerializeField] Collider2D attackHitbox;
     [SerializeField] Rigidbody2D rb2D;
+    [SerializeField] Collider2D attackHitbox;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] public Animator animator;
     [SerializeField] LayerMask playerLayer;
@@ -30,6 +32,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int airJumps;
     [SerializeField] bool wasOnGound;
     [SerializeField] float joystickBuffer = 0.15f;
+    [SerializeField] float Gravity = 1f;
+
 
     public float timeLastJumpPressed;
     
@@ -58,22 +62,7 @@ public class PlayerController : MonoBehaviour
 
         controls.Player.LightAttack.performed += ctx =>
         {
-            if (controls.Player.Move.ReadValue<Vector2>().y > joystickBuffer && IsOnGround())
-            {
-                UpLight();
-            }
-            else if (controls.Player.Move.ReadValue<Vector2>().y < -joystickBuffer && IsOnGround())
-            {
-                DownLight();
-            }
-            else if (controls.Player.Move.ReadValue<Vector2>().x == 0 && IsOnGround())
-            {
-                UpLight();
-            }
-            else
-            {
-                SideLight();
-            }
+            LightAttack();
            
         };
 
@@ -109,7 +98,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        if (!wasOnGound && IsOnGround()) 
+        if (!wasOnGound && IsOnGround())
         {
             OnLand();
         }
@@ -122,13 +111,17 @@ public class PlayerController : MonoBehaviour
 
         animator.SetBool("IsFalling", (rb2D.velocity.y < -0.1));
 
+
         EndFrame();
     }
+
+
 
     private void EndFrame()
     {
         wasOnGound = IsOnGround();
     }
+
 
     private void FastFall()
     {
@@ -144,7 +137,36 @@ public class PlayerController : MonoBehaviour
         collision.gameObject.transform.position += new Vector3(0, 10, 0);
     }
 
-    private void UpLight()
+    
+
+    private void LightAttack()
+    {
+        if (controls.Player.Move.ReadValue<Vector2>().y > joystickBuffer && IsOnGround())
+        {
+            UpLight();
+        }
+        else if (controls.Player.Move.ReadValue<Vector2>().y < -joystickBuffer && IsOnGround())
+        {
+            DownLight();
+        }
+        else if (controls.Player.Move.ReadValue<Vector2>().x == 0 && IsOnGround())
+        {
+            UpLight();
+        }
+        else
+        {
+            SideLight();
+        }
+    }
+
+    public void OnEnterAttack()
+    {
+    }
+    public void OnExitAttack()
+    {
+    }
+
+   private void UpLight()
     {
         uplight.StartAttack(this);
     }
@@ -161,7 +183,9 @@ public class PlayerController : MonoBehaviour
         airJumps = maxAirJumps;
         animator.SetBool("IsJumping", false);
         animator.SetBool("IsInAir", false);
+        rb2D.velocity *= new Vector3(0, 1, 0);
     }
+
 
     private void OnLeaveGround()
     {

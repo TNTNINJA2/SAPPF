@@ -9,16 +9,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4125738885378931690}
-  - component: {fileID: 8132642714137174195}
+  - component: {fileID: 7131960650155010240}
   - component: {fileID: 955274732367071491}
   - component: {fileID: 4735154298517168032}
   - component: {fileID: 6547309207642369613}
   - component: {fileID: 267570677358393839}
   - component: {fileID: 8706233658372441741}
   - component: {fileID: 4542114547846512820}
-  - component: {fileID: 1342300946272170042}
+  - component: {fileID: 3390136982816931037}
   m_Layer: 7
-  m_Name: Player
+  m_Name: Player 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,7 +40,7 @@ Transform:
   - {fileID: 4427824624947237370}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8132642714137174195
+--- !u!114 &7131960650155010240
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -49,11 +49,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 284973921162056684}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b93bc7f5c4919494ca983ad8c5b2da22, type: 3}
+  m_Script: {fileID: 11500000, guid: f7ac29ccc872c284c852cad9bbb0e70f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _stats: {fileID: 11400000, guid: 8d21fba52cceebf4584db82a881ae4b1, type: 2}
   collistionsHitbox: {fileID: 267570677358393839}
-  groundDetectionHitbox: {fileID: 267570677358393839}
+  groundDetectionHitbox: {fileID: 8706233658372441741}
   rb2D: {fileID: 6547309207642369613}
   attackHitbox: {fileID: 8252381614973913596}
   spriteRenderer: {fileID: 955274732367071491}
@@ -61,20 +62,20 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
-  uplight: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
-  downlight: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
-  sidelight: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
-  moveAcceleration: 20
-  maxSpeed: 5
+  uplight: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
+  downlight: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
+  sidelight: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
+  moveAcceleration: 10
+  maxSpeed: 1
   jumpStrength: 10
-  jumpBuffer: 1
-  fastFallAcceleration: -50
-  maxFastFallSpeed: -200
+  jumpBuffer: 0.1
+  fastFallAcceleration: -10
+  maxFastFallSpeed: -10
   maxAirJumps: 2
   airJumps: 0
   wasOnGound: 0
   joystickBuffer: 0.15
-  Gravity: 0.01
+  Gravity: 1
   timeLastJumpPressed: 0
 --- !u!212 &955274732367071491
 SpriteRenderer:
@@ -380,19 +381,41 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
---- !u!114 &1342300946272170042
-MonoBehaviour:
+--- !u!70 &3390136982816931037
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 284973921162056684}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 350a522807d55754a8b4176b8c7fb2fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  velocityInput: {x: 0, y: 0, z: 0}
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1, y: 1}
+  m_Direction: 0
 --- !u!1 &9122952386705469402
 GameObject:
   m_ObjectHideFlags: 0

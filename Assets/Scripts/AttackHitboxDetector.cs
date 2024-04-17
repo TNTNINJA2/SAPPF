@@ -24,20 +24,12 @@ public class AttackHitboxDetector : MonoBehaviour
                 if (hit.gameObject != gameObject && hit.gameObject != transform.parent.gameObject)
                 {
                     playerController.HitEnemy(hit);
-                    Debug.Log("Hit " + hit.gameObject);
                 }
                 else
                 {
-                    Debug.Log("Didn't Hit " + hit.gameObject);
 
                 }
             }
         }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("trigger enter");
-        playerController.HitEnemy(collision);
     }
 }
