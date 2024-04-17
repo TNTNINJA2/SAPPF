@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Attack sidelight;
 
 
+    [SerializeField] float movementThreshold = 0.1f;
     [SerializeField] float moveAcceleration = 10;
     [SerializeField] float maxSpeed = 1;
     [SerializeField] float jumpStrength = 10;
@@ -78,7 +79,10 @@ public class PlayerController : MonoBehaviour
 
         if (controls.Player.Move.IsPressed())
         {
-            Move(moveAcceleration * controls.Player.Move.ReadValue<Vector2>().x * Time.deltaTime);
+            if (Mathf.Abs(controls.Player.Move.ReadValue<Vector2>().x) > movementThreshold)
+            {
+                Move(moveAcceleration * controls.Player.Move.ReadValue<Vector2>().x * Time.deltaTime);
+            }
 
             if (controls.Player.Move.ReadValue<Vector2>().y < 0 && !IsOnGround())
             {

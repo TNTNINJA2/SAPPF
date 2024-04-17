@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8706233658372441741}
   - component: {fileID: 4542114547846512820}
   - component: {fileID: 1342300946272170042}
+  - component: {fileID: 3849774264300089163}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -62,7 +63,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   uplight: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
-  downlight: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
+  downlight: {fileID: 11400000, guid: fab22ab566724d84d9d37c7c8dce770e, type: 2}
   sidelight: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
   moveAcceleration: 20
   maxSpeed: 5
@@ -393,6 +394,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocityInput: {x: 0, y: 0, z: 0}
+--- !u!114 &3849774264300089163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284973921162056684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed5c2a1630d90054ba336194c94fedd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterRender: {fileID: 0}
+  targetPos: {x: 0, y: 0, z: 0}
+  oldTargetPos: {x: 0, y: 0, z: 0}
 --- !u!1 &9122952386705469402
 GameObject:
   m_ObjectHideFlags: 0
