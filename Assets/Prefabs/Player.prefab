@@ -65,6 +65,7 @@ MonoBehaviour:
   uplight: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
   downlight: {fileID: 11400000, guid: fab22ab566724d84d9d37c7c8dce770e, type: 2}
   sidelight: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
+  movementThreshold: 0.1
   moveAcceleration: 20
   maxSpeed: 5
   jumpStrength: 10
@@ -265,7 +266,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 12.91}
+  m_Size: {x: 0.5, y: 0.1}
   m_EdgeRadius: 0
 --- !u!96 &4542114547846512820
 TrailRenderer:
@@ -408,7 +409,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterRender: {fileID: 0}
   targetPos: {x: 0, y: 0, z: 0}
-  oldTargetPos: {x: 0, y: 0, z: 0}
 --- !u!1 &9122952386705469402
 GameObject:
   m_ObjectHideFlags: 0

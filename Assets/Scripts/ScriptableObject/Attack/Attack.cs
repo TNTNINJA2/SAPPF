@@ -8,4 +8,9 @@ public class Attack : ScriptableObject
     {
         player.animator.SetTrigger("Attack");
     }
+
+    public virtual void OnHit(PlayerController player)
+    {
+
+    }
 }
