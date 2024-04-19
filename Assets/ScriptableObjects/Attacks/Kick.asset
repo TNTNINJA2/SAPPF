@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e30322c075f434ea0d195b379fd013, type: 3}
   m_Name: Kick
   m_EditorClassIdentifier: 
+  damage: 10
+  stunDuration: 2
+  launchDirection: {x: 4.51, y: 3.23}

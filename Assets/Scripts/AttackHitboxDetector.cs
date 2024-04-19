@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class AttackHitboxDetector : MonoBehaviour
@@ -30,6 +31,17 @@ public class AttackHitboxDetector : MonoBehaviour
 
                 }
             }
+
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (hitbox.enabled)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(hitbox.transform.position, hitbox.radius);
+        }
+
     }
 }

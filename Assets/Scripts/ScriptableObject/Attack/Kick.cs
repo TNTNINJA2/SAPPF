@@ -11,4 +11,10 @@ public class Kick : Attack
         player.animator.SetTrigger("Kick");
 
     }
+
+    public override void OnHit(PlayerController player, PlayerController target)
+    {
+        base.OnHit(player, target);
+
+    }
 }

@@ -10,7 +10,9 @@ using UnityEngine.PlayerLoop;
 public class PlayerController : MonoBehaviour
 {
 
-# region Fields
+    #region Fields
+    [SerializeField] bool isDummy;
+
     public Controls controls;
     [SerializeField] BoxCollider2D collistionsHitbox;
     [SerializeField] BoxCollider2D groundDetectionHitbox;
@@ -19,13 +21,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] public Animator animator;
     [SerializeField] LayerMask playerLayer;
-    [SerializeField] Attack uplight;
-    [SerializeField] Attack downlight;
-    [SerializeField] Attack sidelight;
+    [SerializeField] Attack upLight;
+    [SerializeField] Attack downLight;
+    [SerializeField] Attack sideLight;
 
 
     [SerializeField] float movementThreshold = 0.1f;
     [SerializeField] float moveAcceleration = 10;
+    [SerializeField] float moveDeceleration = 10;
     [SerializeField] float maxSpeed = 1;
     [SerializeField] float jumpStrength = 10;
     [SerializeField] float jumpBuffer = 0.1f;
@@ -39,39 +42,45 @@ public class PlayerController : MonoBehaviour
 
     // Property which returns input to the nearest whole number vector (up, down, or side)
     [SerializeField] RoundedInputDirection roundedInputDirection = RoundedInputDirection.None;
+    [SerializeField] ActiveAttackType activeAttackType = ActiveAttackType.None;
 
 
     public float timeLastJumpPressed;
 
-#endregion
+    #endregion
 
 
 
     private void Awake() {
-        controls = new Controls();
-        controls.Enable();
+        if (!isDummy)
+        {
+            controls = new Controls();
+            controls.Enable();
 
-        controls.Player.Jump.performed += ctx => TryJump();
+            controls.Player.Jump.performed += ctx => TryJump();
 
-        controls.Player.LightAttack.performed += ctx => LightAttack();
-
-    }
+            controls.Player.LightAttack.performed += ctx => LightAttack();
+        }
+    } 
 
 
     private void Update()
     {
-        CalculateRoundedInputDirection();
-        TryBufferedJump();
+        if (!isDummy)
+        {
+            CalculateRoundedInputDirection();
+            TryBufferedJump();
 
-        HandleMovementInput();
+            HandleMovementInput();
 
-        if (!wasOnGound && IsOnGround()) OnLand();
+            if (!wasOnGound && IsOnGround()) OnLand();
 
-        if (wasOnGound && !IsOnGround()) OnLeaveGround();
-        
-        animator.SetBool("IsFalling", (rb2D.velocity.y < -0.1));
+            if (wasOnGound && !IsOnGround()) OnLeaveGround();
 
-        EndFrame();
+            animator.SetBool("IsFalling", (rb2D.velocity.y < -0.1));
+
+            EndFrame();
+        }
     }
 
     private void CalculateRoundedInputDirection() {
@@ -103,38 +112,55 @@ public class PlayerController : MonoBehaviour
 
     public void HitEnemy(Collider2D collision)
     {
-        collision.gameObject.transform.position += new Vector3(0, 10, 0);
+        if (activeAttackType == ActiveAttackType.UpLight)
+        {
+            upLight.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+        }
+        else if (activeAttackType == ActiveAttackType.DownLight)
+        {
+            downLight.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+        } 
+        else if (activeAttackType == ActiveAttackType.SideLight)
+        {
+            sideLight.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+        }
+
     }
 
     #region Attacks
     private void LightAttack()
     {
-        if (roundedInputDirection == RoundedInputDirection.Up)
+        if (roundedInputDirection == RoundedInputDirection.Up || roundedInputDirection == RoundedInputDirection.None)
         {
             UpLight();
+            activeAttackType = ActiveAttackType.UpLight;
         }
         else if (roundedInputDirection == RoundedInputDirection.Down)
         {
             DownLight();
+            activeAttackType = ActiveAttackType.DownLight;
+
         }
         else if (roundedInputDirection == RoundedInputDirection.Side)
         {
             SideLight();
+            activeAttackType = ActiveAttackType.SideLight;
+
         }
     }
 
 
    private void UpLight()
     {
-        uplight.StartAttack(this);
+        upLight.StartAttack(this);
     }
     private void DownLight()
     {
-        downlight.StartAttack(this);
+        downLight.StartAttack(this);
     }
     private void SideLight()
     {
-        sidelight.StartAttack(this);
+        sideLight.StartAttack(this);
     }
 
     public void OnEnterAttack()
@@ -142,6 +168,7 @@ public class PlayerController : MonoBehaviour
     }
     public void OnExitAttack()
     {
+        activeAttackType = ActiveAttackType.None;
     }
 
     #endregion
@@ -186,6 +213,17 @@ public class PlayerController : MonoBehaviour
         else
         {
             animator.SetBool("IsMoving", false);
+
+            if (IsOnGround())
+            {
+                if (rb2D.velocity.sqrMagnitude < Mathf.Pow(moveDeceleration * Time.deltaTime, 2))
+                {
+                    rb2D.velocity = Vector2.zero;
+                } else
+                {
+                    rb2D.velocity -= rb2D.velocity.normalized * moveDeceleration * Time.deltaTime;
+                }
+            }
         }
 
         animator.SetBool("InputUp", roundedInputDirection == RoundedInputDirection.Up);
@@ -276,5 +314,16 @@ public class PlayerController : MonoBehaviour
         Up,
         Down,
         Side
+    }
+
+    private enum ActiveAttackType
+    {
+        None,
+        UpLight,
+        DownLight,
+        SideLight,
+        UpAirLight,
+        DownAirLight,
+        SideAirLight
     }
 }

@@ -4,15 +4,42 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] float maxHealth = 20;
+    [SerializeField] float health;
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] Animator animator;
+    [SerializeField] Rigidbody2D rb2D;
+    float stunTime;
+
+
+    private void Awake()
     {
-        
+        health = maxHealth;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+        rb2D = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if (stunTime > 0)
+        {
+            stunTime -= Time.deltaTime;
+        } else
+        {
+            animator.SetBool("IsStunned", false);
+        }
+
     }
+    public void TakeDamage(float amount, float stunDuration, Vector2 launchDirection)
+    {
+        health -= amount;
+        if (health <= 0) Destroy(gameObject);
+        stunTime = stunDuration;
+        animator.SetBool("IsStunned", stunDuration > 0);
+        animator.SetTrigger("Stun");
+
+        rb2D.velocity = launchDirection;
+    }
+
 }

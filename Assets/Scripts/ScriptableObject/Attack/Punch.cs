@@ -10,4 +10,10 @@ public class Punch : Attack
         base.StartAttack(player);
         player.animator.SetTrigger("Punch");
     }
+
+    public override void OnHit(PlayerController player, PlayerController target)
+    {
+        base.OnHit(player, target);
+
+    }
 }
