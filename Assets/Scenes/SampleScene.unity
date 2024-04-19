@@ -415,6 +415,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8132642714137174195, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
+      propertyPath: groundDetectionHitbox
+      value: 
+      objectReference: {fileID: 1196770274}
+    - target: {fileID: 8706233658372441741, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
+      propertyPath: m_Size.x
+      value: 0.35
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -423,6 +431,11 @@ PrefabInstance:
 --- !u!1 &1196770270 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 284973921162056684, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
+  m_PrefabInstance: {fileID: 1170233311}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &1196770274 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 8706233658372441741, guid: 3ff978f36324b534294b0c5c278122eb, type: 3}
   m_PrefabInstance: {fileID: 1170233311}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1209348862
