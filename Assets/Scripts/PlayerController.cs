@@ -6,8 +6,9 @@ using UnityEngine;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
 using UnityEngine.PlayerLoop;
+using Unity.Netcode;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
 
     #region Fields
@@ -62,13 +63,20 @@ public class PlayerController : MonoBehaviour
 
             controls.Player.Jump.performed += ctx => TryJump();
 
-            if (IsOnGround())
+
+            controls.Player.LeftAttack.performed += ctx =>
             {
-                controls.Player.LeftAttack.performed += ctx => LeftAttack();
-            } else
-            {
-                controls.Player.LeftAttack.performed += ctx => LeftAirAttack();
-            }
+                if (IsOwner) {
+                    if (IsOnGround())
+                    {
+                        LeftAttack();
+                    }
+                    else
+                    {
+                        LeftAirAttack();
+                    }
+                }
+            };
         }
     } 
 
@@ -244,46 +252,49 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovementInput()
     {
-
-        if (controls.Player.Move.IsPressed())
+        if (IsOwner)
         {
-            Vector2 input = controls.Player.Move.ReadValue<Vector2>();
-            if (Mathf.Abs(input.x) > movementThreshold)
-            {
-                Move(moveAcceleration * input.x * Time.deltaTime);
-            }
 
-            if (input.y < 0 && !IsOnGround()) FastFall();
-
-            if (input.x > 0)
+            if (controls.Player.Move.IsPressed())
             {
-                transform.localScale = new Vector3(1, 1, 1);
-            }
-            if (input.x < 0)
-            {
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
-        }
-        else
-        {
-            animator.SetBool("IsMoving", false);
-
-            if (IsOnGround())
-            {
-                if (rb2D.velocity.sqrMagnitude < Mathf.Pow(moveDeceleration * Time.deltaTime, 2))
+                Vector2 input = controls.Player.Move.ReadValue<Vector2>();
+                if (Mathf.Abs(input.x) > movementThreshold)
                 {
-                    rb2D.velocity = Vector2.zero;
-                } else
+                    Move(moveAcceleration * input.x * Time.deltaTime);
+                }
+
+                if (input.y < 0 && !IsOnGround()) FastFall();
+
+                if (input.x > 0)
                 {
-                    rb2D.velocity -= rb2D.velocity.normalized * moveDeceleration * Time.deltaTime;
+                    transform.localScale = new Vector3(1, 1, 1);
+                }
+                if (input.x < 0)
+                {
+                    transform.localScale = new Vector3(-1, 1, 1);
                 }
             }
+            else
+            {
+                animator.SetBool("IsMoving", false);
+
+                if (IsOnGround())
+                {
+                    if (rb2D.velocity.sqrMagnitude < Mathf.Pow(moveDeceleration * Time.deltaTime, 2))
+                    {
+                        rb2D.velocity = Vector2.zero;
+                    }
+                    else
+                    {
+                        rb2D.velocity -= rb2D.velocity.normalized * moveDeceleration * Time.deltaTime;
+                    }
+                }
+            }
+
+            animator.SetBool("InputUp", roundedInputDirection == RoundedInputDirection.Up);
+            animator.SetBool("InputDown", roundedInputDirection == RoundedInputDirection.Down);
+            animator.SetBool("InputSide", roundedInputDirection == RoundedInputDirection.Side);
         }
-
-        animator.SetBool("InputUp", roundedInputDirection == RoundedInputDirection.Up);
-        animator.SetBool("InputDown", roundedInputDirection == RoundedInputDirection.Down);
-        animator.SetBool("InputSide", roundedInputDirection == RoundedInputDirection.Side);
-
     }
     private void Move(float amount)
     {
