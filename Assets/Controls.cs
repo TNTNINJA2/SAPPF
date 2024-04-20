@@ -46,9 +46,18 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""LightAttack"",
+                    ""name"": ""LeftAttack"",
                     ""type"": ""Button"",
                     ""id"": ""0e960bac-523b-4f81-b21a-c81b4d7c57c9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""b7a62265-5fa3-4a1a-a7ee-9b8db0a328e4"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -184,7 +193,18 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""LightAttack"",
+                    ""action"": ""LeftAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0bb8f968-c985-4a5e-be84-a0ff1d0b7680"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -197,7 +217,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
-        m_Player_LightAttack = m_Player.FindAction("LightAttack", throwIfNotFound: true);
+        m_Player_LeftAttack = m_Player.FindAction("LeftAttack", throwIfNotFound: true);
+        m_Player_RightAttack = m_Player.FindAction("RightAttack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -261,14 +282,16 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Move;
-    private readonly InputAction m_Player_LightAttack;
+    private readonly InputAction m_Player_LeftAttack;
+    private readonly InputAction m_Player_RightAttack;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
         public PlayerActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Move => m_Wrapper.m_Player_Move;
-        public InputAction @LightAttack => m_Wrapper.m_Player_LightAttack;
+        public InputAction @LeftAttack => m_Wrapper.m_Player_LeftAttack;
+        public InputAction @RightAttack => m_Wrapper.m_Player_RightAttack;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -284,9 +307,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @LightAttack.started += instance.OnLightAttack;
-            @LightAttack.performed += instance.OnLightAttack;
-            @LightAttack.canceled += instance.OnLightAttack;
+            @LeftAttack.started += instance.OnLeftAttack;
+            @LeftAttack.performed += instance.OnLeftAttack;
+            @LeftAttack.canceled += instance.OnLeftAttack;
+            @RightAttack.started += instance.OnRightAttack;
+            @RightAttack.performed += instance.OnRightAttack;
+            @RightAttack.canceled += instance.OnRightAttack;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -297,9 +323,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @LightAttack.started -= instance.OnLightAttack;
-            @LightAttack.performed -= instance.OnLightAttack;
-            @LightAttack.canceled -= instance.OnLightAttack;
+            @LeftAttack.started -= instance.OnLeftAttack;
+            @LeftAttack.performed -= instance.OnLeftAttack;
+            @LeftAttack.canceled -= instance.OnLeftAttack;
+            @RightAttack.started -= instance.OnRightAttack;
+            @RightAttack.performed -= instance.OnRightAttack;
+            @RightAttack.canceled -= instance.OnRightAttack;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -321,6 +350,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     {
         void OnJump(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);
-        void OnLightAttack(InputAction.CallbackContext context);
+        void OnLeftAttack(InputAction.CallbackContext context);
+        void OnRightAttack(InputAction.CallbackContext context);
     }
 }

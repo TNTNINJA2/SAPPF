@@ -21,9 +21,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] public Animator animator;
     [SerializeField] LayerMask playerLayer;
-    [SerializeField] Attack upLight;
-    [SerializeField] Attack downLight;
-    [SerializeField] Attack sideLight;
+    [SerializeField] Attack upLeft;
+    [SerializeField] Attack downLeft;
+    [SerializeField] Attack sideLeft;
+    [SerializeField] Attack upAirLeft;
+    [SerializeField] Attack downAirLeft;
+    [SerializeField] Attack sideAirLeft;
 
 
     [SerializeField] float movementThreshold = 0.1f;
@@ -59,7 +62,13 @@ public class PlayerController : MonoBehaviour
 
             controls.Player.Jump.performed += ctx => TryJump();
 
-            controls.Player.LightAttack.performed += ctx => LightAttack();
+            if (IsOnGround())
+            {
+                controls.Player.LeftAttack.performed += ctx => LeftAttack();
+            } else
+            {
+                controls.Player.LeftAttack.performed += ctx => LeftAirAttack();
+            }
         }
     } 
 
@@ -112,55 +121,100 @@ public class PlayerController : MonoBehaviour
 
     public void HitEnemy(Collider2D collision)
     {
-        if (activeAttackType == ActiveAttackType.UpLight)
+        if (activeAttackType == ActiveAttackType.UpLeft)
         {
-            upLight.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+            upLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
         }
-        else if (activeAttackType == ActiveAttackType.DownLight)
+        else if (activeAttackType == ActiveAttackType.DownLeft)
         {
-            downLight.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+            downLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
         } 
-        else if (activeAttackType == ActiveAttackType.SideLight)
+        else if (activeAttackType == ActiveAttackType.SideLeft)
         {
-            sideLight.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+            sideLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+        }
+        else if (activeAttackType == ActiveAttackType.UpAirLeft)
+        {
+            upAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+        }
+        else if (activeAttackType == ActiveAttackType.DownAirLeft)
+        {
+            downAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+        }
+        else if (activeAttackType == ActiveAttackType.SideAirLeft)
+        {
+            sideAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
         }
 
     }
 
     #region Attacks
-    private void LightAttack()
+    private void LeftAttack()
     {
         if (roundedInputDirection == RoundedInputDirection.Up || roundedInputDirection == RoundedInputDirection.None)
         {
-            UpLight();
-            activeAttackType = ActiveAttackType.UpLight;
+            UpLeft();
+            activeAttackType = ActiveAttackType.UpLeft;
         }
         else if (roundedInputDirection == RoundedInputDirection.Down)
         {
-            DownLight();
-            activeAttackType = ActiveAttackType.DownLight;
+            DownLeft();
+            activeAttackType = ActiveAttackType.DownLeft;
 
         }
         else if (roundedInputDirection == RoundedInputDirection.Side)
         {
-            SideLight();
-            activeAttackType = ActiveAttackType.SideLight;
+            SideLeft();
+            activeAttackType = ActiveAttackType.SideLeft;
+
+        }
+    }
+    private void LeftAirAttack()
+    {
+        if (roundedInputDirection == RoundedInputDirection.Up || roundedInputDirection == RoundedInputDirection.None)
+        {
+            UpAirLeft();
+            activeAttackType = ActiveAttackType.UpAirLeft;
+        }
+        else if (roundedInputDirection == RoundedInputDirection.Down)
+        {
+            DownAirLeft();
+            activeAttackType = ActiveAttackType.DownAirLeft;
+
+        }
+        else if (roundedInputDirection == RoundedInputDirection.Side)
+        {
+            SideAirLeft();
+            activeAttackType = ActiveAttackType.SideAirLeft;
 
         }
     }
 
 
-   private void UpLight()
+
+    private void UpLeft()
     {
-        upLight.StartAttack(this);
+        upLeft.StartAttack(this);
     }
-    private void DownLight()
+    private void DownLeft()
     {
-        downLight.StartAttack(this);
+        downLeft.StartAttack(this);
     }
-    private void SideLight()
+    private void SideLeft()
     {
-        sideLight.StartAttack(this);
+        sideLeft.StartAttack(this);
+    }
+    private void UpAirLeft()
+    {
+        upAirLeft.StartAttack(this);
+    }
+    private void DownAirLeft()
+    {
+        downAirLeft.StartAttack(this);
+    }
+    private void SideAirLeft()
+    {
+        sideAirLeft.StartAttack(this);
     }
 
     public void OnEnterAttack()
@@ -319,11 +373,11 @@ public class PlayerController : MonoBehaviour
     private enum ActiveAttackType
     {
         None,
-        UpLight,
-        DownLight,
-        SideLight,
-        UpAirLight,
-        DownAirLight,
-        SideAirLight
+        UpLeft,
+        DownLeft,
+        SideLeft,
+        UpAirLeft,
+        DownAirLeft,
+        SideAirLeft
     }
 }
