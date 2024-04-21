@@ -37,7 +37,7 @@ public class NewBehaviourScript : MonoBehaviour
        Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
       };   
       await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        CreateRelay();  
+      
     }
 
     private async void CreateRelay()
