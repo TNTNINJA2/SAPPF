@@ -69,6 +69,21 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  upLeft: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
+  downLeft: {fileID: 11400000, guid: fab22ab566724d84d9d37c7c8dce770e, type: 2}
+  sideLeft: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
+  upAirLeft: {fileID: 11400000, guid: 0a57fb5f282a781448c3edeb61a1a6cd, type: 2}
+  downAirLeft: {fileID: 11400000, guid: 0a57fb5f282a781448c3edeb61a1a6cd, type: 2}
+  sideAirLeft: {fileID: 11400000, guid: 0a57fb5f282a781448c3edeb61a1a6cd, type: 2}
+  movementThreshold: 0.1
+  moveAcceleration: 20
+  moveDeceleration: 10
+  maxSpeed: 5
+  jumpStrength: 10
+  jumpBuffer: 1
+  fastFallAcceleration: -50
+  maxFastFallSpeed: -200
+  maxAirJumps: 2
   airJumps: 0
   inputDirection: {x: 0, y: 0}
   roundedInputDirection: 0
