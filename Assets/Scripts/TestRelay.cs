@@ -7,9 +7,27 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using UnityEngine.UI;
+
+
 
 public class NewBehaviourScript : MonoBehaviour
 {
+    [SerializeField] Button startBtn;
+    [SerializeField] Button joinBtn;
+    [SerializeField] InputField relayCodeInput;
+    private void Awake()
+    {
+        startBtn.onClick.AddListener(() =>
+        {
+            CreateRelay();
+        });
+        joinBtn.onClick.AddListener(() =>
+        {
+            string enteredCode = relayCodeInput.text; 
+            JoinRelay(enteredCode);
+        });
+    }
     private async void Start()
     {
       await UnityServices.InitializeAsync();
