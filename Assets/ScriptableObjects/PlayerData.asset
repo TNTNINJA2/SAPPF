@@ -19,9 +19,9 @@ MonoBehaviour:
   downAirLeft: {fileID: 0}
   sideAirLeft: {fileID: 0}
   movementThreshold: 0.1
-  moveAcceleration: 10
+  moveAcceleration: 2
   moveDeceleration: 10
-  maxSpeed: 1
+  maxSpeed: 8
   jumpStrength: 10
   jumpBuffer: 0.1
   fastFallAcceleration: -10
