@@ -15,41 +15,38 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] bool isDummy;
 
     public Controls controls;
-    [SerializeField] BoxCollider2D collistionsHitbox;
-    [SerializeField] BoxCollider2D groundDetectionHitbox;
-    [SerializeField] Rigidbody2D rb2D;
-    [SerializeField] Collider2D attackHitbox;
-    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] public BoxCollider2D collistionsHitbox;
+    [SerializeField] public BoxCollider2D groundDetectionHitbox;
+    [SerializeField] public Rigidbody2D rb2D;
+    [SerializeField] public Collider2D attackHitbox;
+    [SerializeField] public SpriteRenderer spriteRenderer;
     [SerializeField] public Animator animator;
+    [SerializeField] public PlayerData data;
     [SerializeField] LayerMask playerLayer;
-    [SerializeField] Attack upLeft;
-    [SerializeField] Attack downLeft;
-    [SerializeField] Attack sideLeft;
-    [SerializeField] Attack upAirLeft;
-    [SerializeField] Attack downAirLeft;
-    [SerializeField] Attack sideAirLeft;
+
+    public bool isOnGound { get; private set; }
+    public bool wasOnGound { get; private set; }
+    public int airJumps;
 
 
-    [SerializeField] float movementThreshold = 0.1f;
-    [SerializeField] float moveAcceleration = 10;
-    [SerializeField] float moveDeceleration = 10;
-    [SerializeField] float maxSpeed = 1;
-    [SerializeField] float jumpStrength = 10;
-    [SerializeField] float jumpBuffer = 0.1f;
-    [SerializeField] float fastFallAcceleration = -10f;
-    [SerializeField] float maxFastFallSpeed = -10f;
-    [SerializeField] int maxAirJumps = 2;
-    [SerializeField] int airJumps;
-    [SerializeField] bool wasOnGound;
-    [SerializeField] float joystickBuffer = 0.15f;
-    [SerializeField] float Gravity = 1f;
+
+
+    public Vector2 inputDirection;
 
     // Property which returns input to the nearest whole number vector (up, down, or side)
-    [SerializeField] RoundedInputDirection roundedInputDirection = RoundedInputDirection.None;
+    public RoundedInputDirection roundedInputDirection = RoundedInputDirection.None;
     [SerializeField] ActiveAttackType activeAttackType = ActiveAttackType.None;
 
 
     public float timeLastJumpPressed;
+
+    PlayerState state;
+
+    public PlayerIdleState idleState;
+    public PlayerWalkState walkState;
+    public PlayerStunState stunState;
+    public PlayerAerialState aerialState;
+    public PlayerAttackState attackState;
 
     #endregion
 
@@ -78,39 +75,89 @@ public class PlayerController : NetworkBehaviour
                 }
             };
         }
-    } 
+        InitializeStates();
+    }
+
+    private void InitializeStates()
+    {
+        idleState = new PlayerIdleState(this, animator);
+        walkState = new PlayerWalkState(this, animator);
+        stunState = new PlayerStunState(this, animator);
+        aerialState = new PlayerAerialState(this, animator);
+        attackState = new PlayerAttackState(this, animator);
+
+        InitializeState(idleState);
+    }
+
+    private void InitializeState(PlayerState newState)
+    {
+        this.state = newState;
+        newState.EnterState();
+    }
+
+    public void ChangeState(PlayerState newState)
+    {
+        state.ExitState();
+        state = newState;
+        state.EnterState();
+    }
 
 
     private void Update()
     {
+        UpdateInputDirection();
+        CalculateRoundedInputDirection();
+
+        UpdateIsOnGround();
+
+
+        if (!wasOnGound && IsOnGround()) OnLand();
+        if (wasOnGound && !IsOnGround()) OnLeaveGround();
+
+
+        state.Update();
+
         if (!isDummy)
         {
-            CalculateRoundedInputDirection();
             TryBufferedJump();
 
             HandleMovementInput();
 
-            if (!wasOnGound && IsOnGround()) OnLand();
 
-            if (wasOnGound && !IsOnGround()) OnLeaveGround();
 
-            animator.SetBool("IsFalling", (rb2D.velocity.y < -0.1));
 
-            EndFrame();
+           
         }
+        EndFrame();
+    }
+
+
+    private void FixedUpdate()
+    {
+        state.FixedUpdate();
+    }
+    private void UpdateIsOnGround()
+    {
+        isOnGound = IsOnGround();
+    }
+
+
+    private void UpdateInputDirection()
+    {
+        inputDirection = controls.Player.Move.ReadValue<Vector2>();
     }
 
     private void CalculateRoundedInputDirection() {
         Vector2 inputDirection = controls.Player.Move.ReadValue<Vector2>();
-        if (inputDirection.y > joystickBuffer)
+        if (inputDirection.y > data.joystickBuffer)
         {
             roundedInputDirection = RoundedInputDirection.Up;
         }
-        else if (inputDirection.y < -joystickBuffer)
+        else if (inputDirection.y < -data.joystickBuffer)
         {
             roundedInputDirection = RoundedInputDirection.Down;
         }
-        else if (inputDirection.sqrMagnitude < Mathf.Pow(joystickBuffer,2))
+        else if (inputDirection.sqrMagnitude < Mathf.Pow(data.joystickBuffer,2))
         {
             roundedInputDirection = RoundedInputDirection.None;
         }
@@ -131,27 +178,27 @@ public class PlayerController : NetworkBehaviour
     {
         if (activeAttackType == ActiveAttackType.UpLeft)
         {
-            upLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+            data.upLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
         }
         else if (activeAttackType == ActiveAttackType.DownLeft)
         {
-            downLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+            data.downLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
         } 
         else if (activeAttackType == ActiveAttackType.SideLeft)
         {
-            sideLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+            data.sideLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
         }
         else if (activeAttackType == ActiveAttackType.UpAirLeft)
         {
-            upAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+            data.upAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
         }
         else if (activeAttackType == ActiveAttackType.DownAirLeft)
         {
-            downAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+            data.downAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
         }
         else if (activeAttackType == ActiveAttackType.SideAirLeft)
         {
-            sideAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
+            data.sideAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
         }
 
     }
@@ -202,27 +249,27 @@ public class PlayerController : NetworkBehaviour
 
     private void UpLeft()
     {
-        upLeft.StartAttack(this);
+        data.upLeft.StartAttack(this);
     }
     private void DownLeft()
     {
-        downLeft.StartAttack(this);
+        data.downLeft.StartAttack(this);
     }
     private void SideLeft()
     {
-        sideLeft.StartAttack(this);
+        data.sideLeft.StartAttack(this);
     }
     private void UpAirLeft()
     {
-        upAirLeft.StartAttack(this);
+        data.upAirLeft.StartAttack(this);
     }
     private void DownAirLeft()
     {
-        downAirLeft.StartAttack(this);
+        data.downAirLeft.StartAttack(this);
     }
     private void SideAirLeft()
     {
-        sideAirLeft.StartAttack(this);
+        data.sideAirLeft.StartAttack(this);
     }
 
     public void OnEnterAttack()
@@ -236,16 +283,14 @@ public class PlayerController : NetworkBehaviour
     #endregion
     private void OnLand()
     {
-        airJumps = maxAirJumps;
-        animator.SetBool("IsJumping", false);
-        animator.SetBool("IsInAir", false);
+        airJumps = data.maxAirJumps;
+
         rb2D.velocity *= new Vector3(0, 1, 0);
     }
 
 
     private void OnLeaveGround()
     {
-        animator.SetBool("IsInAir", true);
     }
 
     #region Movement
@@ -258,58 +303,20 @@ public class PlayerController : NetworkBehaviour
             if (controls.Player.Move.IsPressed())
             {
                 Vector2 input = controls.Player.Move.ReadValue<Vector2>();
-                if (Mathf.Abs(input.x) > movementThreshold)
+                if (Mathf.Abs(input.x) > data.movementThreshold)
                 {
-                    Move(moveAcceleration * input.x * Time.deltaTime);
+                    //Move(data.moveAcceleration * input.x * Time.deltaTime);
                 }
 
                 if (input.y < 0 && !IsOnGround()) FastFall();
 
-                if (input.x > 0)
-                {
-                    transform.localScale = new Vector3(1, 1, 1);
-                }
-                if (input.x < 0)
-                {
-                    transform.localScale = new Vector3(-1, 1, 1);
-                }
-            }
-            else
-            {
-                animator.SetBool("IsMoving", false);
-
-                if (IsOnGround())
-                {
-                    if (rb2D.velocity.sqrMagnitude < Mathf.Pow(moveDeceleration * Time.deltaTime, 2))
-                    {
-                        rb2D.velocity = Vector2.zero;
-                    }
-                    else
-                    {
-                        rb2D.velocity -= rb2D.velocity.normalized * moveDeceleration * Time.deltaTime;
-                    }
-                }
-            }
-
-            animator.SetBool("InputUp", roundedInputDirection == RoundedInputDirection.Up);
-            animator.SetBool("InputDown", roundedInputDirection == RoundedInputDirection.Down);
-            animator.SetBool("InputSide", roundedInputDirection == RoundedInputDirection.Side);
-        }
-    }
-    private void Move(float amount)
-    {
-        if (!(rb2D.velocity.x * amount > 0 && Mathf.Abs(rb2D.velocity.x + amount) > maxSpeed))
-        {
-            rb2D.velocity = rb2D.velocity + new Vector2(amount, 0);
-
-            if (IsOnGround())
-            {
-                animator.SetBool("IsMoving", true);
+               
             }
         }
     }
 
-    private void TryJump()
+
+    public void TryJump()
     {
         if (IsOnGround())
         {
@@ -328,17 +335,16 @@ public class PlayerController : NetworkBehaviour
 
     private void TryBufferedJump()
     {
-        if (timeLastJumpPressed + jumpBuffer >= Time.time && IsOnGround())
+        if (timeLastJumpPressed + data.jumpBuffer >= Time.time && IsOnGround())
         {
             timeLastJumpPressed = -1;
             Jump();
         }
     }
 
-    private void Jump() {
-        rb2D.velocity = Vector2.up * jumpStrength + rb2D.velocity * Vector2.right;
-        animator.SetBool("IsJumping", true);
-        animator.SetTrigger("IsJumping");
+    public void Jump() {
+        rb2D.velocity = Vector2.up * data.jumpStrength + rb2D.velocity * Vector2.right;
+        if (state != aerialState) ChangeState(aerialState);
     }
 
     private void AirJump()
@@ -348,8 +354,8 @@ public class PlayerController : NetworkBehaviour
 
     private void FastFall()
     {
-        float amount = fastFallAcceleration * Time.deltaTime;
-        if (!(rb2D.velocity.y * amount > 0 && (rb2D.velocity.y + amount) < maxFastFallSpeed))
+        float amount = data.fastFallAcceleration * Time.deltaTime;
+        if (!(rb2D.velocity.y * amount > 0 && (rb2D.velocity.y + amount) < data.maxFastFallSpeed))
         {
             rb2D.velocity += new Vector2(0, amount);
         }
@@ -373,7 +379,7 @@ public class PlayerController : NetworkBehaviour
 
     #endregion
 
-    private enum RoundedInputDirection
+    public enum RoundedInputDirection
     {
         None,
         Up,

@@ -65,28 +65,12 @@ MonoBehaviour:
   attackHitbox: {fileID: 8252381614973913596}
   spriteRenderer: {fileID: 955274732367071491}
   animator: {fileID: 4735154298517168032}
+  data: {fileID: 11400000, guid: 77c95419196380b409323775c1998111, type: 2}
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
-  upLeft: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
-  downLeft: {fileID: 11400000, guid: fab22ab566724d84d9d37c7c8dce770e, type: 2}
-  sideLeft: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
-  upAirLeft: {fileID: 0}
-  downAirLeft: {fileID: 0}
-  sideAirLeft: {fileID: 0}
-  movementThreshold: 0.1
-  moveAcceleration: 20
-  moveDeceleration: 10
-  maxSpeed: 5
-  jumpStrength: 10
-  jumpBuffer: 1
-  fastFallAcceleration: -50
-  maxFastFallSpeed: -200
-  maxAirJumps: 2
   airJumps: 0
-  wasOnGound: 0
-  joystickBuffer: 0.15
-  Gravity: 0.01
+  inputDirection: {x: 0, y: 0}
   roundedInputDirection: 0
   activeAttackType: 0
   timeLastJumpPressed: 0

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18fdf2f9a66c1aa4baefd9b4dbb37209, type: 3}
+  m_Name: PlayerData
+  m_EditorClassIdentifier: 
+  upLeft: {fileID: 0}
+  downLeft: {fileID: 0}
+  sideLeft: {fileID: 0}
+  upAirLeft: {fileID: 0}
+  downAirLeft: {fileID: 0}
+  sideAirLeft: {fileID: 0}
+  movementThreshold: 0.1
+  moveAcceleration: 10
+  moveDeceleration: 10
+  maxSpeed: 1
+  jumpStrength: 10
+  jumpBuffer: 0.1
+  fastFallAcceleration: -10
+  maxFastFallSpeed: -10
+  maxAirJumps: 2
+  joystickBuffer: 0.15
+  Gravity: 1

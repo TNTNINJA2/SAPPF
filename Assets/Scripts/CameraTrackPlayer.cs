@@ -20,6 +20,14 @@ public class CameraTrackPlayer : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (player == null)
+        {
+            FindPlayer();
+        }
+    }
+
     public void FindPlayer()
     {
         player = FindObjectOfType<PlayerController>().gameObject;
