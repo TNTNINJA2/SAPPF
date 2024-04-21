@@ -8,6 +8,7 @@ using Unity.Services.Relay.Models;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine.UI;
+using TMPro;
 
 
 
@@ -15,7 +16,7 @@ public class NewBehaviourScript : MonoBehaviour
 {
     [SerializeField] Button startBtn;
     [SerializeField] Button joinBtn;
-    [SerializeField] InputField relayCodeInput;
+    [SerializeField] TMP_InputField relayCodeInput;
     private void Awake()
     {
         startBtn.onClick.AddListener(() =>
