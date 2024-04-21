@@ -308,7 +308,6 @@ public class PlayerController : NetworkBehaviour
                     //Move(data.moveAcceleration * input.x * Time.deltaTime);
                 }
 
-                if (input.y < 0 && !IsOnGround()) FastFall();
 
                
             }
@@ -352,14 +351,7 @@ public class PlayerController : NetworkBehaviour
         Jump();
     }
 
-    private void FastFall()
-    {
-        float amount = data.fastFallAcceleration * Time.deltaTime;
-        if (!(rb2D.velocity.y * amount > 0 && (rb2D.velocity.y + amount) < data.maxFastFallSpeed))
-        {
-            rb2D.velocity += new Vector2(0, amount);
-        }
-    }
+
 
     #endregion
 
