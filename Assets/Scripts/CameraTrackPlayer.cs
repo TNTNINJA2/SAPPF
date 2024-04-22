@@ -30,8 +30,12 @@ public class CameraTrackPlayer : MonoBehaviour
 
     public void FindPlayer()
     {
-        player = FindObjectOfType<PlayerController>().gameObject;
-        transform.position = player.transform.position;
+        var playerController = FindObjectOfType<PlayerController>();
+        if (playerController != null)
+        {
+            player = playerController.gameObject;
+            transform.position = player.transform.position;
+        }
 
     }
 
