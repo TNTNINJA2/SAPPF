@@ -48,6 +48,9 @@ public class PlayerController : NetworkBehaviour
     public PlayerAerialState aerialState;
     public PlayerAttackState attackState;
 
+
+    public Attack activeAttack;
+
     #endregion
 
 
@@ -58,21 +61,10 @@ public class PlayerController : NetworkBehaviour
             controls = new Controls();
             controls.Enable();
 
-            controls.Player.Jump.performed += ctx => TryJump();
-
-
             controls.Player.LeftAttack.performed += ctx =>
             {
-                if (IsOwner) {
-                    if (IsOnGround())
-                    {
-                        LeftAttack();
-                    }
-                    else
-                    {
-                        LeftAirAttack();
-                    }
-                }
+                state.TryLeftAttack();
+                
             };
         }
         InitializeStates();
@@ -204,80 +196,51 @@ public class PlayerController : NetworkBehaviour
     }
 
     #region Attacks
-    private void LeftAttack()
+
+    private void StartAttack(Attack newAttack)
+    {
+        ChangeState(attackState);
+        activeAttack = newAttack;
+        activeAttack.StartAttack(this);
+    }
+    public void LeftGroundedAttack()
     {
         if (roundedInputDirection == RoundedInputDirection.Up || roundedInputDirection == RoundedInputDirection.None)
         {
-            UpLeft();
-            activeAttackType = ActiveAttackType.UpLeft;
+            StartAttack(data.upLeft);
         }
         else if (roundedInputDirection == RoundedInputDirection.Down)
         {
-            DownLeft();
-            activeAttackType = ActiveAttackType.DownLeft;
-
+            StartAttack(data.downLeft);
         }
         else if (roundedInputDirection == RoundedInputDirection.Side)
         {
-            SideLeft();
-            activeAttackType = ActiveAttackType.SideLeft;
-
+            StartAttack(data.sideLeft);
         }
     }
-    private void LeftAirAttack()
+    public void LeftAirAttack()
     {
         if (roundedInputDirection == RoundedInputDirection.Up || roundedInputDirection == RoundedInputDirection.None)
         {
-            UpAirLeft();
-            activeAttackType = ActiveAttackType.UpAirLeft;
+            StartAttack(data.upAirLeft);
         }
         else if (roundedInputDirection == RoundedInputDirection.Down)
         {
-            DownAirLeft();
-            activeAttackType = ActiveAttackType.DownAirLeft;
-
+            StartAttack(data.downAirLeft);
         }
         else if (roundedInputDirection == RoundedInputDirection.Side)
         {
-            SideAirLeft();
-            activeAttackType = ActiveAttackType.SideAirLeft;
-
+            StartAttack(data.sideAirLeft);
         }
     }
 
-
-
-    private void UpLeft()
-    {
-        data.upLeft.StartAttack(this);
-    }
-    private void DownLeft()
-    {
-        data.downLeft.StartAttack(this);
-    }
-    private void SideLeft()
-    {
-        data.sideLeft.StartAttack(this);
-    }
-    private void UpAirLeft()
-    {
-        data.upAirLeft.StartAttack(this);
-    }
-    private void DownAirLeft()
-    {
-        data.downAirLeft.StartAttack(this);
-    }
-    private void SideAirLeft()
-    {
-        data.sideAirLeft.StartAttack(this);
-    }
 
     public void OnEnterAttack()
     {
     }
-    public void OnExitAttack()
+    public void EndAttack()
     {
-        activeAttackType = ActiveAttackType.None;
+        state.EndAttack();
     }
 
     #endregion

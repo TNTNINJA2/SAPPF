@@ -61,4 +61,12 @@ public class PlayerIdleState : PlayerState
             player.rb2D.velocity -= player.rb2D.velocity.normalized * player.data.moveDeceleration * Time.deltaTime;
         }
     }
+
+    public override void TryLeftAttack()
+    {
+        base.TryLeftAttack();
+        player.LeftGroundedAttack();
+    }
+
+
 }

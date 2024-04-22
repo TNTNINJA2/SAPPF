@@ -78,4 +78,10 @@ public class PlayerWalkState : PlayerState
         //} 
         player.rb2D.velocity = Vector2.right * player.data.maxSpeed * player.inputDirection.x;
     }
+
+    public override void TryLeftAttack()
+    {
+        base.TryLeftAttack();
+        player.LeftGroundedAttack();
+    }
 }

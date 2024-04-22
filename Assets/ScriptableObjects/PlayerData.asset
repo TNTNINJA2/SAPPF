@@ -12,20 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18fdf2f9a66c1aa4baefd9b4dbb37209, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  upLeft: {fileID: 0}
-  downLeft: {fileID: 0}
-  sideLeft: {fileID: 0}
-  upAirLeft: {fileID: 0}
+  upLeft: {fileID: 11400000, guid: fc9ca1de661d25a47acd049ce9936902, type: 2}
+  downLeft: {fileID: 11400000, guid: fab22ab566724d84d9d37c7c8dce770e, type: 2}
+  sideLeft: {fileID: 11400000, guid: 564e994316893744183a0ad91dc0ab68, type: 2}
+  upAirLeft: {fileID: 11400000, guid: 0a57fb5f282a781448c3edeb61a1a6cd, type: 2}
   downAirLeft: {fileID: 0}
   sideAirLeft: {fileID: 0}
   movementThreshold: 0.1
-  moveAcceleration: 2
+  moveAcceleration: 1
   moveDeceleration: 10
   maxSpeed: 8
   jumpStrength: 10
   jumpBuffer: 0.1
-  fastFallAcceleration: -10
-  maxFastFallSpeed: -10
+  fastFallAcceleration: -2
+  maxFastFallSpeed: -20
   maxAirJumps: 2
   joystickBuffer: 0.15
   Gravity: 1

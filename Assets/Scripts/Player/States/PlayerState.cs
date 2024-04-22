@@ -30,4 +30,12 @@ public class PlayerState
     {
 
     }
+
+    public virtual void TryLeftAttack() { }
+
+    public virtual void TryRightAttack() { }
+
+    public virtual void EndAttack() { }
+
+    public virtual void OnHit() { }
 }
