@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
 {
 
     #region Fields
-    [SerializeField] bool isDummy;
+    [SerializeField] public bool isDummy;
 
     public Controls controls;
     [SerializeField] public BoxCollider2D collistionsHitbox;
@@ -27,6 +27,10 @@ public class PlayerController : NetworkBehaviour
     public bool isOnGound { get; private set; }
     public bool wasOnGound { get; private set; }
     public int airJumps;
+    public float stunTime;
+
+    float health;
+
 
 
 
@@ -40,7 +44,7 @@ public class PlayerController : NetworkBehaviour
 
     public float timeLastJumpPressed;
 
-    PlayerState state;
+    public PlayerState state;
 
     public PlayerIdleState idleState;
     public PlayerWalkState walkState;
@@ -56,17 +60,24 @@ public class PlayerController : NetworkBehaviour
 
 
     private void Awake() {
+
+        controls = new Controls();
+        controls.Enable();
         if (!isDummy)
         {
-            controls = new Controls();
-            controls.Enable();
-
             controls.Player.LeftAttack.performed += ctx =>
             {
-                state.TryLeftAttack();
-                
+                if (state.ShouldTryAttack()) ChangeState(attackState);
+            };
+
+            controls.Player.Jump.performed += ctx =>
+            {
+                if (state.ShouldTryJump()) TryJump();
             };
         }
+        health = data.maxHealth;
+
+
         InitializeStates();
     }
 
@@ -97,8 +108,6 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        UpdateInputDirection();
-        CalculateRoundedInputDirection();
 
         UpdateIsOnGround();
 
@@ -114,11 +123,13 @@ public class PlayerController : NetworkBehaviour
             TryBufferedJump();
 
             HandleMovementInput();
+            UpdateInputDirection();
+
+            CalculateRoundedInputDirection();
 
 
 
 
-           
         }
         EndFrame();
     }
@@ -197,42 +208,8 @@ public class PlayerController : NetworkBehaviour
 
     #region Attacks
 
-    private void StartAttack(Attack newAttack)
-    {
-        ChangeState(attackState);
-        activeAttack = newAttack;
-        activeAttack.StartAttack(this);
-    }
-    public void LeftGroundedAttack()
-    {
-        if (roundedInputDirection == RoundedInputDirection.Up || roundedInputDirection == RoundedInputDirection.None)
-        {
-            StartAttack(data.upLeft);
-        }
-        else if (roundedInputDirection == RoundedInputDirection.Down)
-        {
-            StartAttack(data.downLeft);
-        }
-        else if (roundedInputDirection == RoundedInputDirection.Side)
-        {
-            StartAttack(data.sideLeft);
-        }
-    }
-    public void LeftAirAttack()
-    {
-        if (roundedInputDirection == RoundedInputDirection.Up || roundedInputDirection == RoundedInputDirection.None)
-        {
-            StartAttack(data.upAirLeft);
-        }
-        else if (roundedInputDirection == RoundedInputDirection.Down)
-        {
-            StartAttack(data.downAirLeft);
-        }
-        else if (roundedInputDirection == RoundedInputDirection.Side)
-        {
-            StartAttack(data.sideAirLeft);
-        }
-    }
+
+
 
 
     public void OnEnterAttack()
@@ -242,6 +219,17 @@ public class PlayerController : NetworkBehaviour
     {
         state.EndAttack();
     }
+    public void Hurt(float amount, float stunDuration, Vector2 launchDirection)
+    {
+        state.OnHurt(amount, stunDuration, launchDirection);
+    }
+
+    public void TakeDamage(float amount)
+    {
+        health -= amount;
+        if (health <= 0) Destroy(gameObject);
+    }
+
 
     #endregion
     private void OnLand()

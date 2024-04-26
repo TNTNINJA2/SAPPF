@@ -27,13 +27,6 @@ public class PlayerIdleState : PlayerState
     {
         base.Update();
 
-
-
-        if (player.controls.Player.Jump.ReadValue<float>() == 1)
-        {
-            player.Jump();
-        }
-
         animator.Play(IDLE_ANIMATION_NAME);
 
 
@@ -52,21 +45,14 @@ public class PlayerIdleState : PlayerState
     public override void FixedUpdate()
     {
         base.FixedUpdate();
-        if (player.rb2D.velocity.sqrMagnitude < Mathf.Pow(player.data.moveDeceleration * Time.deltaTime, 2))
+        if (player.rb2D.velocity.sqrMagnitude < Mathf.Pow(player.data.groundedMoveDeceleration * Time.deltaTime, 2))
         {
            player. rb2D.velocity = Vector2.zero;
         }
         else
         {
-            player.rb2D.velocity -= player.rb2D.velocity.normalized * player.data.moveDeceleration * Time.deltaTime;
+            player.rb2D.velocity -= player.rb2D.velocity.normalized * player.data.groundedMoveDeceleration * Time.deltaTime;
         }
     }
-
-    public override void TryLeftAttack()
-    {
-        base.TryLeftAttack();
-        player.LeftGroundedAttack();
-    }
-
 
 }

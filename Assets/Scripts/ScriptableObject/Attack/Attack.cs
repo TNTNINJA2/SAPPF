@@ -14,7 +14,7 @@ public class Attack : ScriptableObject
 
     public virtual void OnHit(PlayerController player, PlayerController target)
     {
-        target.GetComponent<PlayerHealth>().TakeDamage(damage, stunDuration, new Vector2(launchDirection.x * player.transform.localScale.x, launchDirection.y));
+        target.GetComponent<PlayerController>().Hurt(damage, stunDuration, new Vector2(launchDirection.x * player.transform.localScale.x, launchDirection.y));
 
     }
 }

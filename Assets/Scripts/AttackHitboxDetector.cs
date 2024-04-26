@@ -24,7 +24,8 @@ public class AttackHitboxDetector : MonoBehaviour
             {
                 if (hit.gameObject != gameObject && hit.gameObject != transform.parent.gameObject)
                 {
-                    playerController.HitEnemy(hit);
+                    PlayerController target = hit.GetComponent<PlayerController>();
+                    if (target != null) playerController.state.OnHit(target);
                 }
                 else
                 {

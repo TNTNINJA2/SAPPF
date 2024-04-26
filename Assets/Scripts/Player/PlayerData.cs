@@ -16,7 +16,8 @@ public class PlayerData : ScriptableObject
 
     [SerializeField] public float movementThreshold = 0.1f;
     [SerializeField] public float moveAcceleration = 10;
-    [SerializeField] public float moveDeceleration = 10;
+    [SerializeField] public float groundedMoveAcceleration = 10;
+    [SerializeField] public float groundedMoveDeceleration = 10;
     [SerializeField] public float maxSpeed = 1;
     [SerializeField] public float jumpStrength = 10;
     [SerializeField] public float jumpBuffer = 0.1f;
@@ -25,4 +26,6 @@ public class PlayerData : ScriptableObject
     [SerializeField] public int maxAirJumps = 2;
     [SerializeField] public float joystickBuffer = 0.15f;
     [SerializeField] public float Gravity = 1f;
+    [SerializeField] public float maxHealth = 20;
+
 }

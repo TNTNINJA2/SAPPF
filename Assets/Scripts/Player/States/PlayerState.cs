@@ -31,11 +31,25 @@ public class PlayerState
 
     }
 
-    public virtual void TryLeftAttack() { }
+    public virtual bool ShouldTryAttack() { return true; }
+    public virtual bool ShouldTryJump() { return true; }
+    public virtual bool IsVulnerable() { return true; }
 
-    public virtual void TryRightAttack() { }
 
     public virtual void EndAttack() { }
 
-    public virtual void OnHit() { }
+    public virtual void OnHit(PlayerController target) { }
+
+    public virtual void OnHurt(float amount, float stunDuration, Vector2 launchDirection) { 
+        if (IsVulnerable())
+        {
+            player.rb2D.velocity = launchDirection;
+            player.stunTime = stunDuration;
+            player.TakeDamage(amount);
+            player.ChangeState(player.stunState);
+
+        }
+    }
+
+
 }

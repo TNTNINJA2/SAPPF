@@ -19,9 +19,10 @@ MonoBehaviour:
   downAirLeft: {fileID: 0}
   sideAirLeft: {fileID: 0}
   movementThreshold: 0.1
-  moveAcceleration: 1
-  moveDeceleration: 10
-  maxSpeed: 8
+  moveAcceleration: 0.7
+  groundedMoveAcceleration: 1
+  groundedMoveDeceleration: 10
+  maxSpeed: 5
   jumpStrength: 10
   jumpBuffer: 0.1
   fastFallAcceleration: -2
@@ -29,3 +30,4 @@ MonoBehaviour:
   maxAirJumps: 2
   joystickBuffer: 0.15
   Gravity: 1
+  maxHealth: 10000

@@ -21,10 +21,7 @@ public class PlayerAerialState : PlayerState
     {
 
         animator.Play(AERIAL_UP_ANIMATION);
-        if (player.controls.Player.Jump.ReadValue<float>() == 1)
-        {
-            player.TryJump();
-        }
+
 
 
 

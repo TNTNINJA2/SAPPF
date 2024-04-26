@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerAttackState : PlayerState
@@ -13,6 +14,11 @@ public class PlayerAttackState : PlayerState
     {
         base.EnterState();
         Debug.Log("Enter Attack State");
+
+        if (player.isOnGound)
+        {
+            LeftGroundedAttack();
+        }
     }
 
     public override void EndAttack()
@@ -25,6 +31,54 @@ public class PlayerAttackState : PlayerState
         {
             player.ChangeState(player.aerialState);
         }
+    }
 
+
+    public void LeftGroundedAttack()
+    {
+        if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Up || player.roundedInputDirection == PlayerController.RoundedInputDirection.None)
+        {
+            StartAttack(player.data.upLeft);
+        }
+        else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Down)
+        {
+            StartAttack(player.data.downLeft);
+        }
+        else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Side)
+        {
+            StartAttack(player.data.sideLeft);
+        }
+    }
+    public void LeftAirAttack()
+    {
+        if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Up || player.roundedInputDirection == PlayerController.RoundedInputDirection.None)
+        {
+            StartAttack(player.data.upAirLeft);
+        }
+        else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Down)
+        {
+            StartAttack(player.data.downAirLeft);
+        }
+        else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Side)
+        {
+            StartAttack(player.data.sideAirLeft);
+        }
+    }
+
+    private void StartAttack(Attack newAttack)
+    {
+        player.activeAttack = newAttack;
+        player.activeAttack.StartAttack(player);
+    }
+
+    public override void OnHit(PlayerController target)
+    {
+        base.OnHit(target);
+        player.activeAttack.OnHit(player, target);
+    }
+
+    public override bool ShouldTryJump()
+    {
+        return false;
     }
 }
