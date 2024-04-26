@@ -40,7 +40,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4427824624947237370}
@@ -504,49 +504,14 @@ MonoBehaviour:
     DestinationState: 0
     TransitionDuration: 0.25
     TriggerNameHash: 859106820
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: -1129626584
-    TransitionDuration: 0.25
-    TriggerNameHash: 1080829965
-    TransitionIndex: 3
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 765711723
-    DestinationState: 125937960
-    TransitionDuration: 0
-    TriggerNameHash: 1749078233
-    TransitionIndex: 1
+    TransitionIndex: 0
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 765711723
     DestinationState: 0
     TransitionDuration: 0.25
     TriggerNameHash: 859106820
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 765711723
-    DestinationState: -1129626584
-    TransitionDuration: 0.25
-    TriggerNameHash: 1080829965
-    TransitionIndex: 3
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -1715357138
-    DestinationState: -393773977
-    TransitionDuration: 0.25
-    TriggerNameHash: 1080829965
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 1421979481
-    DestinationState: -393773977
-    TransitionDuration: 0.25
-    TriggerNameHash: 1080829965
-    TransitionIndex: 2
+    TransitionIndex: 0
   m_Animator: {fileID: 4735154298517168032}
 --- !u!1 &9122952386705469402
 GameObject:
