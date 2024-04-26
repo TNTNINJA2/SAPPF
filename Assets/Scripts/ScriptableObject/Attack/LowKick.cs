@@ -10,7 +10,6 @@ public class LowKick : Attack
     {
         base.StartAttack(player);
         player.animator.Play(LOW_KICK_ANIMATION_NAME);
-        Debug.Log("");
 
     }
 }
