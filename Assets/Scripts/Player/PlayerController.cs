@@ -7,6 +7,8 @@ using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
 using UnityEngine.PlayerLoop;
 using Unity.Netcode;
+using System;
+using Unity.Collections;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -15,6 +17,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] public bool isDummy;
 
     public Controls controls;
+    [SerializeField] public ClientNetworkAnimator networkAnimator;
     [SerializeField] public BoxCollider2D collistionsHitbox;
     [SerializeField] public BoxCollider2D groundDetectionHitbox;
     [SerializeField] public Rigidbody2D rb2D;
@@ -30,6 +33,8 @@ public class PlayerController : NetworkBehaviour
     public float stunTime;
 
     float health;
+
+    public NetworkVariable<FixedString32Bytes> currentAnimation = new NetworkVariable<FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 
 
@@ -63,18 +68,10 @@ public class PlayerController : NetworkBehaviour
 
         controls = new Controls();
         controls.Enable();
-        if (!isDummy)
-        {
-            controls.Player.LeftAttack.performed += ctx =>
-            {
-                if (state.ShouldTryAttack()) ChangeState(attackState);
-            };
 
-            controls.Player.Jump.performed += ctx =>
-            {
-                if (state.ShouldTryJump()) TryJump();
-            };
-        }
+        networkAnimator = GetComponent<ClientNetworkAnimator>();
+
+ 
         health = data.maxHealth;
 
 
@@ -105,40 +102,66 @@ public class PlayerController : NetworkBehaviour
         state.EnterState();
     }
 
+    private void Start()
+    {
+        if (IsOwner)
+        {
+            if (!isDummy)
+            {
+                controls.Player.LeftAttack.performed += ctx =>
+                {
+                    if (state.ShouldTryAttack()) ChangeState(attackState);
+                };
+
+                controls.Player.Jump.performed += ctx =>
+                {
+                    if (state.ShouldTryJump()) TryJump();
+                };
+            }
+        }
+
+        currentAnimation.OnValueChanged += (previousValue, newValue) =>
+        {
+            Debug.Log("Current animation changed to" + newValue);
+        };
+
+    }
+
 
     private void Update()
     {
-
-        UpdateIsOnGround();
-
-
-        if (!wasOnGound && IsOnGround()) OnLand();
-        if (wasOnGound && !IsOnGround()) OnLeaveGround();
-
-
-        state.Update();
-
-        if (!isDummy)
+        if (IsOwner || (IsServer && isDummy))
         {
-            TryBufferedJump();
+            UpdateIsOnGround();
 
-            HandleMovementInput();
-            UpdateInputDirection();
+            if (!wasOnGound && IsOnGround()) OnLand();
+            if (wasOnGound && !IsOnGround()) OnLeaveGround();
 
-            CalculateRoundedInputDirection();
+            state.Update();
 
+            if (!isDummy)
+            {
+                TryBufferedJump();
 
+                HandleMovementInput();
+                UpdateInputDirection();
 
-
+                CalculateRoundedInputDirection();
+            }
+            EndFrame();
         }
-        EndFrame();
-    }
 
+        animator.Play(currentAnimation.Value.ToString());
+    }
 
     private void FixedUpdate()
     {
-        state.FixedUpdate();
+        if (IsOwner)
+        {
+            state.FixedUpdate();
+        }
     }
+
     private void UpdateIsOnGround()
     {
         isOnGound = IsOnGround();
@@ -176,41 +199,7 @@ public class PlayerController : NetworkBehaviour
     }
 
 
-
-    public void HitEnemy(Collider2D collision)
-    {
-        if (activeAttackType == ActiveAttackType.UpLeft)
-        {
-            data.upLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
-        }
-        else if (activeAttackType == ActiveAttackType.DownLeft)
-        {
-            data.downLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
-        } 
-        else if (activeAttackType == ActiveAttackType.SideLeft)
-        {
-            data.sideLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
-        }
-        else if (activeAttackType == ActiveAttackType.UpAirLeft)
-        {
-            data.upAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
-        }
-        else if (activeAttackType == ActiveAttackType.DownAirLeft)
-        {
-            data.downAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
-        }
-        else if (activeAttackType == ActiveAttackType.SideAirLeft)
-        {
-            data.sideAirLeft.OnHit(this, collision.gameObject.GetComponent<PlayerController>());
-        }
-
-    }
-
     #region Attacks
-
-
-
-
 
     public void OnEnterAttack()
     {
@@ -230,8 +219,8 @@ public class PlayerController : NetworkBehaviour
         if (health <= 0) Destroy(gameObject);
     }
 
-
     #endregion
+
     private void OnLand()
     {
         airJumps = data.maxAirJumps;

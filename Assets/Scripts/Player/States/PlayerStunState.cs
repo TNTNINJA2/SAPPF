@@ -12,13 +12,14 @@ public class PlayerStunState : PlayerState
     {
         base.EnterState();
         Debug.Log("Enter Stun State");
+        player.currentAnimation.Value = STUN_ANIMATION_NAME;
 
     }
     public override void Update()
     {
         base.Update();
 
-        player.animator.Play(STUN_ANIMATION_NAME);
+        
 
         if (player.stunTime > 0)
         {

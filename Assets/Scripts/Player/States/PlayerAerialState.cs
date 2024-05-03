@@ -20,7 +20,7 @@ public class PlayerAerialState : PlayerState
     public override void Update()
     {
 
-        animator.Play(AERIAL_UP_ANIMATION);
+        player.currentAnimation.Value = AERIAL_UP_ANIMATION;
 
 
 
