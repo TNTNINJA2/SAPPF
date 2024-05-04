@@ -210,7 +210,18 @@ public class PlayerController : NetworkBehaviour
     }
     public void Hurt(float amount, float stunDuration, Vector2 launchDirection)
     {
-        state.OnHurt(amount, stunDuration, launchDirection);
+
+        HurtRpc(amount, stunDuration, launchDirection.x, launchDirection.y);
+
+
+    }
+
+
+
+    [Rpc(SendTo.Owner)]
+    private void HurtRpc(float amount, float stunDuration, float launchX, float launchY)
+    {
+        state.OnHurt(amount, stunDuration, new Vector2(launchX, launchY));
     }
 
     public void TakeDamage(float amount)

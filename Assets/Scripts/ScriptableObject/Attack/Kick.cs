@@ -9,6 +9,7 @@ public class Kick : Attack
     public override void StartAttack(PlayerController player)
     {
         base.StartAttack(player);
+        player.
         player.animator.Play(KICK_ANIMATION_NAME);
 
     }
