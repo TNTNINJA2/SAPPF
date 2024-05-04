@@ -15,4 +15,4 @@ MonoBehaviour:
   damage: 10
   stunDuration: 2
   launchDirection: {x: 4.5, y: 2.3}
-  ANIMATION_NAME: Kick
+  ATTACK_ANIMATION_NAME: Kick

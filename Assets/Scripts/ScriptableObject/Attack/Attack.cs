@@ -9,11 +9,11 @@ public class Attack : ScriptableObject
     [SerializeField] protected float damage;
     [SerializeField] protected float stunDuration;
     [SerializeField] protected Vector2 launchDirection;
-    [SerializeField] protected string ANIMATION_NAME;
+    [SerializeField] protected string ATTACK_ANIMATION_NAME;
     public virtual void StartAttack(PlayerController player)
     {
         player.animator.SetTrigger("Attack");
-        player.currentAnimation.Value = ANIMATION_NAME;
+        player.ChangeNetworkAnimation(ATTACK_ANIMATION_NAME);
     }
 
     public virtual void OnHit(PlayerController player, PlayerController target)

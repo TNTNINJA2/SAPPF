@@ -34,10 +34,40 @@ public class PlayerController : NetworkBehaviour
 
     float health;
 
-    public NetworkVariable<FixedString32Bytes> currentAnimation = new NetworkVariable<FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<NetString> currentAnimation = new NetworkVariable<NetString>(new NetString("Idle"), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 
+    public struct NetString : INetworkSerializable, System.IEquatable<NetString>
+    {
+        public string value;
 
+        public NetString(string value)
+        {
+            this.value = value;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            if (serializer.IsReader)
+            {
+                var reader = serializer.GetFastBufferReader();
+                reader.ReadValueSafe(out value);
+            } else
+            {
+                var writer = serializer.GetFastBufferWriter();
+                writer.WriteValueSafe(value);
+            }
+        }
+        public bool Equals(NetString other)
+        {
+            if (String.Equals(other.value, value, StringComparison.CurrentCulture))
+            {
+                return true;
+            }
+            return false;
+        }
+
+    }
 
 
     public Vector2 inputDirection;
@@ -123,7 +153,7 @@ public class PlayerController : NetworkBehaviour
 
         currentAnimation.OnValueChanged += (previousValue, newValue) =>
         {
-            Debug.Log("Current animation changed to" + newValue);
+            Debug.Log("Current animation changed to" + newValue.value);
         };
 
     }
@@ -154,7 +184,7 @@ public class PlayerController : NetworkBehaviour
             EndFrame();
         }
 
-        animator.Play(currentAnimation.Value.ToString());
+        animator.Play(currentAnimation.Value.value);
     }
 
     private void FixedUpdate()
@@ -163,6 +193,12 @@ public class PlayerController : NetworkBehaviour
         {
             state.FixedUpdate();
         }
+    }
+
+    public void ChangeNetworkAnimation(string animationName)
+    {
+        currentAnimation.Value = new NetString(animationName);
+
     }
 
     private void UpdateIsOnGround()

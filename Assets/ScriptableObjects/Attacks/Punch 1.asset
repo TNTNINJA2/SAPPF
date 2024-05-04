@@ -15,4 +15,4 @@ MonoBehaviour:
   damage: 10
   stunDuration: 2
   launchDirection: {x: 7, y: 1.5}
-  ANIMATION_NAME: Punch
+  ATTACK_ANIMATION_NAME: Punch

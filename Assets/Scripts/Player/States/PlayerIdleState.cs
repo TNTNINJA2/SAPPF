@@ -15,6 +15,7 @@ public class PlayerIdleState : PlayerState
     {
         base.EnterState();
         Debug.Log("Enter Idle State");
+        player.ChangeNetworkAnimation(IDLE_ANIMATION_NAME);
 
     }
 
@@ -28,7 +29,6 @@ public class PlayerIdleState : PlayerState
         base.Update();
 
         //animator.Play(IDLE_ANIMATION_NAME);
-        player.currentAnimation.Value = IDLE_ANIMATION_NAME;
 
 
 

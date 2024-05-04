@@ -27,7 +27,7 @@ public class PlayerWalkState : PlayerState
         base.Update();
 
         //animator.Play(WALK_ANIMATION_NAME);
-        player.currentAnimation.Value = WALK_ANIMATION_NAME;
+        player.ChangeNetworkAnimation(WALK_ANIMATION_NAME);
 
         if (player.inputDirection.x > 0)
         {

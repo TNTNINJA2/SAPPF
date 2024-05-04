@@ -15,4 +15,4 @@ MonoBehaviour:
   damage: 10
   stunDuration: 2
   launchDirection: {x: 0.7, y: 10.6}
-  ANIMATION_NAME: LowKick
+  ATTACK_ANIMATION_NAME: LowKick

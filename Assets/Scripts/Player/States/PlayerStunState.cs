@@ -12,7 +12,7 @@ public class PlayerStunState : PlayerState
     {
         base.EnterState();
         Debug.Log("Enter Stun State");
-        player.currentAnimation.Value = STUN_ANIMATION_NAME;
+        player.ChangeNetworkAnimation(STUN_ANIMATION_NAME);
 
     }
     public override void Update()
