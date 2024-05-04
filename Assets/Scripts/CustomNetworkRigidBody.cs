@@ -7,50 +7,77 @@ using Unity.Netcode.Components;
 using UnityEngine;
 
 
-public class CustomNetworkRigidbody : NetworkRigidbody2D
+public class CustomNetworkRigidbody : NetworkBehaviour
 {
-    private Rigidbody m_Rigidbody;
+    private Rigidbody2D m_Rigidbody;
+    private NetworkTransform m_NetworkTransform;
+
+    private bool m_OriginalKinematic;
+    private RigidbodyInterpolation2D m_OriginalInterpolation;
+
+    // Used to cache the authority state of this rigidbody during the last frame
+    private bool m_IsAuthority;
+
+    /// <summary>
+    /// Gets a bool value indicating whether this <see cref="NetworkRigidbody2D"/> on this peer currently holds authority.
+    /// </summary>
+    private bool HasAuthority => m_NetworkTransform.CanCommitToTransform;
 
     private void Awake()
     {
-        m_Rigidbody = GetComponent<Rigidbody>();
+        m_Rigidbody = GetComponent<Rigidbody2D>();
+        m_NetworkTransform = GetComponent<NetworkTransform>();
+
+        // Turn off physics for the rigid body until spawned, otherwise
+        // clients can run fixed update before the first full
+        // NetworkTransform update
+        //m_Rigidbody.isKinematic = true;
     }
 
-    public override void OnGainedOwnership()
+    private void FixedUpdate()
     {
-        // Let the NetworkRigidbody update the kinematic state first since this is
-        // what determines whether the Rigidbody is kinematic or not
-        base.OnGainedOwnership();
-
-        // Added a check here in case you are changing ownership or ownership changes
-        // when parented.
-        if (transform.parent != null)
+        if (IsSpawned)
         {
-            var parentNetworkObject = transform.parent.GetComponent<NetworkObject>();
-
-            // You might need to add an additional check for the type of parent your
-            // object is parented under, but this is the general idea
-            if (parentNetworkObject != null)
+            if (HasAuthority != m_IsAuthority)
             {
+                m_IsAuthority = HasAuthority;
+                UpdateRigidbodyKinematicMode();
             }
         }
     }
 
-    public override void OnNetworkObjectParentChanged(NetworkObject parentNetworkObject)
+    // Puts the rigidbody in a kinematic non-interpolated mode on everyone but the server.
+    private void UpdateRigidbodyKinematicMode()
     {
-        if (IsOwner)
+        if (m_IsAuthority == false)
         {
-            // You might need to add an additional check for the type of parent your
-            // object is parented under, but this is the general idea
-            if (parentNetworkObject != null)
-            {
-                m_Rigidbody.isKinematic = true;
-            }
-            else
-            {
-                m_Rigidbody.isKinematic = false;
-            }
+            m_OriginalKinematic = m_Rigidbody.isKinematic;
+            m_Rigidbody.isKinematic = true;
+
+            m_OriginalInterpolation = m_Rigidbody.interpolation;
+            // Set interpolation to none, the NetworkTransform component interpolates the position of the object.
+            m_Rigidbody.interpolation = RigidbodyInterpolation2D.None;
         }
-        base.OnNetworkObjectParentChanged(parentNetworkObject);
+        else
+        {
+            // Resets the rigidbody back to it's non replication only state. Happens on shutdown and when authority is lost
+            m_Rigidbody.isKinematic = m_OriginalKinematic;
+            m_Rigidbody.interpolation = m_OriginalInterpolation;
+        }
+    }
+
+    /// <inheritdoc />
+    public override void OnNetworkSpawn()
+    {
+        m_IsAuthority = HasAuthority;
+        m_OriginalKinematic = m_Rigidbody.isKinematic;
+        m_OriginalInterpolation = m_Rigidbody.interpolation;
+        UpdateRigidbodyKinematicMode();
+    }
+
+    /// <inheritdoc />
+    public override void OnNetworkDespawn()
+    {
+        UpdateRigidbodyKinematicMode();
     }
 }

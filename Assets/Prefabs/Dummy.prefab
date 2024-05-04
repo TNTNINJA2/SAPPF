@@ -20,8 +20,8 @@ GameObject:
   - component: {fileID: 1342300946272170042}
   - component: {fileID: 3849774264300089163}
   - component: {fileID: 2341118708519915253}
-  - component: {fileID: 5148723772589181789}
   - component: {fileID: 3726281633109637617}
+  - component: {fileID: -2417738415797181228}
   m_Layer: 7
   m_Name: Dummy
   m_TagString: Untagged
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2913390170
+  GlobalObjectIdHash: 1417180295
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -494,18 +494,6 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &5148723772589181789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 284973921162056684}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3726281633109637617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534,6 +522,18 @@ MonoBehaviour:
     TriggerNameHash: 859106820
     TransitionIndex: 0
   m_Animator: {fileID: 4735154298517168032}
+--- !u!114 &-2417738415797181228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284973921162056684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 394ecefe6cc91a445bb0e3d340a72b48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9122952386705469402
 GameObject:
   m_ObjectHideFlags: 0
