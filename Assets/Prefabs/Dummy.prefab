@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4125738885378931690}
   - component: {fileID: 8132642714137174195}
   - component: {fileID: 955274732367071491}
+  - component: {fileID: 255349122453365719}
   - component: {fileID: 4735154298517168032}
   - component: {fileID: 6547309207642369613}
   - component: {fileID: 267570677358393839}
@@ -18,7 +19,6 @@ GameObject:
   - component: {fileID: 4542114547846512820}
   - component: {fileID: 1342300946272170042}
   - component: {fileID: 3849774264300089163}
-  - component: {fileID: 255349122453365719}
   - component: {fileID: 2341118708519915253}
   - component: {fileID: 5148723772589181789}
   - component: {fileID: 3726281633109637617}
@@ -58,6 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isDummy: 1
+  networkAnimator: {fileID: 0}
   collistionsHitbox: {fileID: 267570677358393839}
   groundDetectionHitbox: {fileID: 267570677358393839}
   rb2D: {fileID: 6547309207642369613}
@@ -70,6 +71,41 @@ MonoBehaviour:
     m_Bits: 128
   airJumps: 0
   stunTime: 0
+  currentAnimation:
+    m_InternalValue:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0016: 0
+        byte0017: 0
+        byte0018: 0
+        byte0019: 0
+        byte0020: 0
+        byte0021: 0
+        byte0022: 0
+        byte0023: 0
+        byte0024: 0
+        byte0025: 0
+        byte0026: 0
+        byte0027: 0
+        byte0028: 0
+        byte0029: 0
   inputDirection: {x: 0, y: 0}
   roundedInputDirection: 0
   activeAttackType: 0
@@ -127,6 +163,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &255349122453365719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284973921162056684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1417180295
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!95 &4735154298517168032
 Animator:
   serializedVersion: 5
@@ -406,26 +463,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterRender: {fileID: 0}
   targetPos: {x: 0, y: 0, z: 0}
---- !u!114 &255349122453365719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 284973921162056684}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!114 &2341118708519915253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,6 +475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 655287de9ca29284ebc0a958bb0e498e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 0
