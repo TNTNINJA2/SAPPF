@@ -118,6 +118,7 @@ public class PlayerController : NetworkBehaviour
                     if (state.ShouldTryJump()) TryJump();
                 };
             }
+
         }
 
         currentAnimation.OnValueChanged += (previousValue, newValue) =>
@@ -126,6 +127,8 @@ public class PlayerController : NetworkBehaviour
         };
 
     }
+
+ 
 
 
     private void Update()
