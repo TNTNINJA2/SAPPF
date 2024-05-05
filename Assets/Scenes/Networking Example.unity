@@ -643,6 +643,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dummy
       objectReference: {fileID: 0}
+    - target: {fileID: 955274732367071491, guid: 15b2661083663f04699f5e99538a8866, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 955274732367071491, guid: 15b2661083663f04699f5e99538a8866, type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4125738885378931690, guid: 15b2661083663f04699f5e99538a8866, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.08

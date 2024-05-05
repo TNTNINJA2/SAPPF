@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc72eae1ea465164497b0006208190b5, type: 3}
   m_Name: Air Kick
   m_EditorClassIdentifier: 
-  damage: 0
-  stunDuration: 0
-  launchDirection: {x: 0, y: 0}
-  ATTACK_ANIMATION_NAME: 
+  damage: 10
+  stunDuration: 0.5
+  launchDirection: {x: 4, y: 5}
+  ATTACK_ANIMATION_NAME: Air Kick
