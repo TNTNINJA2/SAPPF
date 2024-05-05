@@ -3,7 +3,19 @@ guid: 18fdf2f9a66c1aa4baefd9b4dbb37209
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - upLeft: {fileID: 11400000, guid: cd59fe1606c39f3459e29981820dbbe5, type: 2}
+  - downLeft: {fileID: 11400000, guid: d9ee1d1a1fbfd7e4aad577317c61d819, type: 2}
+  - sideLeft: {fileID: 11400000, guid: 597b5fd9032107f4bb979b45d6390c08, type: 2}
+  - upAirLeft: {fileID: 11400000, guid: 815d2b799846aac4bb3953130738f095, type: 2}
+  - downAirLeft: {fileID: 11400000, guid: 815d2b799846aac4bb3953130738f095, type: 2}
+  - sideAirLeft: {fileID: 11400000, guid: 815d2b799846aac4bb3953130738f095, type: 2}
+  - upRight: {fileID: 11400000, guid: cd59fe1606c39f3459e29981820dbbe5, type: 2}
+  - downRight: {fileID: 11400000, guid: d9ee1d1a1fbfd7e4aad577317c61d819, type: 2}
+  - sideRight: {fileID: 11400000, guid: f5ab8b1a9b2c1094fb24cdd7dc8ee908, type: 2}
+  - upAirRight: {fileID: 11400000, guid: 815d2b799846aac4bb3953130738f095, type: 2}
+  - downAirRight: {fileID: 11400000, guid: 815d2b799846aac4bb3953130738f095, type: 2}
+  - sideAirRight: {fileID: 11400000, guid: 815d2b799846aac4bb3953130738f095, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

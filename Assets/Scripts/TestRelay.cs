@@ -43,7 +43,7 @@ public class NewBehaviourScript : MonoBehaviour
     private async void CreateRelay()
     {
         try {
-           Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
+           Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1, null);
 
            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
            Debug.Log(joinCode);
