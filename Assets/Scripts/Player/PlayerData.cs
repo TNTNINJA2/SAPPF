@@ -13,6 +13,13 @@ public class PlayerData : ScriptableObject
     [SerializeField] public Attack downAirLeft;
     [SerializeField] public Attack sideAirLeft;
 
+    [SerializeField] public Attack upRight;
+    [SerializeField] public Attack downRight;
+    [SerializeField] public Attack sideRight;
+    [SerializeField] public Attack upAirRight;
+    [SerializeField] public Attack downAirRight;
+    [SerializeField] public Attack sideAirRight;
+
 
     [SerializeField] public float movementThreshold = 0.1f;
     [SerializeField] public float moveAcceleration = 10;

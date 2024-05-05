@@ -35,6 +35,9 @@ public class PlayerState
     public virtual bool ShouldTryJump() { return true; }
     public virtual bool IsVulnerable() { return true; }
 
+    public virtual void LeftClickPerformed() { }
+    public virtual void RightClickPerformed() { }
+
 
     public virtual void EndAttack() { }
 

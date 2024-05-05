@@ -21,6 +21,28 @@ public class PlayerAttackState : PlayerState
         }
     }
 
+    public override void LeftClickPerformed()
+    {
+        if (player.isOnGound)
+        {
+            LeftGroundedAttack();
+        } else
+        {
+            LeftAirAttack();
+        }
+    }
+
+    public override void RightClickPerformed()
+    {
+        if (player.isOnGound)
+        {
+            RightGroundedAttack();
+        } else
+        {
+            RightAirAttack();
+        }
+    }
+
     public override void EndAttack()
     {
         base.EndAttack();
@@ -49,6 +71,23 @@ public class PlayerAttackState : PlayerState
             StartAttack(player.data.sideLeft);
         }
     }
+
+    public void RightGroundedAttack()
+    {
+        if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Up || player.roundedInputDirection == PlayerController.RoundedInputDirection.None)
+        {
+            StartAttack(player.data.upRight);
+        }
+        else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Down)
+        {
+            StartAttack(player.data.downRight);
+        }
+        else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Side)
+        {
+            StartAttack(player.data.sideRight);
+        }
+    }
+
     public void LeftAirAttack()
     {
         if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Up || player.roundedInputDirection == PlayerController.RoundedInputDirection.None)
@@ -62,6 +101,22 @@ public class PlayerAttackState : PlayerState
         else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Side)
         {
             StartAttack(player.data.sideAirLeft);
+        }
+    }
+
+    public void RightAirAttack()
+    {
+        if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Up || player.roundedInputDirection == PlayerController.RoundedInputDirection.None)
+        {
+            StartAttack(player.data.upAirRight);
+        }
+        else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Down)
+        {
+            StartAttack(player.data.downAirRight);
+        }
+        else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Side)
+        {
+            StartAttack(player.data.sideAirRight);
         }
     }
 
