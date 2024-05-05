@@ -140,14 +140,20 @@ public class PlayerController : NetworkBehaviour
             {
                 controls.Player.LeftAttack.performed += ctx =>
                 {
-                    if (state.ShouldTryAttack()) ChangeState(attackState);
-                    state.LeftClickPerformed();
+                    if (state.ShouldTryAttack())
+                    {
+                        ChangeState(attackState);
+                        state.LeftClickPerformed();
+                    }
                 };
 
                 controls.Player.RightAttack.performed += ctx =>
                 {
-                    if (state.ShouldTryAttack()) ChangeState(attackState);
-                    state.RightClickPerformed();
+                    if (state.ShouldTryAttack())
+                    {
+                        ChangeState(attackState);
+                        state.RightClickPerformed();
+                    }
                 };
 
                 controls.Player.Jump.performed += ctx =>

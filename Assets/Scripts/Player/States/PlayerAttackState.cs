@@ -136,4 +136,9 @@ public class PlayerAttackState : PlayerState
     {
         return false;
     }
+
+    public override bool ShouldTryAttack()
+    {
+        return false;
+    }
 }
