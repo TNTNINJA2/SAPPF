@@ -43,6 +43,13 @@ public class PlayerAttackState : PlayerState
         }
     }
 
+    public override void ExitState()
+    {
+        base.ExitState();
+        player.animationPositionController.ResetTargetPos();
+
+    }
+
     public override void EndAttack()
     {
         base.EndAttack();

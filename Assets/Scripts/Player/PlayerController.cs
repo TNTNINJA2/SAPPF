@@ -1,14 +1,6 @@
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Unity.VisualScripting;
-using System.Runtime.CompilerServices;
-using UnityEngine.PlayerLoop;
-using Unity.Netcode;
 using System;
-using Unity.Collections;
+using Unity.Netcode;
+using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -26,6 +18,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] public Animator animator;
     [SerializeField] public PlayerData data;
     [SerializeField] LayerMask playerLayer;
+
+    public AnimationPositionController animationPositionController;
+
 
     public bool isOnGound { get; private set; }
     public bool wasOnGound { get; private set; }
@@ -100,6 +95,7 @@ public class PlayerController : NetworkBehaviour
         controls.Enable();
 
         networkAnimator = GetComponent<ClientNetworkAnimator>();
+        animationPositionController = GetComponent <AnimationPositionController>();
 
  
         health = data.maxHealth;
