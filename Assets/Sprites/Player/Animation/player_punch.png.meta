@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 54f22d9baa092044a973f2f66039b811
+guid: 4688d3fdf46217649976e42cc2ee10ee
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -45,10 +45,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -123,7 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Character Limbs By Frame_0
+      name: player_punch_0
       rect:
         serializedVersion: 2
         x: 0
@@ -137,14 +137,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5d5112a51e8699046b4bb94e74d8471a
-      internalID: -1239716151
+      spriteID: 4f243c222efa2374cb52061b28fe170a
+      internalID: 738799688
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character Limbs By Frame_1
+      name: player_punch_1
       rect:
         serializedVersion: 2
         x: 64
@@ -158,14 +158,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ac4e77187f52fa044a9ea45a0db58fdf
-      internalID: -552710591
+      spriteID: f0764369bcc85f44da8c5bfe34a08fc5
+      internalID: 1474654530
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character Limbs By Frame_2
+      name: player_punch_2
       rect:
         serializedVersion: 2
         x: 0
@@ -179,14 +179,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 26d320220975d2c4eb72cc5c94b0248c
-      internalID: 948004453
+      spriteID: 9ab7d186067024848a581d157108564d
+      internalID: 631460498
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character Limbs By Frame_3
+      name: player_punch_3
       rect:
         serializedVersion: 2
         x: 64
@@ -200,14 +200,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 76aa818edeb1ad241bc50018d4a0c446
-      internalID: -797455378
+      spriteID: 79094860c5e6701448388bc9e417fa92
+      internalID: 666729229
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character Limbs By Frame_4
+      name: player_punch_4
       rect:
         serializedVersion: 2
         x: 0
@@ -221,14 +221,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fdbcaf68071a87c40bccb28149a5303f
-      internalID: -409040097
+      spriteID: a2730e7147b62f149a4092a02dad63ac
+      internalID: 1334815193
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character Limbs By Frame_5
+      name: player_punch_5
       rect:
         serializedVersion: 2
         x: 64
@@ -242,8 +242,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6e388abcf75182140aee9a2fe691e6a7
-      internalID: 1996513399
+      spriteID: 9e2dc06e3163d8a49a72399ab4edf8ff
+      internalID: 530104368
       vertices: []
       indices: 
       edges: []
@@ -259,12 +259,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Character Limbs By Frame_0: -1239716151
-      Character Limbs By Frame_1: -552710591
-      Character Limbs By Frame_2: 948004453
-      Character Limbs By Frame_3: -797455378
-      Character Limbs By Frame_4: -409040097
-      Character Limbs By Frame_5: 1996513399
+      player_punch_0: 738799688
+      player_punch_1: 1474654530
+      player_punch_2: 631460498
+      player_punch_3: 666729229
+      player_punch_4: 1334815193
+      player_punch_5: 530104368
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
