@@ -55,6 +55,10 @@ Material:
     m_Floats: []
     m_Colors:
     - _Color: {r: 0.45579004, g: 0.8867924, b: 0.26352793, a: 0}
+    - _PlayerColor: {r: 0.2971698, g: 0.9227529, b: 1, a: 0}
+    - _PlayerOutline: {r: 0, g: 0, b: 0, a: 0}
+    - _StreakColor1: {r: 0.52336115, g: 0, b: 0.745283, a: 0}
+    - _StreakColor2: {r: 0.8679245, g: 0, b: 0.093868524, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &1787768084569267953
 MonoBehaviour:
