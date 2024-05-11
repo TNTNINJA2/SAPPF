@@ -1671,7 +1671,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "B",
     "m_StageCapability": 3,
-    "m_Value": 2.0,
+    "m_Value": 3.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
 }
@@ -4072,7 +4072,7 @@
     "m_ShaderOutputName": "B",
     "m_StageCapability": 3,
     "m_Value": {
-        "e00": 3000.0,
+        "e00": 2900.0,
         "e01": 255.0,
         "e02": 2.0,
         "e03": 2.0,
@@ -4823,7 +4823,7 @@
     "hlslDeclarationOverride": 0,
     "m_Hidden": false,
     "m_Value": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"4a5b15f8320136d45859640104d2f799\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"d51a6ab4a7e7642168fb9d8c48c2f474\",\"type\":3}}",
         "m_Guid": ""
     },
     "isMainTexture": false,
