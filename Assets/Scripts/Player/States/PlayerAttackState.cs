@@ -2,10 +2,14 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class PlayerAttackState : PlayerState
 {
+    private Attack currentAttack;
+    private Vector3 startPosition;
+
     public PlayerAttackState(PlayerController playerController, Animator animator) : base(playerController, animator)
     {
     }
@@ -14,10 +18,30 @@ public class PlayerAttackState : PlayerState
     {
         base.EnterState();
         Debug.Log("Enter Attack State");
+        startPosition = player.transform.position;
 
-        if (player.isOnGound)
+    }
+
+    public override void Update()
+    {
+        float attackTime = Time.time - startTime;
+        Debug.Log("attackTime:" + attackTime);
+        foreach (KeyFrame<SpriteKeyFrameData> spriteKeyFrame in currentAttack.spriteKeyFrames)
         {
-            LeftGroundedAttack();
+            if (spriteKeyFrame.time > attackTime)
+            {
+                player.spriteRenderer.sprite = spriteKeyFrame.data.sprite;
+                break;
+            }
+        }
+
+        foreach (KeyFrame<PosKeyFrameData> posKeyFrame in currentAttack.posKeyFrames)
+        {
+            if (posKeyFrame.time > attackTime)
+            {
+                player.transform.position = startPosition +  new Vector3(player.transform.localScale.x * posKeyFrame.data.pos.x, posKeyFrame.data.pos.y, 0);
+                break;
+            }
         }
     }
 
@@ -129,6 +153,7 @@ public class PlayerAttackState : PlayerState
 
     private void StartAttack(Attack newAttack)
     {
+        currentAttack = newAttack;
         player.activeAttack = newAttack;
         player.activeAttack.StartAttack(player);
     }
@@ -149,3 +174,4 @@ public class PlayerAttackState : PlayerState
         return false;
     }
 }
+

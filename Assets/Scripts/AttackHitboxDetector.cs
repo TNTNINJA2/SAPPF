@@ -12,7 +12,7 @@ public class AttackHitboxDetector : MonoBehaviour
     public List<int> nums = new List<int>();
 
     [SerializeField]
-    public Hitbox[] hitboxes;
+    public List<Hitbox> hitboxes;
 
     [SerializeField]
     public Hitbox hitbox2;
@@ -52,6 +52,16 @@ public class AttackHitboxDetector : MonoBehaviour
         }
     }
 
+    public void CreateRectHitbox(float x, float y, float width, float height)
+    {
+        Hitbox newHitbox = new Hitbox();
+        newHitbox.position = new Vector2(x, y);
+        newHitbox.width = width;
+        newHitbox.height = height;
+        newHitbox.type = HitboxType.rectangle;
+        hitboxes.Add(newHitbox);
+    }
+
     private void OnDrawGizmos()
     {
         if (hitbox.enabled)
@@ -65,6 +75,7 @@ public class AttackHitboxDetector : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(transform.position + new Vector3(hitbox.position.x, hitbox.position.y, 0), hitbox.radius);
         }
+        hitboxes = new List<Hitbox>();
 
     }
 }
