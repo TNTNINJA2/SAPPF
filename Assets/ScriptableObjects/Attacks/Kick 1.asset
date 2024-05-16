@@ -20,57 +20,21 @@ MonoBehaviour:
   spriteKeyFrames:
   - time: 0
     data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
-    data:
-      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+      sprite: {fileID: 0}
   hitboxKeyFrames: []
   posKeyFrames:
   - time: 0
     data:
       pos: {x: 0, y: 0}
-      velocity: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: 0, y: 0}
+      afterBezierControlPoint: {x: 0, y: 0}
   - time: 0
     data:
       pos: {x: 0, y: 0}
-      velocity: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: 0, y: 0}
+      afterBezierControlPoint: {x: 0, y: 0}
   - time: 0
     data:
       pos: {x: 0, y: 0}
-      velocity: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: 0, y: 0}
+      afterBezierControlPoint: {x: 0, y: 0}
