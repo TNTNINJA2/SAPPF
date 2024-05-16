@@ -28,7 +28,7 @@ public class Attack : ScriptableObject
     public virtual void AddSprite()
     {
         KeyFrame<SpriteKeyFrameData> newSpriteKeyFrame = spriteKeyFrames[spriteKeyFrames.Count - 1];
-        newSpriteKeyFrame.time = +0.1f;
+        newSpriteKeyFrame.time += 0.1f;
         spriteKeyFrames.Add(newSpriteKeyFrame);
     }
 
@@ -36,8 +36,19 @@ public class Attack : ScriptableObject
     public virtual void AddPosKeyFrame()
     {
         KeyFrame<PosKeyFrameData> newPosKeyFrame = posKeyFrames[posKeyFrames.Count - 1];
-        newPosKeyFrame.time = +0.1f;
+        newPosKeyFrame.time += 0.1f;
         posKeyFrames.Add(newPosKeyFrame);
+    }
+
+    public float GetAttackLength()
+    {
+        float lastSpriteFrameTime = (spriteKeyFrames.Count > 0 )? spriteKeyFrames[spriteKeyFrames.Count-1].time: 0;
+        float lastHitboxFrameTime = (hitboxKeyFrames.Count > 0) ? hitboxKeyFrames[hitboxKeyFrames.Count-1].time : 0;
+        float lastposFrameTime = (posKeyFrames.Count > 0) ? posKeyFrames[posKeyFrames.Count-1].time : 0;
+
+        Debug.Log("AttackLength is: " + Mathf.Max(lastSpriteFrameTime, lastHitboxFrameTime, lastposFrameTime));
+
+        return Mathf.Max(lastSpriteFrameTime, lastHitboxFrameTime, lastposFrameTime);
     }
 
     private float GetHighestKeyFrameTime<T>(List<KeyFrame<T>> keyFrames) where T: KeyFrameData
@@ -76,11 +87,13 @@ public struct HitboxKeyFrameData : KeyFrameData
 {
     public Vector2 pos;
     public Vector2 size;
+    public float length;
 }
 
 [System.Serializable]
 public struct PosKeyFrameData : KeyFrameData
 {
     public Vector2 pos;
-    public Vector2 velocity;
+    public Vector2 beforeBezierControlPoint;
+    public Vector2 afterBezierControlPoint;
 }

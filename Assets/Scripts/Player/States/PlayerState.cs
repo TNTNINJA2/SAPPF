@@ -31,6 +31,10 @@ public class PlayerState
     {
 
     }
+    public virtual void OnDrawGizmos()
+    {
+
+    }
 
     public virtual bool ShouldTryAttack() { return true; }
     public virtual bool ShouldTryJump() { return true; }

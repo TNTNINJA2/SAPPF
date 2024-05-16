@@ -33,7 +33,7 @@ public class AttackHitboxDetector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (hitbox.enabled)
+        if (hitbox != null && hitbox.enabled)
         {
             Collider2D[] hits = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), hitbox.radius, targetLayers);
             foreach (Collider2D hit in hits)
@@ -64,7 +64,7 @@ public class AttackHitboxDetector : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (hitbox.enabled)
+        if (hitbox != null && hitbox.enabled)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(hitbox.transform.position, hitbox.radius);

@@ -17,7 +17,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] public SpriteRenderer spriteRenderer;
     [SerializeField] public Animator animator;
     [SerializeField] public PlayerData data;
-    [SerializeField] LayerMask playerLayer;
+    [SerializeField] public LayerMask playerLayer;
 
     public AnimationPositionController animationPositionController;
 
@@ -194,6 +194,11 @@ public class PlayerController : NetworkBehaviour
         }
 
         animator.Play(currentAnimation.Value.value);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (state != null) state.OnDrawGizmos();
     }
 
     private void FixedUpdate()

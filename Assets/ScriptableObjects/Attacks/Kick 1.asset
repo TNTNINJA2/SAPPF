@@ -17,31 +17,60 @@ MonoBehaviour:
   launchDirection: {x: 4.5, y: 2.3}
   ATTACK_ANIMATION_NAME: Kick
   playerController: {fileID: 0}
-  sprites:
-    entries:
-    - key: 0
-      value: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 0.1
-      value: {fileID: -1507362442, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 0.2
-      value: {fileID: -1254142609, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 0.3
-      value: {fileID: 1569528490, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 0.4
-      value: {fileID: 1481732725, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 0.5
-      value: {fileID: 928602773, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 0.6
-      value: {fileID: -1595951259, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 0.70000005
-      value: {fileID: 1974362843, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 0.8000001
-      value: {fileID: 1285550819, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 0.9000001
-      value: {fileID: -539085366, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 1.0000001
-      value: {fileID: -103886705, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-    - key: 1.1000001
-      value: {fileID: -1537867730, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  hitboxes:
-    entries: []
+  spriteKeyFrames:
+  - time: 0
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  hitboxKeyFrames: []
+  posKeyFrames:
+  - time: 0
+    data:
+      pos: {x: 0, y: 0}
+      velocity: {x: 0, y: 0}
+  - time: 0
+    data:
+      pos: {x: 0, y: 0}
+      velocity: {x: 0, y: 0}
+  - time: 0
+    data:
+      pos: {x: 0, y: 0}
+      velocity: {x: 0, y: 0}
