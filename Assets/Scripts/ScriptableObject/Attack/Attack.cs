@@ -40,13 +40,11 @@ public class Attack : ScriptableObject
         posKeyFrames.Add(newPosKeyFrame);
     }
 
-    public float GetAttackLength()
+    public float GetTotalDuration()
     {
         float lastSpriteFrameTime = (spriteKeyFrames.Count > 0 )? spriteKeyFrames[spriteKeyFrames.Count-1].time: 0;
         float lastHitboxFrameTime = (hitboxKeyFrames.Count > 0) ? hitboxKeyFrames[hitboxKeyFrames.Count-1].time : 0;
         float lastposFrameTime = (posKeyFrames.Count > 0) ? posKeyFrames[posKeyFrames.Count-1].time : 0;
-
-        Debug.Log("AttackLength is: " + Mathf.Max(lastSpriteFrameTime, lastHitboxFrameTime, lastposFrameTime));
 
         return Mathf.Max(lastSpriteFrameTime, lastHitboxFrameTime, lastposFrameTime);
     }

@@ -28,15 +28,35 @@ public class PlayerAttackState : PlayerState
     {
         attackTime = Time.time - startTime;
         Debug.Log("attackTime:" + attackTime);
+
+        HandleSprites();
+        HandlePos();
+        HandleHitboxes();
+        
+
+
+        // End attack if past attack length
+        if (attackTime >= attackLength)
+        {
+            player.EndAttack();
+        }
+    }
+
+    private void HandleSprites()
+    {
         foreach (KeyFrame<SpriteKeyFrameData> spriteKeyFrame in currentAttack.spriteKeyFrames)
         {
             if (spriteKeyFrame.time > attackTime)
             {
-                player.spriteRenderer.sprite = spriteKeyFrame.data.sprite;
+                Sprite sprite = currentAttack.spriteKeyFrames[currentAttack.spriteKeyFrames.IndexOf(spriteKeyFrame) - 1].data.sprite;
+                player.spriteRenderer.sprite = sprite;
                 break;
             }
         }
+    }
 
+    private void HandlePos()
+    {
         foreach (KeyFrame<PosKeyFrameData> posKeyFrame2 in currentAttack.posKeyFrames)
         {
             if (posKeyFrame2.time > attackTime)
@@ -71,14 +91,17 @@ public class PlayerAttackState : PlayerState
                 break;
             }
         }
+    }
 
+    private void HandleHitboxes()
+    {
+        // For each hitbox, if its between its start and end time, boxcast at its pos and size and handle hits
         foreach (KeyFrame<HitboxKeyFrameData> hitboxKeyFrame in currentAttack.hitboxKeyFrames)
         {
             if (hitboxKeyFrame.time < attackTime && hitboxKeyFrame.time + hitboxKeyFrame.data.length > attackTime)
             {
                 Vector2 hitboxPos = new Vector2(player.transform.position.x, player.transform.position.y) + new Vector2(player.transform.localScale.x * hitboxKeyFrame.data.pos.x, hitboxKeyFrame.data.pos.y);
                 Vector3 hitboxSize = new Vector2(hitboxKeyFrame.data.size.x, hitboxKeyFrame.data.size.y);
-                ContactFilter2D contactFilter = new ContactFilter2D();
                 RaycastHit2D[] hits = Physics2D.BoxCastAll(hitboxPos, hitboxSize, 0, Vector2.zero, 0, player.playerLayer);
                 foreach (RaycastHit2D hit in hits)
                 {
@@ -87,20 +110,20 @@ public class PlayerAttackState : PlayerState
                         if (playerHit != player) OnHit(playerHit);
                     }
                 }
-
-                break;
             }
-        }
-
-        if (attackTime >= attackLength)
-        {
-            player.EndAttack();
         }
     }
 
     public override void OnDrawGizmos()
     {
         base.OnDrawGizmos();
+
+        DrawHitboxGizmos();
+    }
+
+    private void DrawHitboxGizmos()
+    {
+        // For each hitbox, if its between its start and end time, draw the hitbox
 
         foreach (KeyFrame<HitboxKeyFrameData> hitboxKeyFrame in currentAttack.hitboxKeyFrames)
         {
@@ -110,10 +133,8 @@ public class PlayerAttackState : PlayerState
                 Vector3 hitboxSize = new Vector3(hitboxKeyFrame.data.size.x, hitboxKeyFrame.data.size.y, 0);
                 Gizmos.color = Color.red;
                 Gizmos.DrawCube(hitboxPos, hitboxSize);
-                break;
             }
         }
-
     }
 
     public override void LeftClickPerformed()
@@ -227,7 +248,7 @@ public class PlayerAttackState : PlayerState
         currentAttack = newAttack;
         player.activeAttack = newAttack;
         player.activeAttack.StartAttack(player);
-        attackLength = currentAttack.GetAttackLength();
+        attackLength = currentAttack.GetTotalDuration();
     }
 
     public override void OnHit(PlayerController target)

@@ -33,14 +33,28 @@ MonoBehaviour:
   - time: 0.4
     data:
       sprite: {fileID: -1553007584, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 0.5
+  - time: 1
     data:
       sprite: {fileID: 1234539593, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
+  - time: 1
+    data:
+      sprite: {fileID: 0}
+  - time: 1
+    data:
+      sprite: {fileID: 0}
+  - time: 1
+    data:
+      sprite: {fileID: 0}
   hitboxKeyFrames:
   - time: 0.3
     data:
       pos: {x: 0.2, y: -0.2}
       size: {x: 0.5, y: 0.25}
+      length: 0.1
+  - time: 0.3
+    data:
+      pos: {x: -0.5, y: -0.2}
+      size: {x: 0.25, y: 0.25}
       length: 0.1
   posKeyFrames:
   - time: 0
