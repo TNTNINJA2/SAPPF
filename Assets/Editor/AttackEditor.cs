@@ -3,6 +3,7 @@ using System.Drawing.Printing;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.EditorTools;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 [CustomEditor(typeof(Attack))]
@@ -11,6 +12,7 @@ public class AttackEditor : UnityEditor.Editor
     public float time;
     public Attack attack;
     public PlayerController dummy;
+
     public override void OnInspectorGUI()
     {
         attack = (Attack)target;
@@ -57,9 +59,9 @@ public class AttackEditor : UnityEditor.Editor
         for (int i = 0; i < attack.posKeyFrames.Count; i++)
         {
             KeyFrame<PosKeyFrameData> posKeyFrame = attack.posKeyFrames[i];
-
             
             Vector2 newPos = Handles.DoPositionHandle(posKeyFrame.data.pos, Quaternion.identity);
+
             Vector2 deltaPos = newPos - posKeyFrame.data.pos;
 
             posKeyFrame.data.beforeBezierControlPoint += deltaPos;
