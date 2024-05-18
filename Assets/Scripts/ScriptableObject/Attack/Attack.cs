@@ -5,7 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 [CreateAssetMenu(fileName = "Attack", menuName = "ScriptableObjects/Attacks/Attack", order = 1)]
 
@@ -118,6 +120,9 @@ public class Attack : ScriptableObject
 
                 // Set Pos
                 return startPosition + new Vector3(player.transform.localScale.x * pos.x, pos.y, 0);
+            } else if (posKeyFrame2 == posKeyFrames[posKeyFrames.Count - 1])
+            {
+                return startPosition + new Vector3(player.transform.localScale.x * posKeyFrame2.data.pos.x, posKeyFrame2.data.pos.y, 0);
             }
         }
         throw new Exception("Time value of " + time + "has no corresponding Pos Keyframe");
