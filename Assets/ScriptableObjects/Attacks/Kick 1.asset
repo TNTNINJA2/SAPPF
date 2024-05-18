@@ -16,3 +16,25 @@ MonoBehaviour:
   stunDuration: 2
   launchDirection: {x: 4.5, y: 2.3}
   ATTACK_ANIMATION_NAME: Kick
+  playerController: {fileID: 0}
+  spriteKeyFrames:
+  - time: 0
+    data:
+      sprite: {fileID: 0}
+  hitboxKeyFrames: []
+  posKeyFrames:
+  - time: 0
+    data:
+      pos: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: 0, y: 0}
+      afterBezierControlPoint: {x: 0, y: 0}
+  - time: 0
+    data:
+      pos: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: 0, y: 0}
+      afterBezierControlPoint: {x: 0, y: 0}
+  - time: 0
+    data:
+      pos: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: 0, y: 0}
+      afterBezierControlPoint: {x: 0, y: 0}

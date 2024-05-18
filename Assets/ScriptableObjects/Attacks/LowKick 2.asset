@@ -16,3 +16,10 @@ MonoBehaviour:
   stunDuration: 2
   launchDirection: {x: 0.7, y: 10.6}
   ATTACK_ANIMATION_NAME: LowKick
+  playerController: {fileID: 0}
+  sprites:
+    entries:
+    - key: 0
+      value: {fileID: 0}
+  hitboxes:
+    entries: []

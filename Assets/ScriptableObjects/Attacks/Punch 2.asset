@@ -16,3 +16,79 @@ MonoBehaviour:
   stunDuration: 0.7
   launchDirection: {x: 7, y: 2.2}
   ATTACK_ANIMATION_NAME: Big Punch
+  playerController: {fileID: 0}
+  spriteKeyFrames:
+  - time: 0
+    data:
+      sprite: {fileID: 1657176726, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: 194092784, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
+  - time: 0.2
+    data:
+      sprite: {fileID: -1455209982, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
+  - time: 0.3
+    data:
+      sprite: {fileID: 2093637836, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
+  - time: 0.4
+    data:
+      sprite: {fileID: -1553007584, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
+  - time: 1
+    data:
+      sprite: {fileID: 1234539593, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
+  - time: 1
+    data:
+      sprite: {fileID: 0}
+  - time: 1
+    data:
+      sprite: {fileID: 0}
+  - time: 1
+    data:
+      sprite: {fileID: 0}
+  hitboxKeyFrames:
+  - time: 0.3
+    data:
+      pos: {x: 0.2, y: -0.2}
+      size: {x: 0.5, y: 0.25}
+      length: 0.1
+  - time: 0.3
+    data:
+      pos: {x: -0.5, y: -0.2}
+      size: {x: 0.25, y: 0.25}
+      length: 0.1
+  posKeyFrames:
+  - time: 0
+    data:
+      pos: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: 0, y: 0}
+      afterBezierControlPoint: {x: -0.025, y: 0}
+  - time: 0.1
+    data:
+      pos: {x: -0.1, y: 0}
+      beforeBezierControlPoint: {x: -0.075, y: 0}
+      afterBezierControlPoint: {x: 0.15, y: 0}
+  - time: 0.2
+    data:
+      pos: {x: 0.5, y: 0}
+      beforeBezierControlPoint: {x: 0.35, y: 0}
+      afterBezierControlPoint: {x: 0.65, y: 0}
+  - time: 0.3
+    data:
+      pos: {x: 1, y: 0}
+      beforeBezierControlPoint: {x: 0.85, y: 0}
+      afterBezierControlPoint: {x: 1.15, y: 0}
+  - time: 0.4
+    data:
+      pos: {x: 1.5, y: 0}
+      beforeBezierControlPoint: {x: 1.35, y: 0}
+      afterBezierControlPoint: {x: 1.5, y: 0}
+  - time: 5
+    data:
+      pos: {x: 1.5, y: 0}
+      beforeBezierControlPoint: {x: 1.5, y: 0}
+      afterBezierControlPoint: {x: 1.5, y: 0}
+  - time: 0.5
+    data:
+      pos: {x: 1.5, y: 0}
+      beforeBezierControlPoint: {x: 1.5, y: 0}
+      afterBezierControlPoint: {x: 1.5, y: 0}

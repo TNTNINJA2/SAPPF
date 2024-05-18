@@ -6,6 +6,7 @@ public class PlayerState
 {
     protected PlayerController player;
     protected Animator animator;
+    protected float startTime;
 
     public PlayerState(PlayerController playerController, Animator animator)
     {
@@ -16,6 +17,7 @@ public class PlayerState
 
     public virtual void EnterState()
     {
+        startTime = Time.time;
 
     }
     public virtual void ExitState()
@@ -24,9 +26,12 @@ public class PlayerState
     }
     public virtual void Update()
     {
-
     }
     public virtual void FixedUpdate()
+    {
+
+    }
+    public virtual void OnDrawGizmos()
     {
 
     }
