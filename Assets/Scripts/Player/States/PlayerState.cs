@@ -33,6 +33,7 @@ public class PlayerState
 
     public virtual bool ShouldTryAttack() { return true; }
     public virtual bool ShouldTryJump() { return true; }
+    public virtual bool ShouldTryDodge() { return true; }
     public virtual bool IsVulnerable() { return true; }
 
     public virtual void LeftClickPerformed() { }

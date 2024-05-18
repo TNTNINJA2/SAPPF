@@ -26,6 +26,8 @@ public class PlayerController : NetworkBehaviour
     public bool wasOnGound { get; private set; }
     public int airJumps;
     public float stunTime;
+    public float dodgeTime;
+    public Vector2 dodgeDirection;
 
     float health;
 
@@ -79,6 +81,7 @@ public class PlayerController : NetworkBehaviour
     public PlayerIdleState idleState;
     public PlayerWalkState walkState;
     public PlayerStunState stunState;
+    public PlayerDodgeState dodgeState;
     public PlayerAerialState aerialState;
     public PlayerAttackState attackState;
 
@@ -109,6 +112,7 @@ public class PlayerController : NetworkBehaviour
         idleState = new PlayerIdleState(this, animator);
         walkState = new PlayerWalkState(this, animator);
         stunState = new PlayerStunState(this, animator);
+        dodgeState = new PlayerDodgeState(this, animator);
         aerialState = new PlayerAerialState(this, animator);
         attackState = new PlayerAttackState(this, animator);
 
@@ -155,6 +159,11 @@ public class PlayerController : NetworkBehaviour
                 controls.Player.Jump.performed += ctx =>
                 {
                     if (state.ShouldTryJump()) TryJump();
+                };
+
+                controls.Player.Dodge.performed += ctx =>
+                {
+                    if (state.ShouldTryDodge()) ChangeState(dodgeState);
                 };
             }
 

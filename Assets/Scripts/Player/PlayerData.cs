@@ -34,5 +34,8 @@ public class PlayerData : ScriptableObject
     [SerializeField] public float joystickBuffer = 0.15f;
     [SerializeField] public float Gravity = 1f;
     [SerializeField] public float maxHealth = 20;
+    [SerializeField] public float maxDodgeTime = 0.5f;
+    [SerializeField] public float dodgeSpeed = 5f;
+
 
 }
