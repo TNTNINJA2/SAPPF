@@ -29,41 +29,34 @@ public class AttackEditorWindow : EditorWindow
 
         if (Selection.activeObject is Attack)
         {
-            attack = (Attack)Selection.activeObject;
+            GUILayout.BeginHorizontal();
 
-            // Clear previous elements (optional, but recommended)
-            rootVisualElement.Clear();
-
-
-            // Create TwoPaneSplitView
-            var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Vertical);
-            rootVisualElement.Add(splitView);
+            // Split the rect vertically
+            var leftRect = new Rect(position.x, position.y, 250, position.height);
+            var rightRect = new Rect(position.x + 250, position.y, position.width - 250, position.height);
 
             // Left Panel - Text Box
-            var leftPanel = new VisualElement();
-            TextField textField = new TextField();
-            textField.label = "Enter Text:";
-            leftPanel.Add(textField);
-            splitView.Add(leftPanel);
+            GUILayout.BeginVertical("Left Side", GUILayout.MaxWidth(100), GUILayout.Height(100));
+            {
+                GUILayout.Label("Enter Text:");
+                string text = GUILayout.TextField(""); // Get user input
+            }
+            GUILayout.EndVertical();
+
 
             // Right Panel - Rectangle
-            var rightPanel = new VisualElement();
-            var rectangle = new VisualElement();
-            rectangle.style.backgroundColor = Color.red; // Set desired color
-            rectangle.style.width = 100;
-            rectangle.style.height = 50;
-            rightPanel.Add(rectangle);
-            splitView.Add(rightPanel);
-        }
+            GUILayout.BeginVertical("Right Side", GUILayout.MaxWidth(100), GUILayout.Height(100));
+            {
+                GUI.backgroundColor = Color.red; // Set desired color
+                GUILayout.Box("", GUILayout.Width(100), GUILayout.Height(50));
+                GUI.backgroundColor = Color.blue; // Set desired color
+                GUILayout.Box("", GUILayout.Width(100), GUILayout.Height(50));
+            }
+            GUILayout.EndVertical();
 
-        // Ensure valid target
-        if (attack == null)
-        {
-            return;
+            GUILayout.EndHorizontal();
         }
         
-
-        
-
     }
+
 }

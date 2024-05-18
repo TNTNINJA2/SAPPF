@@ -33,18 +33,9 @@ MonoBehaviour:
   - time: 0.4
     data:
       sprite: {fileID: -1553007584, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 1
+  - time: 0.5
     data:
       sprite: {fileID: 1234539593, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 1
-    data:
-      sprite: {fileID: 0}
-  - time: 1
-    data:
-      sprite: {fileID: 0}
-  - time: 1
-    data:
-      sprite: {fileID: 0}
   hitboxKeyFrames:
   - time: 0.3
     data:
@@ -59,36 +50,16 @@ MonoBehaviour:
   posKeyFrames:
   - time: 0
     data:
-      pos: {x: 0, y: 0}
-      beforeBezierControlPoint: {x: 0, y: 0}
-      afterBezierControlPoint: {x: -0.025, y: 0}
-  - time: 0.1
-    data:
-      pos: {x: -0.1, y: 0}
-      beforeBezierControlPoint: {x: -0.075, y: 0}
-      afterBezierControlPoint: {x: 0.15, y: 0}
+      pos: {x: 0.19488549, y: 0}
+      beforeBezierControlPoint: {x: -0.7640644, y: 0}
+      afterBezierControlPoint: {x: 0.3558035, y: -0.0022446513}
   - time: 0.2
     data:
-      pos: {x: 0.5, y: 0}
-      beforeBezierControlPoint: {x: 0.35, y: 0}
-      afterBezierControlPoint: {x: 0.65, y: 0}
+      pos: {x: 1.019009, y: -0.0044589043}
+      beforeBezierControlPoint: {x: 0.58630943, y: -0.015591204}
+      afterBezierControlPoint: {x: 1.2761806, y: -0.0044589043}
   - time: 0.3
     data:
-      pos: {x: 1, y: 0}
-      beforeBezierControlPoint: {x: 0.85, y: 0}
-      afterBezierControlPoint: {x: 1.15, y: 0}
-  - time: 0.4
-    data:
-      pos: {x: 1.5, y: 0}
-      beforeBezierControlPoint: {x: 1.35, y: 0}
-      afterBezierControlPoint: {x: 1.5, y: 0}
-  - time: 5
-    data:
-      pos: {x: 1.5, y: 0}
-      beforeBezierControlPoint: {x: 1.5, y: 0}
-      afterBezierControlPoint: {x: 1.5, y: 0}
-  - time: 0.5
-    data:
-      pos: {x: 1.5, y: 0}
-      beforeBezierControlPoint: {x: 1.5, y: 0}
-      afterBezierControlPoint: {x: 1.5, y: 0}
+      pos: {x: 1.8097875, y: -0.004618734}
+      beforeBezierControlPoint: {x: 1.9421473, y: 0.0036298335}
+      afterBezierControlPoint: {x: 2.204318, y: 1.2881346}

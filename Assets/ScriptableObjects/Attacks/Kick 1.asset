@@ -20,21 +20,59 @@ MonoBehaviour:
   spriteKeyFrames:
   - time: 0
     data:
-      sprite: {fileID: 0}
-  hitboxKeyFrames: []
+      sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.1
+    data:
+      sprite: {fileID: -1507362442, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.2
+    data:
+      sprite: {fileID: -1254142609, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.3
+    data:
+      sprite: {fileID: 1569528490, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.4
+    data:
+      sprite: {fileID: 1481732725, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.5
+    data:
+      sprite: {fileID: 928602773, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.6
+    data:
+      sprite: {fileID: -1595951259, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.7
+    data:
+      sprite: {fileID: 1974362843, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.8
+    data:
+      sprite: {fileID: 1285550819, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 0.9
+    data:
+      sprite: {fileID: -539085366, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 1
+    data:
+      sprite: {fileID: -103886705, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  - time: 1.1
+    data:
+      sprite: {fileID: -1537867730, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
+  hitboxKeyFrames:
+  - time: 0
+    data:
+      pos: {x: 0.08866882, y: 0.010061979}
+      size: {x: 0.45674944, y: 0.5108932}
+      length: 1
   posKeyFrames:
   - time: 0
     data:
-      pos: {x: 0, y: 0}
-      beforeBezierControlPoint: {x: 0, y: 0}
-      afterBezierControlPoint: {x: 0, y: 0}
-  - time: 0
+      pos: {x: 0.0052568913, y: 0.005256921}
+      beforeBezierControlPoint: {x: -0.48889333, y: 0.29964435}
+      afterBezierControlPoint: {x: 0.6215019, y: 0.005256951}
+  - time: 0.5
     data:
-      pos: {x: 0, y: 0}
-      beforeBezierControlPoint: {x: 0, y: 0}
-      afterBezierControlPoint: {x: 0, y: 0}
-  - time: 0
+      pos: {x: 1.4047827, y: -0.0052568913}
+      beforeBezierControlPoint: {x: 0.88434786, y: 0.0052571297}
+      afterBezierControlPoint: {x: 1.8941143, y: 0.66864586}
+  - time: 1.1
     data:
-      pos: {x: 0, y: 0}
-      beforeBezierControlPoint: {x: 0, y: 0}
-      afterBezierControlPoint: {x: 0, y: 0}
+      pos: {x: 5.2458916, y: 0.002690643}
+      beforeBezierControlPoint: {x: 4.5366597, y: 1.393493}
+      afterBezierControlPoint: {x: 5.960833, y: 0.8175132}
