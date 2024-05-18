@@ -37,12 +37,21 @@ public class Attack : ScriptableObject
     }
 
     [ProButton]
+    public virtual void AddHitboxKeyFrame()
+    {
+        KeyFrame<HitboxKeyFrameData> newHitboxKeyFrame = hitboxKeyFrames[hitboxKeyFrames.Count - 1];
+        newHitboxKeyFrame.time += 0.1f;
+        hitboxKeyFrames.Add(newHitboxKeyFrame);
+    }
+
+    [ProButton]
     public virtual void AddPosKeyFrame()
     {
         KeyFrame<PosKeyFrameData> newPosKeyFrame = posKeyFrames[posKeyFrames.Count - 1];
         newPosKeyFrame.time += 0.1f;
         posKeyFrames.Add(newPosKeyFrame);
     }
+
 
     public float GetTotalDuration()
     {

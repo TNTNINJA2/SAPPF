@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.EditorTools;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [CustomEditor(typeof(Attack))]
 public class AttackEditor : UnityEditor.Editor
@@ -21,6 +22,11 @@ public class AttackEditor : UnityEditor.Editor
         time = EditorGUILayout.Slider(time, 0, attack.GetTotalDuration());
 
         dummy = GameObject.FindGameObjectWithTag("Dummy").GetComponent<PlayerController>();
+
+        if (GUILayout.Button("Create Hitbox KeyFrame"))
+        {
+            attack.AddHitboxKeyFrame();
+        }
 
 
         DrawDefaultInspector();
@@ -42,6 +48,7 @@ public class AttackEditor : UnityEditor.Editor
     public void OnSceneupdate(SceneView sceneView)
     {
         attack = (Attack)target;
+
 
         // Set handle color
         Handles.color = Color.red;
