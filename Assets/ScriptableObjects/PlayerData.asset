@@ -37,3 +37,5 @@ MonoBehaviour:
   joystickBuffer: 0.15
   Gravity: 1
   maxHealth: 10000
+  maxDodgeTime: 0.5
+  dodgeSpeed: 10
