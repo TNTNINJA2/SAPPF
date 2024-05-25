@@ -12,6 +12,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] public ClientNetworkAnimator networkAnimator;
     [SerializeField] public BoxCollider2D collistionsHitbox;
     [SerializeField] public BoxCollider2D groundDetectionHitbox;
+    [SerializeField] public BoxCollider2D wallDetectionHitbox;
     [SerializeField] public Rigidbody2D rb2D;
     [SerializeField] public Collider2D attackHitbox;
     [SerializeField] public SpriteRenderer spriteRenderer;
@@ -84,6 +85,7 @@ public class PlayerController : NetworkBehaviour
     public PlayerDodgeState dodgeState;
     public PlayerAerialState aerialState;
     public PlayerAttackState attackState;
+    public PlayerWallClingState wallClingState;
 
 
     public Attack activeAttack;
@@ -115,6 +117,8 @@ public class PlayerController : NetworkBehaviour
         dodgeState = new PlayerDodgeState(this, animator);
         aerialState = new PlayerAerialState(this, animator);
         attackState = new PlayerAttackState(this, animator);
+        wallClingState = new PlayerWallClingState(this, animator);
+        
 
         InitializeState(idleState);
     }
@@ -371,6 +375,10 @@ public class PlayerController : NetworkBehaviour
     private bool IsOnGround()
     {
         return groundDetectionHitbox.IsTouchingLayers(LayerMask.GetMask("Ground"));
+    }
+    public bool IsOnWall()
+    {
+        return wallDetectionHitbox.IsTouchingLayers(LayerMask.GetMask("Ground"));
     }
 
     #region Enabling
