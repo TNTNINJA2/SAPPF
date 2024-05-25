@@ -45,11 +45,20 @@ public class Attack : ScriptableObject
     }
 
     [ProButton]
-    public virtual void AddPosKeyFrame()
+    public virtual void AddPosKeyFrame(float time, Vector2 pos, Vector2 beforeBezierControlPoint, Vector2 afterBezierControlPoint)
     {
-        KeyFrame<PosKeyFrameData> newPosKeyFrame = posKeyFrames[posKeyFrames.Count - 1];
-        newPosKeyFrame.time += 0.1f;
-        posKeyFrames.Add(newPosKeyFrame);
+        KeyFrame<PosKeyFrameData> newPosKeyFrame = new KeyFrame<PosKeyFrameData>();
+        newPosKeyFrame.time = time;
+        newPosKeyFrame.data.pos = pos;
+        newPosKeyFrame.data.beforeBezierControlPoint = beforeBezierControlPoint;
+        newPosKeyFrame.data.afterBezierControlPoint = afterBezierControlPoint;
+
+        int index = 0;
+        for (int i = 0; i < posKeyFrames.Count; i++)
+        {
+            if (posKeyFrames[i].time < time) index++;
+        }
+        posKeyFrames.Insert(index, newPosKeyFrame);
     }
 
 
@@ -88,6 +97,9 @@ public class Attack : ScriptableObject
             if (spriteKeyFrame.time > time)
             {
                 Sprite sprite = spriteKeyFrames[spriteKeyFrames.IndexOf(spriteKeyFrame) - 1].data.sprite;
+                Debug.Log(player);
+                Debug.Log(player.spriteRenderer);
+                Debug.Log(player.spriteRenderer.sprite);
                 player.spriteRenderer.sprite = sprite;
                 break;
             }

@@ -22,12 +22,13 @@ public class PlayerAerialState : PlayerState
 
         player.ChangeNetworkAnimation(AERIAL_UP_ANIMATION);
 
-
-
-
         if (player.isOnGound)
         {
             player.ChangeState(player.idleState);
+        }
+        else if (player.IsOnWall())
+        {
+            player.ChangeState(player.wallClingState);
         }
     }
 
