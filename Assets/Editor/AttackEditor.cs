@@ -1,5 +1,7 @@
 
+using System.Collections;
 using System.Drawing.Printing;
+using Unity.EditorCoroutines.Editor;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEditor;
@@ -19,23 +21,42 @@ public class AttackEditor : UnityEditor.Editor
     public static Color bezierControlColor = Color.Lerp(Color.red, Color.yellow, 0.5f);
     public static Color selectedKeyFrameColor = Color.magenta;
     public static bool shouldDrawBezierControls = true;
+    public bool isPlaying = false;
+    public float playStartTime;
+    public float playTimeStep;
     public Attack attack;
     public PlayerController dummy;
     public Vector2 previousMousePosition;
     public int nearestHandle = -1;
 
+    private EditorCoroutine playCoroutine;
+
     public override void OnInspectorGUI()
     {
         attack = (Attack)target;
+        dummy = GameObject.FindGameObjectWithTag("Dummy").GetComponent<PlayerController>();
+
 
 
         time = EditorGUILayout.Slider(time, 0, attack.GetTotalDuration());
+         
+        
+        //if (GUILayout.Button("Play"))
+        //{
+        //    isPlaying = true;
+        //    playStartTime = Time.time;
+        //    PlayAttack();
+        //}
+        attack.DisplayAtTime(dummy, time, Vector3.zero);
+
+
+
+
         posKeyFrameColor = EditorGUILayout.ColorField(posKeyFrameColor);
         bezierControlColor = EditorGUILayout.ColorField(bezierControlColor);
         selectedKeyFrameColor = EditorGUILayout.ColorField(selectedKeyFrameColor);
         shouldDrawBezierControls = EditorGUILayout.Toggle("Draw Bezier Controls", shouldDrawBezierControls);
 
-        dummy = GameObject.FindGameObjectWithTag("Dummy").GetComponent<PlayerController>();
 
         if (GUILayout.Button("Create Hitbox KeyFrame"))
         {
@@ -44,8 +65,46 @@ public class AttackEditor : UnityEditor.Editor
 
 
         DrawDefaultInspector();
-        attack.DisplayAtTime(dummy, time, Vector3.zero);
 
+    }
+
+
+    public void PlayAttack()
+    {
+        if (isPlaying)
+        {
+           
+            EditorCoroutineUtility.StopCoroutine(playCoroutine);
+        }
+        else
+        {
+            isPlaying= true;
+            playCoroutine = EditorCoroutineUtility.StartCoroutine(StepPlayAttack(), attack);
+        }
+    }
+
+    IEnumerator StepPlayAttack()
+    {
+        float lastTime = 0;
+
+        while (isPlaying)
+        {
+            time = Time.time - playStartTime;
+            Debug.Log("IsPlaying");
+            while (time > lastTime + playTimeStep)
+            {
+                if (time > attack.GetTotalDuration()) isPlaying = false;
+                attack.DisplayAtTime(dummy, time, Vector3.zero);
+                lastTime = time;
+                Debug.Log("Is Time Stepping");
+
+
+                EditorUtility.SetDirty(this);
+            }
+            
+
+            yield return null;
+        }
     }
 
     private void OnEnable()
@@ -60,6 +119,8 @@ public class AttackEditor : UnityEditor.Editor
         SceneView.duringSceneGui -= OnSceneGUI;
 
     }
+
+    
 
     private void OnSceneGUI(SceneView sceneView)
     {
@@ -139,7 +200,7 @@ public class AttackEditor : UnityEditor.Editor
             Handles.color = hoverIndex == index ? selectedKeyFrameColor : posKeyFrameColor;
             CreateHandleCap(index, poskeyFrame.data.pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
-            if ((Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == index)
+            if (i != 0 && (Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == index)
             {
                 Vector2 move = Camera.main.ScreenToWorldPoint(Event.current.mousePosition) - Camera.main.ScreenToWorldPoint(previousMousePosition);
                 Debug.Log(move);

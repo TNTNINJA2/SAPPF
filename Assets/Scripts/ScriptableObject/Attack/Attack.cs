@@ -88,6 +88,9 @@ public class Attack : ScriptableObject
             if (spriteKeyFrame.time > time)
             {
                 Sprite sprite = spriteKeyFrames[spriteKeyFrames.IndexOf(spriteKeyFrame) - 1].data.sprite;
+                Debug.Log(player);
+                Debug.Log(player.spriteRenderer);
+                Debug.Log(player.spriteRenderer.sprite);
                 player.spriteRenderer.sprite = sprite;
                 break;
             }

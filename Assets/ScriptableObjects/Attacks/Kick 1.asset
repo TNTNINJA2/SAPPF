@@ -63,16 +63,16 @@ MonoBehaviour:
   posKeyFrames:
   - time: 0
     data:
-      pos: {x: -0.5007329, y: -2.0953937}
-      beforeBezierControlPoint: {x: -0.48889333, y: 0.29964435}
-      afterBezierControlPoint: {x: 0.6215019, y: 0.005256951}
+      pos: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: -1.4745853, y: 0.33144033}
+      afterBezierControlPoint: {x: 2.2800834, y: 0.0024127364}
   - time: 0.5
     data:
-      pos: {x: 1.7227476, y: -1.1022363}
-      beforeBezierControlPoint: {x: 0.88434786, y: 0.0052571297}
-      afterBezierControlPoint: {x: 1.8941143, y: 0.66864586}
+      pos: {x: 4.687956, y: 0}
+      beforeBezierControlPoint: {x: 2.765835, y: 0.004875958}
+      afterBezierControlPoint: {x: 3.2535985, y: 6.171479}
   - time: 1.1
     data:
-      pos: {x: 0.38756734, y: 0.2729609}
-      beforeBezierControlPoint: {x: 4.5366597, y: 1.393493}
-      afterBezierControlPoint: {x: 5.960833, y: 0.8175132}
+      pos: {x: 7.843362, y: 3.9013612}
+      beforeBezierControlPoint: {x: 11.388315, y: 3.527457}
+      afterBezierControlPoint: {x: 8.86973, y: 6.3537035}
