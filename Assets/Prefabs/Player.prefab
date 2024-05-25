@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2948445664
+  GlobalObjectIdHash: 232410996
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -93,6 +93,8 @@ MonoBehaviour:
   animationPositionController: {fileID: 0}
   airJumps: 0
   stunTime: 0
+  dodgeTime: 0
+  dodgeDirection: {x: 0, y: 0}
   inputDirection: {x: 0, y: 0}
   roundedInputDirection: 0
   activeAttackType: 0

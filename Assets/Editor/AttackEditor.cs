@@ -29,10 +29,17 @@ public class AttackEditor : UnityEditor.Editor
     public Vector2 previousMousePosition;
     public int nearestHandle = -1;
 
+    private static bool showMenu = false;
+    private static Vector2 menuPosition;
+    private float keyFrameCreationTime = 1;
+
+    private bool showFrameTimeEditor = false; // Flag to track window visibility
+
     private EditorCoroutine playCoroutine;
 
     public override void OnInspectorGUI()
     {
+
         attack = (Attack)target;
         dummy = GameObject.FindGameObjectWithTag("Dummy").GetComponent<PlayerController>();
 
@@ -134,7 +141,13 @@ public class AttackEditor : UnityEditor.Editor
 
         DrawPosCurves();
         DrawBezierControls();
-       
+
+        if (showFrameTimeEditor)
+        {
+            Rect windowRect = new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100);
+            GUI.Window(0, windowRect, DrawValueEditor, "Edit Value");
+        }
+
 
         if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
         {
@@ -155,6 +168,29 @@ public class AttackEditor : UnityEditor.Editor
         {
             previousMousePosition = Event.current.mousePosition;
         }
+    }
+
+    void DrawValueEditor(int windowID)
+    {
+        // Layout elements for editing the value
+        GUILayout.Label("Current Value: " + keyFrameCreationTime);
+        keyFrameCreationTime = EditorGUILayout.FloatField(keyFrameCreationTime, GUILayout.Width(100));
+        Debug.Log(keyFrameCreationTime);
+
+        // Button to confirm and close window
+        if (GUILayout.Button("Create keyframe"))
+        {
+            CreateNewPoskeyFrame();
+            showFrameTimeEditor = false;
+        }
+
+        // Button to cancel (optional)
+        if (GUILayout.Button("Cancel"))
+        {
+          showFrameTimeEditor = false;
+        }
+
+        GUI.DragWindow(); // Allow dragging the window
     }
 
     private void DrawPosCurves()
@@ -210,6 +246,36 @@ public class AttackEditor : UnityEditor.Editor
                 posKeyFrame.data.afterBezierControlPoint += new Vector2(move.x, -move.y);
 
             }
+
+            if (i != 0 && (Event.current.type == EventType.MouseDown && Event.current.button == 1))
+            {
+                Debug.Log("pressedbutton");
+                if (nearestHandle == index)
+                {
+
+                    KeyFrame<PosKeyFrameData> posKeyFrame = attack.posKeyFrames[i];
+                    Debug.Log("left clicked: " + posKeyFrame);
+
+                }
+                menuPosition = Event.current.mousePosition;
+                showMenu = true;
+                Event.current.Use();
+
+            }
+
+            // Draw the context menu if needed
+            if (showMenu)
+            {
+                // Create a new generic menu
+                GenericMenu menu = new GenericMenu();
+                menu.AddItem(new GUIContent("Create PosKeyFrame"), false, OpenFrameTimeEditorWindow);
+                menu.AddItem(new GUIContent("Option 2"), false, Option2);
+                
+
+                // Show the menu at the mouse position
+                menu.ShowAsContext();
+                showMenu = false;
+            }
         }
 
         if (shouldDrawBezierControls)
@@ -225,6 +291,31 @@ public class AttackEditor : UnityEditor.Editor
         if (Event.current.type == EventType.MouseDrag) SceneView.RepaintAll();
 
 
+    }
+    private void GetAndSetKeyFrameCreationTime(object userData)
+    {
+        keyFrameCreationTime = EditorGUILayout.FloatField(new GUIContent(""), keyFrameCreationTime); // No label needed here
+    }
+
+    private void OpenFrameTimeEditorWindow()
+    {
+        showFrameTimeEditor = true;
+
+    }
+
+    private void CreateNewPoskeyFrame()
+    {
+
+        Vector2 pos = Camera.main.ScreenToWorldPoint(menuPosition);
+        Vector2 afterBezierControlPoint = pos + Vector2.right;
+        Vector2 beforeBezierControlPoint = pos + Vector2.left;
+        float time = keyFrameCreationTime;
+        attack.AddPosKeyFrame(time, pos, afterBezierControlPoint, beforeBezierControlPoint);
+
+    }
+    private void Option2()
+    {
+        Debug.Log("option 2");
     }
 
     private void DrawBezierControlsForPoint(int index, int hoverIndex, KeyFrame<PosKeyFrameData> posKeyFrame)
