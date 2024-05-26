@@ -6,6 +6,7 @@ using System.Drawing.Printing;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.EditorCoroutines.Editor;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEditor;
 using UnityEditor.EditorTools;
@@ -24,6 +25,7 @@ public class AttackEditor : UnityEditor.Editor
     public static Color bezierControlColor = Color.Lerp(Color.red, Color.yellow, 0.5f);
     public static Color selectedKeyFrameColor = Color.magenta;
     public static bool shouldDrawBezierControls = true;
+    public static bool shouldDrawTimeControls = true;
     public bool isPlaying = false;
     public float playStartTime;
     public float playTimeStep;
@@ -44,8 +46,11 @@ public class AttackEditor : UnityEditor.Editor
 
     private bool showFrameTimeEditor = false; // Flag to track window visibility
 
+    bool isDragging = false;
+
     public override void OnInspectorGUI()
     {
+
 
         attack = (Attack)target;
         dummy = GameObject.FindGameObjectWithTag("Dummy").GetComponent<PlayerController>();
@@ -70,6 +75,7 @@ public class AttackEditor : UnityEditor.Editor
         bezierControlColor = EditorGUILayout.ColorField(bezierControlColor);
         selectedKeyFrameColor = EditorGUILayout.ColorField(selectedKeyFrameColor);
         shouldDrawBezierControls = EditorGUILayout.Toggle("Draw Bezier Controls", shouldDrawBezierControls);
+        shouldDrawTimeControls = EditorGUILayout.Toggle("Draw Time Controls", shouldDrawTimeControls);
 
 
         if (GUILayout.Button("Create Hitbox KeyFrame"))
@@ -109,6 +115,9 @@ public class AttackEditor : UnityEditor.Editor
 
 
 
+
+
+
         DrawPosCurves();
         DrawBezierControls();
 
@@ -134,6 +143,7 @@ public class AttackEditor : UnityEditor.Editor
         {
             nearestHandle = -1;
             previousMousePosition = Vector3.zero;
+            RecalculatePosKeyFrameIndices();
         }
         HandlePosKeyFrames(hoverIndex);
         if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
@@ -223,6 +233,8 @@ public class AttackEditor : UnityEditor.Editor
 
                 }
             }
+
+            if (shouldDrawTimeControls) HandlePosKeyFrameTime(i);
         }
 
         if (shouldDrawBezierControls)
@@ -236,6 +248,62 @@ public class AttackEditor : UnityEditor.Editor
         if (Event.current.type == EventType.MouseDrag) SceneView.RepaintAll();
 
 
+    }
+
+    private void HandlePosKeyFrameTime(int posKeyFrameIndex)
+    {
+        KeyFrame<PosKeyFrameData> posKeyFrame = attack.posKeyFrames[posKeyFrameIndex];
+
+        Vector3 position = posKeyFrame.data.pos;
+
+        // 2. Draw the Input Field and Handle Events
+        Handles.BeginGUI();
+        GUILayout.BeginArea(new Rect(HandleUtility.WorldToGUIPoint(position), Vector2.one * 150));
+
+        EditorGUI.BeginChangeCheck(); // Start checking for changes
+
+        float newValue = EditorGUILayout.FloatField("Float Value: " + posKeyFrame.time, posKeyFrame.time);
+        if (posKeyFrameIndex != 0) posKeyFrame.time = newValue; // Make first frame uneditable
+
+        if (EditorGUI.EndChangeCheck()) // Check if the value changed
+        {
+            Undo.RecordObject(target, "Modified Float Value");
+            posKeyFrame.time = Mathf.Clamp(posKeyFrame.time, 0, float.MaxValue);
+        }
+
+        // Check for mouse events within the GUI area
+
+
+        
+
+
+        GUILayout.EndArea();
+        Handles.EndGUI();
+
+        // Prevent object movement when editing the float value
+        if (isDragging)
+        {
+            Tools.current = Tool.None; // Temporarily disable the current tool
+        }
+    }
+
+    private void RecalculatePosKeyFrameIndices()
+    {
+        bool swapped = true;
+        while (swapped) {
+            swapped = false;
+            for (int i = 0; i < attack.posKeyFrames.Count - 1; i++)
+            {
+                KeyFrame<PosKeyFrameData> posKeyFrame1 = attack.posKeyFrames[i];
+                KeyFrame<PosKeyFrameData> posKeyFrame2 = attack.posKeyFrames[i + 1];
+                if (posKeyFrame1.time > posKeyFrame2.time) {
+                    attack.posKeyFrames[i] = posKeyFrame2;
+                    attack.posKeyFrames[i + 1] = posKeyFrame1;
+                    swapped = true;
+                }
+            }
+            
+        }
     }
 
     private void HandleSceneRightClicks()
@@ -307,13 +375,11 @@ public class AttackEditor : UnityEditor.Editor
 
         if ((Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == beforeControlIndex)
         {
-            Vector2 move = Camera.main.ScreenToWorldPoint(Event.current.mousePosition) - Camera.main.ScreenToWorldPoint(previousMousePosition);
-            posKeyFrame.data.beforeBezierControlPoint += new Vector2(move.x, -move.y);
+            Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition); posKeyFrame.data.beforeBezierControlPoint += new Vector2(move.x, -move.y);
         }
         if ((Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == afterControlIndex)
         {
-            Vector2 move = Camera.main.ScreenToWorldPoint(Event.current.mousePosition) - Camera.main.ScreenToWorldPoint(previousMousePosition);
-            posKeyFrame.data.afterBezierControlPoint += new Vector2(move.x, -move.y);
+            Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition); posKeyFrame.data.afterBezierControlPoint += new Vector2(move.x, -move.y);
         }
     }
 

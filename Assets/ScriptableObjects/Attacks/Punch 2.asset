@@ -48,28 +48,28 @@ MonoBehaviour:
       size: {x: 0.25, y: 0.25}
       length: 0.1
   posKeyFrames:
-  - time: 0
+  - time: -0.1
     data:
-      pos: {x: 0.19488549, y: 0}
-      beforeBezierControlPoint: {x: -0.7640644, y: 0}
-      afterBezierControlPoint: {x: 0.3558035, y: -0.0022446513}
-  - time: 0.2
+      pos: {x: 2.0683465, y: 2.3056545}
+      beforeBezierControlPoint: {x: 1.8450285, y: 0.5355409}
+      afterBezierControlPoint: {x: 1.9870081, y: 2.8686748}
+  - time: 0.53
     data:
-      pos: {x: 1.1122516, y: -0.12878275}
-      beforeBezierControlPoint: {x: 0.6795521, y: -0.13991499}
-      afterBezierControlPoint: {x: 1.3694233, y: -0.12878275}
-  - time: 0.3
+      pos: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: -1.8602182, y: 0.0776124}
+      afterBezierControlPoint: {x: 1.7458308, y: -0.008855343}
+  - time: 7.11
     data:
-      pos: {x: 2.6520243, y: 0.49682665}
-      beforeBezierControlPoint: {x: 2.4510512, y: -0.023659945}
-      afterBezierControlPoint: {x: 3.1040254, y: 1.5482008}
-  - time: 1
+      pos: {x: -4.411174, y: 2.5924294}
+      beforeBezierControlPoint: {x: -3.4111738, y: 2.5924294}
+      afterBezierControlPoint: {x: -5.411174, y: 2.5924294}
+  - time: 7.15
     data:
       pos: {x: 0.47923565, y: 3.0387082}
       beforeBezierControlPoint: {x: 1.0424541, y: 3.2341113}
       afterBezierControlPoint: {x: -0.71616554, y: 2.8662953}
-  - time: 1.1
+  - time: 24.8
     data:
-      pos: {x: -4.411174, y: 2.5732937}
-      beforeBezierControlPoint: {x: -3.4111738, y: 2.5732937}
-      afterBezierControlPoint: {x: -5.411174, y: 2.5732937}
+      pos: {x: 2.8296788, y: 0.40799898}
+      beforeBezierControlPoint: {x: 2.6287057, y: -0.112487584}
+      afterBezierControlPoint: {x: 3.2816799, y: 1.4593729}
