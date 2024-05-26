@@ -97,9 +97,6 @@ public class Attack : ScriptableObject
             if (spriteKeyFrame.time > time)
             {
                 Sprite sprite = spriteKeyFrames[spriteKeyFrames.IndexOf(spriteKeyFrame) - 1].data.sprite;
-                Debug.Log(player);
-                Debug.Log(player.spriteRenderer);
-                Debug.Log(player.spriteRenderer.sprite);
                 player.spriteRenderer.sprite = sprite;
                 break;
             }
@@ -146,7 +143,7 @@ public class Attack : ScriptableObject
                 return startPosition + new Vector3(player.transform.localScale.x * posKeyFrame2.data.pos.x, posKeyFrame2.data.pos.y, 0);
             }
         }
-        throw new Exception("Time value of " + time + "has no corresponding Pos Keyframe");
+        return Vector3.zero;
     }
 
     private void HandleHitboxes(PlayerController player, float time, Vector3 startPosition)

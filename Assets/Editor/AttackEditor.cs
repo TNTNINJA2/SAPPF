@@ -1,6 +1,9 @@
 
+using PlasticPipe.PlasticProtocol.Messages;
+using System;
 using System.Collections;
 using System.Drawing.Printing;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.EditorCoroutines.Editor;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Dependencies.NCalc;
@@ -29,13 +32,17 @@ public class AttackEditor : UnityEditor.Editor
     public Vector2 previousMousePosition;
     public int nearestHandle = -1;
 
+    private int posKeyPositionIndexOffset = 10;
+    private int posKeyBeforeControlIndexOffset = 100;
+    private int posKeyAfterControlIndexOffset = 100;
+
+    private KeyFrame<PosKeyFrameData> lastSelectedlPosKeyFrame;
+
     private static bool showMenu = false;
     private static Vector2 menuPosition;
     private float keyFrameCreationTime = 1;
 
     private bool showFrameTimeEditor = false; // Flag to track window visibility
-
-    private EditorCoroutine playCoroutine;
 
     public override void OnInspectorGUI()
     {
@@ -76,43 +83,7 @@ public class AttackEditor : UnityEditor.Editor
     }
 
 
-    public void PlayAttack()
-    {
-        if (isPlaying)
-        {
-           
-            EditorCoroutineUtility.StopCoroutine(playCoroutine);
-        }
-        else
-        {
-            isPlaying= true;
-            playCoroutine = EditorCoroutineUtility.StartCoroutine(StepPlayAttack(), attack);
-        }
-    }
-
-    IEnumerator StepPlayAttack()
-    {
-        float lastTime = 0;
-
-        while (isPlaying)
-        {
-            time = Time.time - playStartTime;
-            Debug.Log("IsPlaying");
-            while (time > lastTime + playTimeStep)
-            {
-                if (time > attack.GetTotalDuration()) isPlaying = false;
-                attack.DisplayAtTime(dummy, time, Vector3.zero);
-                lastTime = time;
-                Debug.Log("Is Time Stepping");
-
-
-                EditorUtility.SetDirty(this);
-            }
-            
-
-            yield return null;
-        }
-    }
+   
 
     private void OnEnable()
     {
@@ -137,10 +108,11 @@ public class AttackEditor : UnityEditor.Editor
         hoverIndex = HandleUtility.nearestControl;
 
 
-        int index = 10;
 
         DrawPosCurves();
         DrawBezierControls();
+
+        HandleSceneRightClicks();
 
         if (showFrameTimeEditor)
         {
@@ -163,7 +135,7 @@ public class AttackEditor : UnityEditor.Editor
             nearestHandle = -1;
             previousMousePosition = Vector3.zero;
         }
-        HandlePosKeyFrames(hoverIndex, ref index);
+        HandlePosKeyFrames(hoverIndex);
         if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
         {
             previousMousePosition = Event.current.mousePosition;
@@ -175,7 +147,6 @@ public class AttackEditor : UnityEditor.Editor
         // Layout elements for editing the value
         GUILayout.Label("Current Value: " + keyFrameCreationTime);
         keyFrameCreationTime = EditorGUILayout.FloatField(keyFrameCreationTime, GUILayout.Width(100));
-        Debug.Log(keyFrameCreationTime);
 
         // Button to confirm and close window
         if (GUILayout.Button("Create keyframe"))
@@ -224,57 +195,33 @@ public class AttackEditor : UnityEditor.Editor
         }
     }
 
-    private void HandlePosKeyFrames(int hoverIndex, ref int index)
+
+
+
+
+    private void HandlePosKeyFrames(int hoverIndex)
     {
-
-
-
         for (int i = 0; i < attack.posKeyFrames.Count; i++)
         {
-            index++;
-            KeyFrame<PosKeyFrameData> poskeyFrame = attack.posKeyFrames[i];
+            int index = posKeyPositionIndexOffset + i;
+            KeyFrame<PosKeyFrameData> posKeyFrame = attack.posKeyFrames[i];
             Handles.color = hoverIndex == index ? selectedKeyFrameColor : posKeyFrameColor;
-            CreateHandleCap(index, poskeyFrame.data.pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+            CreateHandleCap(index, posKeyFrame.data.pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
-            if (i != 0 && (Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == index)
+            if (nearestHandle == index)
             {
-                Vector2 move = Camera.main.ScreenToWorldPoint(Event.current.mousePosition) - Camera.main.ScreenToWorldPoint(previousMousePosition);
-                Debug.Log(move);
-                KeyFrame<PosKeyFrameData> posKeyFrame = attack.posKeyFrames[i];
-                posKeyFrame.data.pos += new Vector2(move.x, -move.y);
-                posKeyFrame.data.beforeBezierControlPoint += new Vector2(move.x, -move.y);
-                posKeyFrame.data.afterBezierControlPoint += new Vector2(move.x, -move.y);
+                lastSelectedlPosKeyFrame = posKeyFrame;
 
-            }
-
-            if (i != 0 && (Event.current.type == EventType.MouseDown && Event.current.button == 1))
-            {
-                Debug.Log("pressedbutton");
-                if (nearestHandle == index)
+                if (i != 0 && (Event.current.type == EventType.MouseDrag && Event.current.button == 0))
                 {
+                    Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
+                    Debug.Log(move);
+                    posKeyFrame.data.pos += new Vector2(move.x, -move.y);
+                    posKeyFrame.data.beforeBezierControlPoint += new Vector2(move.x, -move.y);
+                    posKeyFrame.data.afterBezierControlPoint += new Vector2(move.x, -move.y);
 
-                    KeyFrame<PosKeyFrameData> posKeyFrame = attack.posKeyFrames[i];
-                    Debug.Log("left clicked: " + posKeyFrame);
 
                 }
-                menuPosition = Event.current.mousePosition;
-                showMenu = true;
-                Event.current.Use();
-
-            }
-
-            // Draw the context menu if needed
-            if (showMenu)
-            {
-                // Create a new generic menu
-                GenericMenu menu = new GenericMenu();
-                menu.AddItem(new GUIContent("Create PosKeyFrame"), false, OpenFrameTimeEditorWindow);
-                menu.AddItem(new GUIContent("Option 2"), false, Option2);
-                
-
-                // Show the menu at the mouse position
-                menu.ShowAsContext();
-                showMenu = false;
             }
         }
 
@@ -282,9 +229,7 @@ public class AttackEditor : UnityEditor.Editor
         {
             for (int i = 0; i < attack.posKeyFrames.Count; i++)
             {
-                index++;
-                DrawBezierControlsForPoint(index, hoverIndex, attack.posKeyFrames[i]);
-                index++;
+                DrawBezierControlsForPoint(i, hoverIndex, attack.posKeyFrames[i]);
             }
         }
 
@@ -292,44 +237,80 @@ public class AttackEditor : UnityEditor.Editor
 
 
     }
-    private void GetAndSetKeyFrameCreationTime(object userData)
+
+    private void HandleSceneRightClicks()
     {
-        keyFrameCreationTime = EditorGUILayout.FloatField(new GUIContent(""), keyFrameCreationTime); // No label needed here
+        if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
+        {
+            menuPosition = Event.current.mousePosition;
+            showMenu = true;
+            Event.current.Use();
+
+        }
+
+        // Draw the context menu if needed
+        if (showMenu)
+        {
+            // Create a new generic menu
+            GenericMenu menu = new GenericMenu();
+            menu.AddItem(new GUIContent("Create PosKeyFrame"), false, OpenFrameTimeEditorWindow);
+            menu.AddItem(new GUIContent("Delete last selected PosKeyFrame"), false, DeleteSelectedPosKeyFrame);
+
+
+            // Show the menu at the mouse position
+            menu.ShowAsContext();
+            showMenu = false;
+        }
     }
+
 
     private void OpenFrameTimeEditorWindow()
     {
+        keyFrameCreationTime = attack.posKeyFrames[attack.posKeyFrames.Count - 1].time + 0.1f;
         showFrameTimeEditor = true;
-
     }
 
     private void CreateNewPoskeyFrame()
     {
+        // Undo
+        Undo.RegisterCompleteObjectUndo(attack, "HandleTransform");
+        Undo.FlushUndoRecordObjects();
 
-        Vector2 pos = Camera.main.ScreenToWorldPoint(menuPosition);
+        Vector2 pos = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(menuPosition * new Vector2(1, -1)
+            + new Vector2(0, SceneView.GetAllSceneCameras()[0].pixelHeight));
         Vector2 afterBezierControlPoint = pos + Vector2.right;
         Vector2 beforeBezierControlPoint = pos + Vector2.left;
         float time = keyFrameCreationTime;
         attack.AddPosKeyFrame(time, pos, afterBezierControlPoint, beforeBezierControlPoint);
 
+
+
     }
-    private void Option2()
+    private void DeleteSelectedPosKeyFrame()
     {
-        Debug.Log("option 2");
+        if (lastSelectedlPosKeyFrame != null) { attack.posKeyFrames.Remove(lastSelectedlPosKeyFrame); }
+        else { Debug.Log("Keyframe is null :("); }
+        Debug.Log("Trying to delete " + lastSelectedlPosKeyFrame.time);
+        
     }
 
-    private void DrawBezierControlsForPoint(int index, int hoverIndex, KeyFrame<PosKeyFrameData> posKeyFrame)
+    private void DrawBezierControlsForPoint(int i, int hoverIndex, KeyFrame<PosKeyFrameData> posKeyFrame)
     {
-        Handles.color = hoverIndex == index ? selectedKeyFrameColor : bezierControlColor;
-        CreateHandleCap(index, posKeyFrame.data.beforeBezierControlPoint, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
-        CreateHandleCap(index + 1, posKeyFrame.data.afterBezierControlPoint, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+        int index = i + posKeyPositionIndexOffset;
+        int beforeControlIndex = index + posKeyBeforeControlIndexOffset;
+        int afterControlIndex = beforeControlIndex + posKeyAfterControlIndexOffset;
+        Handles.color = (hoverIndex == index || hoverIndex == beforeControlIndex) ? selectedKeyFrameColor : bezierControlColor;
+        CreateHandleCap(beforeControlIndex, posKeyFrame.data.beforeBezierControlPoint, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
-        if ((Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == index)
+        Handles.color = (hoverIndex == index || hoverIndex == afterControlIndex) ? selectedKeyFrameColor : bezierControlColor;
+        CreateHandleCap(afterControlIndex, posKeyFrame.data.afterBezierControlPoint, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+
+        if ((Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == beforeControlIndex)
         {
             Vector2 move = Camera.main.ScreenToWorldPoint(Event.current.mousePosition) - Camera.main.ScreenToWorldPoint(previousMousePosition);
             posKeyFrame.data.beforeBezierControlPoint += new Vector2(move.x, -move.y);
         }
-        if ((Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == index + 1)
+        if ((Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == afterControlIndex)
         {
             Vector2 move = Camera.main.ScreenToWorldPoint(Event.current.mousePosition) - Camera.main.ScreenToWorldPoint(previousMousePosition);
             posKeyFrame.data.afterBezierControlPoint += new Vector2(move.x, -move.y);
