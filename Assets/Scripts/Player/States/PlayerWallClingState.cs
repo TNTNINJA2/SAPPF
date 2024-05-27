@@ -40,4 +40,8 @@ public class PlayerWallClingState : PlayerState
     {
         return false;
     }
+    public override bool ShouldTryWallJump()
+    {
+        return true;
+    }
 }

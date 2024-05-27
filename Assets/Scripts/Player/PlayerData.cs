@@ -28,6 +28,9 @@ public class PlayerData : ScriptableObject
     [SerializeField] public float maxSpeed = 1;
     [SerializeField] public float jumpStrength = 10;
     [SerializeField] public float jumpBuffer = 0.1f;
+    [SerializeField] public float wallJumpStrengthX = 8;
+    [SerializeField] public float wallJumpStrengthY = 8;
+    [SerializeField] public float wallJumpBuffer = 0.1f;
     [SerializeField] public float fastFallAcceleration = -10f;
     [SerializeField] public float maxFastFallSpeed = -10f;
     [SerializeField] public int maxAirJumps = 2;
