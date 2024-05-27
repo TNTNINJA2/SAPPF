@@ -146,6 +146,42 @@ public class Attack : ScriptableObject
         return Vector3.zero;
     }
 
+
+    public Vector3 GetVelocityAtTime(PlayerController player, float time, Vector3 startPosition)
+    {
+        foreach (KeyFrame<PosKeyFrameData> posKeyFrame2 in posKeyFrames)
+        {
+            if (posKeyFrame2.time > time)
+            {
+                KeyFrame<PosKeyFrameData> posKeyFrame1 = posKeyFrames[posKeyFrames.IndexOf(posKeyFrame2) - 1]; // Get the next target keyframe
+                float time1 = posKeyFrame1.time; // Keyframe last passed time
+                float time2 = posKeyFrame2.time; // Next keyframe time
+
+                float t = (time - time1) / (time2 - time1); // Calculate t (percentage along path between pos1 and 2)
+                float tSquared = Mathf.Pow(t, 2);
+
+
+                // Get Bezier control points
+                Vector2 point1 = posKeyFrame1.data.pos;
+                Vector2 point2 = posKeyFrame1.data.afterBezierControlPoint;
+                Vector2 point3 = posKeyFrame2.data.beforeBezierControlPoint;
+                Vector2 point4 = posKeyFrame2.data.pos;
+
+                // Calculate position on bezier curve
+                Vector2 pos = point1 * (-3 * tSquared + 6 * t - 3) +
+                    point2 * (9 * tSquared - 12 * t + 3) +
+                    point3 * (-9 * tSquared + 6 * t) +
+                    point4 * (3 * tSquared);
+
+
+                // Set Pos
+                return startPosition + new Vector3(player.transform.localScale.x * pos.x, pos.y, 0);
+            }
+
+        }
+        return Vector3.zero;
+    }
+
     private void HandleHitboxes(PlayerController player, float time, Vector3 startPosition)
     {
         // For each hitbox, if its between its start and end time, boxcast at its pos and size and handle hits

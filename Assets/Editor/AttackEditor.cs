@@ -26,6 +26,9 @@ public class AttackEditor : UnityEditor.Editor
     public static Color selectedKeyFrameColor = Color.magenta;
     public static bool shouldDrawBezierControls = true;
     public static bool shouldDrawTimeControls = true;
+    public static bool shouldDrawSpeedIndicators = true;
+    public static float speedIndicatorSpacing = 0.1f;
+    public static float speedIndicatorWidth = 0.1f;
     public bool isPlaying = false;
     public float playStartTime;
     public float playTimeStep;
@@ -76,6 +79,11 @@ public class AttackEditor : UnityEditor.Editor
         selectedKeyFrameColor = EditorGUILayout.ColorField(selectedKeyFrameColor);
         shouldDrawBezierControls = EditorGUILayout.Toggle("Draw Bezier Controls", shouldDrawBezierControls);
         shouldDrawTimeControls = EditorGUILayout.Toggle("Draw Time Controls", shouldDrawTimeControls);
+        shouldDrawSpeedIndicators = EditorGUILayout.Toggle("Draw Speed Indicators", shouldDrawSpeedIndicators);
+        speedIndicatorSpacing = EditorGUILayout.FloatField("Speed Indicator Spacing", speedIndicatorSpacing);
+        speedIndicatorSpacing = Mathf.Clamp(speedIndicatorSpacing, 0.01f, float.MaxValue);
+        speedIndicatorWidth = EditorGUILayout.FloatField("Speed Indicator Width", speedIndicatorWidth);
+        speedIndicatorWidth = Mathf.Clamp(speedIndicatorWidth, 0.01f, 1);
 
 
         if (GUILayout.Button("Create Hitbox KeyFrame"))
@@ -120,6 +128,7 @@ public class AttackEditor : UnityEditor.Editor
 
         DrawPosCurves();
         DrawBezierControls();
+        DrawSpeedIndicators();
 
         HandleSceneRightClicks();
 
@@ -149,6 +158,22 @@ public class AttackEditor : UnityEditor.Editor
         if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
         {
             previousMousePosition = Event.current.mousePosition;
+        }
+    }
+
+    private void DrawSpeedIndicators() {
+        float time = 0;
+        float maxTime = attack.GetTotalDuration();
+        while (time < maxTime)
+        {
+            Vector2 pos = attack.GetPosAtTime(dummy, time, Vector3.zero);
+            Vector2 normalizedVelocity = attack.GetVelocityAtTime(dummy, time, Vector3.zero).normalized;
+            Vector2 perpendicular = new Vector2(normalizedVelocity.y, -normalizedVelocity.x);
+            Vector2 p1 = pos + perpendicular * speedIndicatorWidth;
+            Vector2 p2 = pos - perpendicular * speedIndicatorWidth;
+
+            Handles.DrawLine(p1, p2, 0.1f);
+            time += speedIndicatorSpacing;
         }
     }
 
