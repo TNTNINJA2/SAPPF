@@ -12,7 +12,8 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] public ClientNetworkAnimator networkAnimator;
     [SerializeField] public BoxCollider2D collistionsHitbox;
     [SerializeField] public BoxCollider2D groundDetectionHitbox;
-    [SerializeField] public BoxCollider2D wallDetectionHitbox;
+    [SerializeField] public BoxCollider2D wallDetectionHitboxFront;
+    [SerializeField] public BoxCollider2D wallDetectionHitboxBack;
     [SerializeField] public Rigidbody2D rb2D;
     [SerializeField] public Collider2D attackHitbox;
     [SerializeField] public SpriteRenderer spriteRenderer;
@@ -163,6 +164,7 @@ public class PlayerController : NetworkBehaviour
                 controls.Player.Jump.performed += ctx =>
                 {
                     if (state.ShouldTryJump()) TryJump();
+                    if (state.ShouldTryWallJump()) TryWallJump();
                 };
 
                 controls.Player.Dodge.performed += ctx =>
@@ -358,6 +360,13 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void TryWallJump()
+    {
+        if (IsOnWall())
+        {
+            WallJump();
+        }
+    }
     public void Jump() {
         rb2D.velocity = Vector2.up * data.jumpStrength + rb2D.velocity * Vector2.right;
         if (state != aerialState) ChangeState(aerialState);
@@ -368,7 +377,18 @@ public class PlayerController : NetworkBehaviour
         Jump();
     }
 
-
+    private void WallJump()
+    {
+        if (IsOnRightWall())
+        {
+            rb2D.velocity = new Vector2(data.wallJumpStrengthX, data.wallJumpStrengthY);
+        } else if (IsOnLeftWall())
+        {
+            rb2D.velocity = new Vector2(-data.wallJumpStrengthX, data.wallJumpStrengthY);
+        }
+       
+        if (state != aerialState) ChangeState(aerialState);
+    }
 
     #endregion
 
@@ -378,7 +398,16 @@ public class PlayerController : NetworkBehaviour
     }
     public bool IsOnWall()
     {
-        return wallDetectionHitbox.IsTouchingLayers(LayerMask.GetMask("Ground"));
+        return IsOnRightWall() || IsOnLeftWall();
+    }
+
+    public bool IsOnRightWall()
+    {
+        return (wallDetectionHitboxBack.IsTouchingLayers(LayerMask.GetMask("Ground")) && transform.localScale.x == 1) || (wallDetectionHitboxFront.IsTouchingLayers(LayerMask.GetMask("Ground")) && transform.localScale.x == -1);
+    }
+    public bool IsOnLeftWall()
+    {
+        return (wallDetectionHitboxBack.IsTouchingLayers(LayerMask.GetMask("Ground")) && transform.localScale.x == -1) || (wallDetectionHitboxFront.IsTouchingLayers(LayerMask.GetMask("Ground")) && transform.localScale.x == 1);
     }
 
     #region Enabling
