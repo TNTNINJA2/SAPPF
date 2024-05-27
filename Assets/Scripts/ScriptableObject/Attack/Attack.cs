@@ -189,8 +189,8 @@ public class Attack : ScriptableObject
         {
             if (hitboxKeyFrame.time < time && hitboxKeyFrame.time + hitboxKeyFrame.data.length > time)
             {
-                Vector2 hitboxPos = new Vector2(player.transform.position.x, player.transform.position.y) + new Vector2(player.transform.localScale.x * hitboxKeyFrame.data.pos.x, hitboxKeyFrame.data.pos.y);
-                Vector3 hitboxSize = new Vector2(hitboxKeyFrame.data.size.x, hitboxKeyFrame.data.size.y);
+                Vector2 hitboxPos = new Vector2(player.transform.position.x, player.transform.position.y) + new Vector2(player.transform.localScale.x * hitboxKeyFrame.data.rect.position.x, hitboxKeyFrame.data.rect.position.y);
+                Vector3 hitboxSize = new Vector2(hitboxKeyFrame.data.rect.size.x, hitboxKeyFrame.data.rect.size.y);
                 RaycastHit2D[] hits = Physics2D.BoxCastAll(hitboxPos, hitboxSize, 0, Vector2.zero, 0, player.playerLayer);
                 foreach (RaycastHit2D hit in hits)
                 {
@@ -225,9 +225,38 @@ public struct SpriteKeyFrameData : KeyFrameData
 [System.Serializable]
 public struct HitboxKeyFrameData : KeyFrameData
 {
-    public Vector2 pos;
-    public Vector2 size;
+    //public Vector2 pos;
+    //public Vector2 size;
+    public Rect rect;
     public float length;
+    /*public float xMin
+    {
+        get
+        {
+            return pos.x - size.x / 2;
+        }
+    }
+    public float xMax
+    {
+        get
+        {
+            return pos.x + size.x / 2;
+        }
+    }
+    public float yMin
+    {
+        get
+        {
+            return pos.y - size.y / 2;
+        }
+    }
+    public float yMax
+    {
+        get
+        {
+            return pos.y + size.y / 2;
+        }
+    }*/
 }
 
 [System.Serializable]

@@ -21,19 +21,19 @@ MonoBehaviour:
   - time: 0
     data:
       sprite: {fileID: 1657176726, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 4.1737022
-    data:
-      sprite: {fileID: 194092784, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 0.27932686
-    data:
-      sprite: {fileID: -1455209982, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
   - time: 0.3
     data:
       sprite: {fileID: 2093637836, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 0.78505117
+  - time: 0.7200129
+    data:
+      sprite: {fileID: -1455209982, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
+  - time: 1.5046628
     data:
       sprite: {fileID: -1553007584, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 1.0538911
+  - time: 1.8336122
+    data:
+      sprite: {fileID: 194092784, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
+  - time: 2.012056
     data:
       sprite: {fileID: 1234539593, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
   hitboxKeyFrames:

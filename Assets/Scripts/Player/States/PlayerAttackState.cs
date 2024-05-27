@@ -100,8 +100,8 @@ public class PlayerAttackState : PlayerState
         {
             if (hitboxKeyFrame.time < attackTime && hitboxKeyFrame.time + hitboxKeyFrame.data.length > attackTime)
             {
-                Vector2 hitboxPos = new Vector2(player.transform.position.x, player.transform.position.y) + new Vector2(player.transform.localScale.x * hitboxKeyFrame.data.pos.x, hitboxKeyFrame.data.pos.y);
-                Vector3 hitboxSize = new Vector2(hitboxKeyFrame.data.size.x, hitboxKeyFrame.data.size.y);
+                Vector2 hitboxPos = new Vector2(player.transform.position.x, player.transform.position.y) + new Vector2(player.transform.localScale.x * hitboxKeyFrame.data.rect.position.x, hitboxKeyFrame.data.rect.position.y);
+                Vector3 hitboxSize = new Vector2(hitboxKeyFrame.data.rect.size.x, hitboxKeyFrame.data.rect.size.y);
                 RaycastHit2D[] hits = Physics2D.BoxCastAll(hitboxPos, hitboxSize, 0, Vector2.zero, 0, player.playerLayer);
                 foreach (RaycastHit2D hit in hits)
                 {
@@ -129,8 +129,8 @@ public class PlayerAttackState : PlayerState
         {
             if (hitboxKeyFrame.time < attackTime && hitboxKeyFrame.time + hitboxKeyFrame.data.length > attackTime)
             {
-                Vector3 hitboxPos = player.transform.position + new Vector3(player.transform.localScale.x * hitboxKeyFrame.data.pos.x, hitboxKeyFrame.data.pos.y, 0);
-                Vector3 hitboxSize = new Vector3(hitboxKeyFrame.data.size.x, hitboxKeyFrame.data.size.y, 0);
+                Vector3 hitboxPos = player.transform.position + new Vector3(player.transform.localScale.x * hitboxKeyFrame.data.rect.position.x, hitboxKeyFrame.data.rect.position.y, 0);
+                Vector3 hitboxSize = new Vector3(hitboxKeyFrame.data.rect.size.x, hitboxKeyFrame.data.rect.size.y, 0);
                 Gizmos.color = Color.red;
                 Gizmos.DrawCube(hitboxPos, hitboxSize);
             }

@@ -26,11 +26,14 @@ public class AttackEditor : UnityEditor.Editor
     public static Color bezierControlColor = Color.Lerp(Color.red, Color.yellow, 0.5f);
     public static Color spriteKeyFrameColor = Color.cyan;
     public static Color speedIndicatorColor = Color.yellow;
+    public static Color hitboxColor = Color.blue;
     public static Color selectedKeyFrameColor = Color.magenta;
     public static bool shouldDrawBezierControls = true;
     public static bool shouldDrawTimeControls = true;
     public static bool shouldDrawSpriteTimeControls = true;
     public static bool shouldDrawSpeedIndicators = true;
+    public static bool shouldDrawHitboxes = true;
+    public static bool shouldDrawSecondaryHitboxes= true;
     public static float speedIndicatorSpacing = 0.1f;
     public static float speedIndicatorWidth = 0.1f;
     public bool isPlaying = false;
@@ -46,6 +49,7 @@ public class AttackEditor : UnityEditor.Editor
     private int posKeyBeforeControlIndexOffset = 100;
     private int posKeyAfterControlIndexOffset = 100;
     private int spriteKeyIndexOffset = 100;
+    private int hitboxKeyIndexOffset = 100;
 
     private KeyFrame<PosKeyFrameData> lastSelectedPosKeyFrame;
     private KeyFrame<SpriteKeyFrameData> lastSelectedSpriteKeyFrame;
@@ -87,11 +91,16 @@ public class AttackEditor : UnityEditor.Editor
         bezierControlColor = EditorGUILayout.ColorField("Bezier Controls", bezierControlColor);
         spriteKeyFrameColor = EditorGUILayout.ColorField("Sprite Keys", spriteKeyFrameColor);
         speedIndicatorColor = EditorGUILayout.ColorField("Speed Indicators", speedIndicatorColor);
+        hitboxColor = EditorGUILayout.ColorField("Hitboxes", hitboxColor);
         selectedKeyFrameColor = EditorGUILayout.ColorField("Selected Keys", selectedKeyFrameColor);
+
         shouldDrawBezierControls = EditorGUILayout.Toggle("Draw Bezier Controls", shouldDrawBezierControls);
         shouldDrawTimeControls = EditorGUILayout.Toggle("Draw Time Controls", shouldDrawTimeControls);
         shouldDrawSpriteTimeControls = EditorGUILayout.Toggle("Draw Sprite Time Controls", shouldDrawSpriteTimeControls);
         shouldDrawSpeedIndicators = EditorGUILayout.Toggle("Draw Speed Indicators", shouldDrawSpeedIndicators);
+        shouldDrawHitboxes = EditorGUILayout.Toggle("Draw hitboxes", shouldDrawHitboxes);
+        shouldDrawSecondaryHitboxes = EditorGUILayout.Toggle("Draw secondary hitboxes", shouldDrawSecondaryHitboxes);
+
         speedIndicatorSpacing = EditorGUILayout.FloatField("Speed Indicator Spacing", speedIndicatorSpacing);
         speedIndicatorSpacing = Mathf.Clamp(speedIndicatorSpacing, 0.01f, float.MaxValue);
         speedIndicatorWidth = EditorGUILayout.FloatField("Speed Indicator Width", speedIndicatorWidth);
@@ -119,7 +128,6 @@ public class AttackEditor : UnityEditor.Editor
 
     private void OnDisable()
     {
-        SceneView.duringSceneGui -= OnSceneupdate;
         SceneView.duringSceneGui -= OnSceneGUI;
 
     }
@@ -144,6 +152,7 @@ public class AttackEditor : UnityEditor.Editor
 
         if (shouldDrawSpriteTimeControls) DrawSpriteTimeControls();
         if (shouldDrawSpeedIndicators) DrawSpeedIndicators();
+        if (shouldDrawHitboxes) HandleHitBoxFrames();
 
         HandleSceneRightClicks();
 
@@ -168,6 +177,7 @@ public class AttackEditor : UnityEditor.Editor
             nearestHandle = -1;
             previousMousePosition = Vector3.zero;
             RecalculatePosKeyFrameIndices();
+            RecalculateSpriteKeyFrameIndices();
         }
         HandlePosKeyFrames(hoverIndex);
         if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
@@ -338,7 +348,175 @@ public class AttackEditor : UnityEditor.Editor
     }
 
 
+    private void HandleHitBoxFrames()
+    {
+        for (int i = 0; i < attack.hitboxKeyFrames.Count; i++)
+        {
+            int index = 20 * i + posKeyPositionIndexOffset + posKeyAfterControlIndexOffset + posKeyBeforeControlIndexOffset + spriteKeyIndexOffset + hitboxKeyIndexOffset;
+            KeyFrame<HitboxKeyFrameData> hitboxKeyFrame = attack.hitboxKeyFrames[i];
 
+            Vector2 currentAttackPos = attack.GetPosAtTime(dummy, time, Vector2.zero);
+
+            float handleSize = 0.03f;
+
+            // Draw the rectangle
+            Handles.color = hitboxColor; // Example color
+            Handles.DrawWireCube(hitboxKeyFrame.data.rect.position + hitboxKeyFrame.data.rect.size * 0.5f + currentAttackPos, hitboxKeyFrame.data.rect.size); // Use half size and center for drawing
+            float timeStep = 0;
+            while (shouldDrawSecondaryHitboxes && timeStep < hitboxKeyFrame.data.length)
+            {
+                timeStep += 0.1f;
+                Vector2 currentPos = attack.GetPosAtTime(dummy, time + timeStep, Vector2.zero);
+                Handles.DrawWireCube(hitboxKeyFrame.data.rect.position + hitboxKeyFrame.data.rect.size * 0.5f + currentPos, hitboxKeyFrame.data.rect.size); // Use half size and center for drawing
+
+            }
+
+
+            // Bottom left corner
+            Handles.color = nearestHandle == index ? selectedKeyFrameColor : hitboxColor;
+            Vector2 handlePos = new Vector2(hitboxKeyFrame.data.rect.xMin, hitboxKeyFrame.data.rect.yMin) + currentAttackPos;
+            CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), handleSize, Event.current.type);
+
+            if (nearestHandle == index)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
+                {
+                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
+                    Debug.Log(move);
+                    hitboxKeyFrame.data.rect.xMin += move.x;
+                    hitboxKeyFrame.data.rect.yMin += move.y;
+                }
+            }
+            index++;
+
+            // Bottom edge
+            Handles.color = nearestHandle == index ? selectedKeyFrameColor : hitboxColor;
+            handlePos = new Vector2((hitboxKeyFrame.data.rect.xMax + hitboxKeyFrame.data.rect.xMin) * 0.5f, hitboxKeyFrame.data.rect.yMin) + currentAttackPos;
+            CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), handleSize, Event.current.type);
+
+            if (nearestHandle == index)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
+                {
+                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
+                    hitboxKeyFrame.data.rect.yMin += move.y;
+                }
+            }
+            index++;
+
+            // Bottom right corner
+            Handles.color = nearestHandle == index ? selectedKeyFrameColor : hitboxColor;
+            handlePos = new Vector2(hitboxKeyFrame.data.rect.xMax, hitboxKeyFrame.data.rect.yMin) + currentAttackPos;
+            CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), handleSize, Event.current.type);
+
+            if (nearestHandle == index)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
+                {
+                    Vector2 move = Vector2.Scale(new Vector2(1,-1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
+                    hitboxKeyFrame.data.rect.xMax += move.x;
+                    hitboxKeyFrame.data.rect.yMin += move.y;
+                }
+            }
+            index++;
+
+            // Left Edge
+            Handles.color = nearestHandle == index ? selectedKeyFrameColor : hitboxColor;
+            handlePos = new Vector2(hitboxKeyFrame.data.rect.xMin, (hitboxKeyFrame.data.rect.yMin + hitboxKeyFrame.data.rect.yMax) * 0.5f) + currentAttackPos;
+            CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), handleSize, Event.current.type);
+
+            if (nearestHandle == index)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
+                {
+                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
+                    hitboxKeyFrame.data.rect.xMin += move.x;
+                }
+            }
+            index++;
+
+            // Middle
+            Handles.color = nearestHandle == index ? selectedKeyFrameColor : hitboxColor;
+            handlePos = new Vector2((hitboxKeyFrame.data.rect.xMin + hitboxKeyFrame.data.rect.xMax) * 0.5f, (hitboxKeyFrame.data.rect.yMin + hitboxKeyFrame.data.rect.yMax) * 0.5f) + currentAttackPos;
+            CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), handleSize, Event.current.type);
+
+            if (nearestHandle == index)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
+                {
+                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
+                    hitboxKeyFrame.data.rect.x += move.x;
+                    hitboxKeyFrame.data.rect.y += move.y;
+                }
+            }
+            index++;
+
+            // Right Edge
+            Handles.color = nearestHandle == index ? selectedKeyFrameColor : hitboxColor;
+            handlePos = new Vector2(hitboxKeyFrame.data.rect.xMax, (hitboxKeyFrame.data.rect.yMin + hitboxKeyFrame.data.rect.yMax) * 0.5f) + currentAttackPos;
+            CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), handleSize, Event.current.type);
+
+            if (nearestHandle == index)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
+                {
+                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
+                    hitboxKeyFrame.data.rect.xMax += move.x;
+                }
+            }
+            index++;
+
+            // Top Left Corner
+            Handles.color = nearestHandle == index ? selectedKeyFrameColor : hitboxColor;
+            handlePos = new Vector2(hitboxKeyFrame.data.rect.xMin, hitboxKeyFrame.data.rect.yMax) + currentAttackPos;
+            CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), handleSize, Event.current.type);
+
+            if (nearestHandle == index)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
+                {
+                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
+                    hitboxKeyFrame.data.rect.xMin += move.x;
+                    hitboxKeyFrame.data.rect.yMax += move.y;
+                }
+            }
+            index++;
+
+            // Top Edge
+            Handles.color = nearestHandle == index ? selectedKeyFrameColor : hitboxColor;
+            handlePos = new Vector2((hitboxKeyFrame.data.rect.xMin + hitboxKeyFrame.data.rect.xMax) * 0.5f, hitboxKeyFrame.data.rect.yMax) + currentAttackPos;
+            CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), handleSize, Event.current.type);
+
+            if (nearestHandle == index)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
+                {
+                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
+                    hitboxKeyFrame.data.rect.yMax += move.y;
+                }
+            }
+            index++;
+
+            // Top Right Corner
+            Handles.color = nearestHandle == index ? selectedKeyFrameColor : hitboxColor;
+            handlePos = new Vector2(hitboxKeyFrame.data.rect.xMax, hitboxKeyFrame.data.rect.yMax) + currentAttackPos;
+            CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), handleSize, Event.current.type);
+
+            if (nearestHandle == index)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
+                {
+                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
+                    hitboxKeyFrame.data.rect.xMax += move.x;
+                    hitboxKeyFrame.data.rect.yMax += move.y;
+                }
+            }
+            index++;
+
+
+
+        }
+    }
 
 
     private void HandlePosKeyFrames(int hoverIndex)
@@ -437,6 +615,26 @@ public class AttackEditor : UnityEditor.Editor
             
         }
     }
+    private void RecalculateSpriteKeyFrameIndices()
+    {
+        bool swapped = true;
+        while (swapped)
+        {
+            swapped = false;
+            for (int i = 0; i < attack.spriteKeyFrames.Count - 1; i++)
+            {
+                KeyFrame<SpriteKeyFrameData> spriteKeyFrame1 = attack.spriteKeyFrames[i];
+                KeyFrame<SpriteKeyFrameData> spriteKeyFrame2 = attack.spriteKeyFrames[i + 1];
+                if (spriteKeyFrame1.time > spriteKeyFrame2.time)
+                {
+                    attack.spriteKeyFrames[i] = spriteKeyFrame2;
+                    attack.spriteKeyFrames[i + 1] = spriteKeyFrame1;
+                    swapped = true;
+                }
+            }
+
+        }
+    }
 
     private void HandleSceneRightClicks()
     {
@@ -529,33 +727,7 @@ public class AttackEditor : UnityEditor.Editor
 
 
 
-    public void OnSceneupdate(SceneView sceneView)
-    {
-        attack = (Attack)target;
 
-
-        // Set handle color
-
-
-
-
-
-
-        for (int i = 0; i < attack.hitboxKeyFrames.Count; i++)
-        {
-            KeyFrame<HitboxKeyFrameData> hitboxKeyFrame = attack.hitboxKeyFrames[i];
-            Vector3 pos = hitboxKeyFrame.data.pos;
-            Quaternion rotation = Quaternion.identity;
-            Vector3 size = hitboxKeyFrame.data.size;
-            pos = Handles.PositionHandle(pos, rotation);
-            size = Handles.ScaleHandle(size, pos, rotation);
-            Handles.DrawSolidRectangleWithOutline(new Rect(pos, size), Color.red, Color.red);
-
-            hitboxKeyFrame.data.pos = pos;
-            hitboxKeyFrame.data.size = size;
-
-        }
-    }
     private Texture2D GetTextureFromRect(Texture2D sourceTexture, Rect selectionRect)
     {
         Texture2D newTexture = new Texture2D((int)selectionRect.width, (int)selectionRect.height);
