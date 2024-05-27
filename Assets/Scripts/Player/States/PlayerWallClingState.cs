@@ -16,7 +16,7 @@ public class PlayerWallClingState : PlayerState
 
     public override void ExitState()
     {
-        base.ExitState();
+     
 
     }
 
@@ -31,6 +31,11 @@ public class PlayerWallClingState : PlayerState
             player.ChangeState(player.aerialState);
         }
 
+        if (player.isOnGound)
+        {
+            player.ChangeState(player.idleState);
+        }
+
     }
     public override bool ShouldTryAttack()
     {
@@ -40,7 +45,15 @@ public class PlayerWallClingState : PlayerState
     {
         return false;
     }
+    public override bool ShouldTryDodge()
+    {
+        return false;
+    }
     public override bool ShouldTryWallJump()
+    {
+        return true;
+    }
+    public override bool ShouldTryWallMove()
     {
         return true;
     }
