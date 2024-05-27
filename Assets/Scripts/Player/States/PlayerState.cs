@@ -39,6 +39,7 @@ public class PlayerState
     public virtual bool ShouldTryAttack() { return true; }
     public virtual bool ShouldTryJump() { return true; }
     public virtual bool ShouldTryWallJump () { return false; }
+    public virtual bool ShouldTryWallMove () { return false;  }
     public virtual bool ShouldTryDodge() { return true; }
     public virtual bool IsVulnerable() { return true; }
 
