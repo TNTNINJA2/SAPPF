@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Drawing.Printing;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Unity.EditorCoroutines.Editor;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
@@ -23,6 +24,8 @@ public class AttackEditor : UnityEditor.Editor
     public float time;
     public static Color posKeyFrameColor = Color.red;
     public static Color bezierControlColor = Color.Lerp(Color.red, Color.yellow, 0.5f);
+    public static Color spriteKeyFrameColor = Color.cyan;
+    public static Color speedIndicatorColor = Color.yellow;
     public static Color selectedKeyFrameColor = Color.magenta;
     public static bool shouldDrawBezierControls = true;
     public static bool shouldDrawTimeControls = true;
@@ -44,7 +47,8 @@ public class AttackEditor : UnityEditor.Editor
     private int posKeyAfterControlIndexOffset = 100;
     private int spriteKeyIndexOffset = 100;
 
-    private KeyFrame<PosKeyFrameData> lastSelectedlPosKeyFrame;
+    private KeyFrame<PosKeyFrameData> lastSelectedPosKeyFrame;
+    private KeyFrame<SpriteKeyFrameData> lastSelectedSpriteKeyFrame;
 
     private static bool showMenu = false;
     private static Vector2 menuPosition;
@@ -79,9 +83,11 @@ public class AttackEditor : UnityEditor.Editor
 
 
 
-        posKeyFrameColor = EditorGUILayout.ColorField(posKeyFrameColor);
-        bezierControlColor = EditorGUILayout.ColorField(bezierControlColor);
-        selectedKeyFrameColor = EditorGUILayout.ColorField(selectedKeyFrameColor);
+        posKeyFrameColor = EditorGUILayout.ColorField("Pos Keys", posKeyFrameColor);
+        bezierControlColor = EditorGUILayout.ColorField("Bezier Controls", bezierControlColor);
+        spriteKeyFrameColor = EditorGUILayout.ColorField("Sprite Keys", spriteKeyFrameColor);
+        speedIndicatorColor = EditorGUILayout.ColorField("Speed Indicators", speedIndicatorColor);
+        selectedKeyFrameColor = EditorGUILayout.ColorField("Selected Keys", selectedKeyFrameColor);
         shouldDrawBezierControls = EditorGUILayout.Toggle("Draw Bezier Controls", shouldDrawBezierControls);
         shouldDrawTimeControls = EditorGUILayout.Toggle("Draw Time Controls", shouldDrawTimeControls);
         shouldDrawSpriteTimeControls = EditorGUILayout.Toggle("Draw Sprite Time Controls", shouldDrawSpriteTimeControls);
@@ -208,6 +214,9 @@ public class AttackEditor : UnityEditor.Editor
             {
                 Texture2D texture = GetSlicedSpriteTexture(spriteKeyFrame.data.sprite);
 
+                Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? selectedKeyFrameColor : spriteKeyFrameColor);
+                CreateDotHandleCap(index, spritePos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+
                 Handles.BeginGUI();
 
                 Vector2 guiPosition = HandleUtility.WorldToGUIPoint(spritePos);
@@ -221,9 +230,6 @@ public class AttackEditor : UnityEditor.Editor
                 }
 
                 Handles.EndGUI();
-                CreateDotHandleCap(index, spritePos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
-
-                
             }
             else if (Event.current.type == EventType.Layout)
             {
@@ -231,11 +237,15 @@ public class AttackEditor : UnityEditor.Editor
             }
             if (nearestHandle == index)
             {
+                lastSelectedSpriteKeyFrame = spriteKeyFrame;
 
                 if (i != 0 && (Event.current.type == EventType.MouseDrag && Event.current.button == 0))
                 {
+
+
                     Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
                     move.y *= -1;
+
                     Vector2 velocity = attack.GetVelocityAtTime(dummy, spriteKeyFrame.time);
                     if (velocity.x == 0) velocity.x = 0.0001f;
 
@@ -259,6 +269,7 @@ public class AttackEditor : UnityEditor.Editor
     private void DrawSpeedIndicators() {
         float time = 0;
         float maxTime = attack.GetTotalDuration();
+        Handles.color = speedIndicatorColor;
         while (time < maxTime)
         {
             Vector2 pos = attack.GetPosAtTime(dummy, time, Vector3.zero);
@@ -268,6 +279,7 @@ public class AttackEditor : UnityEditor.Editor
             Vector2 p2 = pos - perpendicular * speedIndicatorWidth;
 
             Handles.DrawLine(p1, p2, 0.1f);
+            Handles.DrawLine(pos, pos + normalizedVelocity);
             time += speedIndicatorSpacing;
         }
     }
@@ -340,7 +352,7 @@ public class AttackEditor : UnityEditor.Editor
 
             if (nearestHandle == index)
             {
-                lastSelectedlPosKeyFrame = posKeyFrame;
+                lastSelectedPosKeyFrame = posKeyFrame;
 
                 if (i != 0 && (Event.current.type == EventType.MouseDrag && Event.current.button == 0))
                 {
@@ -443,6 +455,7 @@ public class AttackEditor : UnityEditor.Editor
             GenericMenu menu = new GenericMenu();
             menu.AddItem(new GUIContent("Create PosKeyFrame"), false, OpenFrameTimeEditorWindow);
             menu.AddItem(new GUIContent("Delete last selected PosKeyFrame"), false, DeleteSelectedPosKeyFrame);
+            menu.AddItem(new GUIContent("Delete last selected SpriteKeyFrame"), false, DeleteSelectedSpriteKeyFrame);
 
 
             // Show the menu at the mouse position
@@ -476,10 +489,16 @@ public class AttackEditor : UnityEditor.Editor
     }
     private void DeleteSelectedPosKeyFrame()
     {
-        if (lastSelectedlPosKeyFrame != null) { attack.posKeyFrames.Remove(lastSelectedlPosKeyFrame); }
+        if (lastSelectedPosKeyFrame != null) { attack.posKeyFrames.Remove(lastSelectedPosKeyFrame); }
         else { Debug.Log("Keyframe is null :("); }
-        Debug.Log("Trying to delete " + lastSelectedlPosKeyFrame.time);
+        Debug.Log("Trying to delete " + lastSelectedPosKeyFrame.time);
         
+    }
+    private void DeleteSelectedSpriteKeyFrame()
+    {
+        if (lastSelectedSpriteKeyFrame != null) { attack.spriteKeyFrames.Remove(lastSelectedSpriteKeyFrame); }
+        else { Debug.Log("Keyframe is null :("); }
+
     }
 
     private void DrawBezierControlsForPoint(int i, int hoverIndex, KeyFrame<PosKeyFrameData> posKeyFrame)
