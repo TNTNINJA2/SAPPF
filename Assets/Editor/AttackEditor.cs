@@ -136,8 +136,8 @@ public class AttackEditor : UnityEditor.Editor
         DrawPosCurves();
         DrawBezierControls();
 
-        DrawSpriteTimeControls();
-        DrawSpeedIndicators();
+        if (shouldDrawSpriteTimeControls) DrawSpriteTimeControls();
+        if (shouldDrawSpeedIndicators) DrawSpeedIndicators();
 
         HandleSceneRightClicks();
 
