@@ -147,7 +147,7 @@ public class Attack : ScriptableObject
     }
 
 
-    public Vector3 GetVelocityAtTime(PlayerController player, float time, Vector3 startPosition)
+    public Vector3 GetVelocityAtTime(PlayerController player, float time)
     {
         foreach (KeyFrame<PosKeyFrameData> posKeyFrame2 in posKeyFrames)
         {
@@ -168,14 +168,14 @@ public class Attack : ScriptableObject
                 Vector2 point4 = posKeyFrame2.data.pos;
 
                 // Calculate position on bezier curve
-                Vector2 pos = point1 * (-3 * tSquared + 6 * t - 3) +
+                Vector2 velocity = point1 * (-3 * tSquared + 6 * t - 3) +
                     point2 * (9 * tSquared - 12 * t + 3) +
                     point3 * (-9 * tSquared + 6 * t) +
                     point4 * (3 * tSquared);
 
 
                 // Set Pos
-                return startPosition + new Vector3(player.transform.localScale.x * pos.x, pos.y, 0);
+                return new Vector3(player.transform.localScale.x * velocity.x, velocity.y, 0);
             }
 
         }

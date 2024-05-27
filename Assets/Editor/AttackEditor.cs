@@ -26,6 +26,7 @@ public class AttackEditor : UnityEditor.Editor
     public static Color selectedKeyFrameColor = Color.magenta;
     public static bool shouldDrawBezierControls = true;
     public static bool shouldDrawTimeControls = true;
+    public static bool shouldDrawSpriteTimeControls = true;
     public static bool shouldDrawSpeedIndicators = true;
     public static float speedIndicatorSpacing = 0.1f;
     public static float speedIndicatorWidth = 0.1f;
@@ -37,9 +38,11 @@ public class AttackEditor : UnityEditor.Editor
     public Vector2 previousMousePosition;
     public int nearestHandle = -1;
 
+
     private int posKeyPositionIndexOffset = 10;
     private int posKeyBeforeControlIndexOffset = 100;
     private int posKeyAfterControlIndexOffset = 100;
+    private int spriteKeyIndexOffset = 100;
 
     private KeyFrame<PosKeyFrameData> lastSelectedlPosKeyFrame;
 
@@ -50,6 +53,8 @@ public class AttackEditor : UnityEditor.Editor
     private bool showFrameTimeEditor = false; // Flag to track window visibility
 
     bool isDragging = false;
+
+    Vector2 dragOffset;
 
     public override void OnInspectorGUI()
     {
@@ -79,6 +84,7 @@ public class AttackEditor : UnityEditor.Editor
         selectedKeyFrameColor = EditorGUILayout.ColorField(selectedKeyFrameColor);
         shouldDrawBezierControls = EditorGUILayout.Toggle("Draw Bezier Controls", shouldDrawBezierControls);
         shouldDrawTimeControls = EditorGUILayout.Toggle("Draw Time Controls", shouldDrawTimeControls);
+        shouldDrawSpriteTimeControls = EditorGUILayout.Toggle("Draw Sprite Time Controls", shouldDrawSpriteTimeControls);
         shouldDrawSpeedIndicators = EditorGUILayout.Toggle("Draw Speed Indicators", shouldDrawSpeedIndicators);
         speedIndicatorSpacing = EditorGUILayout.FloatField("Speed Indicator Spacing", speedIndicatorSpacing);
         speedIndicatorSpacing = Mathf.Clamp(speedIndicatorSpacing, 0.01f, float.MaxValue);
@@ -121,13 +127,16 @@ public class AttackEditor : UnityEditor.Editor
         int hoverIndex = -1;
         hoverIndex = HandleUtility.nearestControl;
 
-
-
-
+        if (Event.current.type == EventType.DragPerform)
+        {
+            HandleDragAndDropSprites();
+        }
 
 
         DrawPosCurves();
         DrawBezierControls();
+
+        DrawSpriteTimeControls();
         DrawSpeedIndicators();
 
         HandleSceneRightClicks();
@@ -161,13 +170,99 @@ public class AttackEditor : UnityEditor.Editor
         }
     }
 
+    private void HandleDragAndDropSprites()
+    {
+        foreach (var draggedObject in DragAndDrop.objectReferences)
+        {
+            if (draggedObject is Sprite)
+            {
+                Undo.RecordObject(attack, "Added Sprite KeyFrame");
+                Undo.FlushUndoRecordObjects();
+
+                Sprite draggedSprite = (Sprite)draggedObject;
+                KeyFrame<SpriteKeyFrameData> newSpriteKeyFrame = new KeyFrame<SpriteKeyFrameData>();
+                newSpriteKeyFrame.data.sprite = draggedSprite;
+                newSpriteKeyFrame.time = attack.spriteKeyFrames[attack.spriteKeyFrames.Count - 1].time + 0.1f;
+                attack.spriteKeyFrames.Add(newSpriteKeyFrame);
+                Event.current.Use();
+
+
+
+            }
+        }
+    }
+
+    private void DrawSpriteTimeControls()
+    {
+        for (int i = 0; i < attack.spriteKeyFrames.Count; i++)
+        {
+
+            KeyFrame<SpriteKeyFrameData> spriteKeyFrame = attack.spriteKeyFrames[i];
+            Vector3 spritePos = attack.GetPosAtTime(dummy, spriteKeyFrame.time, Vector3.zero);
+            int index = i + posKeyPositionIndexOffset + posKeyBeforeControlIndexOffset + posKeyAfterControlIndexOffset + spriteKeyIndexOffset;
+
+
+            //Handles.DrawSolidDisc(spritePos, Vector3.back, 0.1f);
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                Texture2D texture = GetSlicedSpriteTexture(spriteKeyFrame.data.sprite);
+
+                Handles.BeginGUI();
+
+                Vector2 guiPosition = HandleUtility.WorldToGUIPoint(spritePos);
+                Rect handleRect = new Rect(guiPosition - new Vector2(texture.width / 2, texture.height / 2),
+                    new Vector2(texture.width, texture.height));
+                GUI.DrawTexture(handleRect, texture);
+
+                if (GUI.Button(handleRect, "", GUIStyle.none))
+                {
+                    // Handle click interaction here.
+                }
+
+                Handles.EndGUI();
+                CreateDotHandleCap(index, spritePos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+
+                
+            }
+            else if (Event.current.type == EventType.Layout)
+            {
+                CreateDotHandleCap(index, spritePos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+            }
+            if (nearestHandle == index)
+            {
+
+                if (i != 0 && (Event.current.type == EventType.MouseDrag && Event.current.button == 0))
+                {
+                    Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
+                    move.y *= -1;
+                    Vector2 velocity = attack.GetVelocityAtTime(dummy, spriteKeyFrame.time);
+                    if (velocity.x == 0) velocity.x = 0.0001f;
+
+                    float slope = velocity.y / velocity.x;
+
+                    Vector2 projectedMove = new Vector2((slope * move.y + move.x) / (slope * slope + 1), (slope * slope * move.y + slope * move.x) / (slope * slope + 1));
+
+                    float direction = Vector2.Dot(velocity.normalized, projectedMove.normalized);
+                    float timeChange = direction * (projectedMove / velocity).magnitude;
+
+                    Debug.Log(projectedMove);
+
+                    spriteKeyFrame.time += timeChange;
+                }
+
+
+            }
+        }
+    }
+
     private void DrawSpeedIndicators() {
         float time = 0;
         float maxTime = attack.GetTotalDuration();
         while (time < maxTime)
         {
             Vector2 pos = attack.GetPosAtTime(dummy, time, Vector3.zero);
-            Vector2 normalizedVelocity = attack.GetVelocityAtTime(dummy, time, Vector3.zero).normalized;
+            Vector2 normalizedVelocity = attack.GetVelocityAtTime(dummy, time).normalized;
             Vector2 perpendicular = new Vector2(normalizedVelocity.y, -normalizedVelocity.x);
             Vector2 p1 = pos + perpendicular * speedIndicatorWidth;
             Vector2 p2 = pos - perpendicular * speedIndicatorWidth;
@@ -241,7 +336,7 @@ public class AttackEditor : UnityEditor.Editor
             int index = posKeyPositionIndexOffset + i;
             KeyFrame<PosKeyFrameData> posKeyFrame = attack.posKeyFrames[i];
             Handles.color = hoverIndex == index ? selectedKeyFrameColor : posKeyFrameColor;
-            CreateHandleCap(index, posKeyFrame.data.pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+            CreateDotHandleCap(index, posKeyFrame.data.pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
             if (nearestHandle == index)
             {
@@ -279,7 +374,7 @@ public class AttackEditor : UnityEditor.Editor
     {
         KeyFrame<PosKeyFrameData> posKeyFrame = attack.posKeyFrames[posKeyFrameIndex];
 
-        Vector3 position = posKeyFrame.data.pos;
+        Vector3 position = posKeyFrame.data.pos + Vector2.up * 0.5f;
 
         // 2. Draw the Input Field and Handle Events
         Handles.BeginGUI();
@@ -393,10 +488,10 @@ public class AttackEditor : UnityEditor.Editor
         int beforeControlIndex = index + posKeyBeforeControlIndexOffset;
         int afterControlIndex = beforeControlIndex + posKeyAfterControlIndexOffset;
         Handles.color = (hoverIndex == index || hoverIndex == beforeControlIndex) ? selectedKeyFrameColor : bezierControlColor;
-        CreateHandleCap(beforeControlIndex, posKeyFrame.data.beforeBezierControlPoint, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+        CreateDotHandleCap(beforeControlIndex, posKeyFrame.data.beforeBezierControlPoint, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
         Handles.color = (hoverIndex == index || hoverIndex == afterControlIndex) ? selectedKeyFrameColor : bezierControlColor;
-        CreateHandleCap(afterControlIndex, posKeyFrame.data.afterBezierControlPoint, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+        CreateDotHandleCap(afterControlIndex, posKeyFrame.data.afterBezierControlPoint, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
         if ((Event.current.type == EventType.MouseDrag && Event.current.button == 0) && nearestHandle == beforeControlIndex)
         {
@@ -408,10 +503,11 @@ public class AttackEditor : UnityEditor.Editor
         }
     }
 
-    void CreateHandleCap(int id, Vector3 position, Quaternion rotation, float size, EventType eventType)
+    void CreateDotHandleCap(int id, Vector3 position, Quaternion rotation, float size, EventType eventType)
     {
         Handles.DotHandleCap(id, position, rotation, size, eventType);
     }
+
 
 
     public void OnSceneupdate(SceneView sceneView)
@@ -441,4 +537,54 @@ public class AttackEditor : UnityEditor.Editor
 
         }
     }
+    private Texture2D GetTextureFromRect(Texture2D sourceTexture, Rect selectionRect)
+    {
+        Texture2D newTexture = new Texture2D((int)selectionRect.width, (int)selectionRect.height);
+        Debug.Log("xMin: " + selectionRect.xMin + " width: " + selectionRect.width + " yMin: " + selectionRect.yMin + " height: " + selectionRect.height);
+        Color[] sourcePixels = sourceTexture.GetPixels((int)selectionRect.xMin, (int)selectionRect.yMin,
+                                               (int)selectionRect.width, (int)selectionRect.height);
+
+        newTexture.SetPixels(sourcePixels);
+        newTexture.Apply();
+
+        return newTexture;
+    }
+
+    private Texture2D GetTextureFromSprite(Sprite sprite)
+    {
+        return GetTextureFromRect(sprite.texture, sprite.rect);
+    }
+
+    public static Texture2D GetSpriteTexture(Sprite sprite)
+    {
+        Texture2D originalTexture = sprite.texture;
+        Rect textureRect = sprite.textureRect;
+
+        // Adjust textureRect to account for atlas packing
+        textureRect.x += sprite.rect.x;
+        textureRect.y += sprite.rect.y;
+
+        // Create a new Texture2D to store the extracted portion
+        Texture2D extractedTexture = new Texture2D((int)textureRect.width, (int)textureRect.height);
+
+        // Read the pixels from the original texture within the sprite's rectangle
+        extractedTexture.ReadPixels(textureRect, 0, 0);
+        extractedTexture.Apply(); // Apply changes to the extracted texture
+
+        return extractedTexture;
+    }
+
+    Texture2D GetSlicedSpriteTexture(Sprite sprite)
+    {
+        Rect rect = sprite.rect;
+        Texture2D slicedTex = new Texture2D((int)rect.width, (int)rect.height);
+        slicedTex.filterMode = sprite.texture.filterMode;
+
+        slicedTex.SetPixels(0, 0, (int)rect.width, (int)rect.height, sprite.texture.GetPixels((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height));
+        slicedTex.Apply();
+
+        return slicedTex;
+    }
+
+
 }
