@@ -6,6 +6,7 @@ using System.Drawing.Printing;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Unity.EditorCoroutines.Editor;
+using Unity.Profiling;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using Unity.VisualScripting.Dependencies.NCalc;
@@ -16,6 +17,7 @@ using UnityEditor.SearchService;
 using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 [CustomEditor(typeof(Attack))]
@@ -224,7 +226,7 @@ public class AttackEditor : UnityEditor.Editor
             {
                 Texture2D texture = GetSlicedSpriteTexture(spriteKeyFrame.data.sprite);
 
-                Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? selectedKeyFrameColor : spriteKeyFrameColor);
+                /*Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? selectedKeyFrameColor : spriteKeyFrameColor);
                 CreateDotHandleCap(index, spritePos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
                 Handles.BeginGUI();
@@ -235,6 +237,31 @@ public class AttackEditor : UnityEditor.Editor
                 GUI.DrawTexture(handleRect, texture);
 
                 if (GUI.Button(handleRect, "", GUIStyle.none))
+                {
+                    // Handle click interaction here.
+                }
+
+                Handles.EndGUI();*/
+                Handles.BeginGUI();
+
+                Rect spriteRect = spriteKeyFrame.data.sprite.rect;
+                spriteRect.width /= spriteKeyFrame.data.sprite.pixelsPerUnit;
+                spriteRect.height /= spriteKeyFrame.data.sprite.pixelsPerUnit;
+                spriteRect.center = spritePos;
+
+                // Calc world rect to screen rect
+                Vector2 minCornerScreenPos = HandleUtility.WorldToGUIPoint(spriteRect.min);
+                Vector2 maxCornerScreenPos = HandleUtility.WorldToGUIPoint(spriteRect.max);
+
+                Rect screenRect = new Rect();
+                screenRect.min = new Vector2(minCornerScreenPos.x, maxCornerScreenPos.y);
+                screenRect.max = new Vector2(maxCornerScreenPos.x, minCornerScreenPos.y);
+                
+                
+                GUI.DrawTexture(screenRect, texture);
+
+
+                if (GUI.Button(screenRect, "", GUIStyle.none))
                 {
                     // Handle click interaction here.
                 }
@@ -355,7 +382,7 @@ public class AttackEditor : UnityEditor.Editor
             int index = 20 * i + posKeyPositionIndexOffset + posKeyAfterControlIndexOffset + posKeyBeforeControlIndexOffset + spriteKeyIndexOffset + hitboxKeyIndexOffset;
             KeyFrame<HitboxKeyFrameData> hitboxKeyFrame = attack.hitboxKeyFrames[i];
 
-            Vector2 currentAttackPos = attack.GetPosAtTime(dummy, time, Vector2.zero);
+            Vector2 currentAttackPos = attack.GetPosAtTime(dummy, hitboxKeyFrame.time, Vector2.zero);
 
             float handleSize = 0.03f;
 
@@ -366,7 +393,7 @@ public class AttackEditor : UnityEditor.Editor
             while (shouldDrawSecondaryHitboxes && timeStep < hitboxKeyFrame.data.length)
             {
                 timeStep += 0.1f;
-                Vector2 currentPos = attack.GetPosAtTime(dummy, time + timeStep, Vector2.zero);
+                Vector2 currentPos = attack.GetPosAtTime(dummy, hitboxKeyFrame.time + timeStep, Vector2.zero);
                 Handles.DrawWireCube(hitboxKeyFrame.data.rect.position + hitboxKeyFrame.data.rect.size * 0.5f + currentPos, hitboxKeyFrame.data.rect.size); // Use half size and center for drawing
 
             }
