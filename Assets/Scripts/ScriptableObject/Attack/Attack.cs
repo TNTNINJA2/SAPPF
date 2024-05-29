@@ -3,6 +3,7 @@ using Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
 using Unity.VisualScripting;
@@ -37,10 +38,12 @@ public class Attack : ScriptableObject
     }
 
     [ProButton]
-    public virtual void AddHitboxKeyFrame()
+    public virtual void AddHitboxKeyFrame(float time, float length)
     {
-        KeyFrame<HitboxKeyFrameData> newHitboxKeyFrame = hitboxKeyFrames[hitboxKeyFrames.Count - 1];
-        newHitboxKeyFrame.time += 0.1f;
+        KeyFrame<HitboxKeyFrameData> newHitboxKeyFrame = new KeyFrame<HitboxKeyFrameData>();
+        newHitboxKeyFrame.time = time;
+        newHitboxKeyFrame.data.length = length;
+        newHitboxKeyFrame.data.rect = new Rect(Vector2.zero, Vector2.one * 0.2f);
         hitboxKeyFrames.Add(newHitboxKeyFrame);
     }
 
@@ -65,7 +68,12 @@ public class Attack : ScriptableObject
     public float GetTotalDuration()
     {
         float lastSpriteFrameTime = (spriteKeyFrames.Count > 0 )? spriteKeyFrames[spriteKeyFrames.Count-1].time: 0;
-        float lastHitboxFrameTime = (hitboxKeyFrames.Count > 0) ? hitboxKeyFrames[hitboxKeyFrames.Count-1].time : 0;
+        float lastHitboxFrameTime = 0;
+        foreach (KeyFrame<HitboxKeyFrameData> hitboxFrame in hitboxKeyFrames)
+        {
+            float lastTime = hitboxFrame.time + hitboxFrame.data.length;
+            if (lastTime > lastHitboxFrameTime) lastHitboxFrameTime = lastTime;
+        }
         float lastposFrameTime = (posKeyFrames.Count > 0) ? posKeyFrames[posKeyFrames.Count-1].time : 0;
 
         return Mathf.Max(lastSpriteFrameTime, lastHitboxFrameTime, lastposFrameTime);
@@ -225,38 +233,10 @@ public struct SpriteKeyFrameData : KeyFrameData
 [System.Serializable]
 public struct HitboxKeyFrameData : KeyFrameData
 {
-    //public Vector2 pos;
-    //public Vector2 size;
+
     public Rect rect;
     public float length;
-    /*public float xMin
-    {
-        get
-        {
-            return pos.x - size.x / 2;
-        }
-    }
-    public float xMax
-    {
-        get
-        {
-            return pos.x + size.x / 2;
-        }
-    }
-    public float yMin
-    {
-        get
-        {
-            return pos.y - size.y / 2;
-        }
-    }
-    public float yMax
-    {
-        get
-        {
-            return pos.y + size.y / 2;
-        }
-    }*/
+
 }
 
 [System.Serializable]
