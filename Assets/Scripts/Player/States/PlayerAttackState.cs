@@ -27,12 +27,10 @@ public class PlayerAttackState : PlayerState
     public override void Update()
     {
         attackTime = Time.time - startTime;
-        Debug.Log("attackTime:" + attackTime);
 
         HandleSprites();
-        HandlePos();
         HandleHitboxes();
-        
+
 
 
         // End attack if past attack length
@@ -40,6 +38,16 @@ public class PlayerAttackState : PlayerState
         {
             player.EndAttack();
         }
+
+
+    }
+
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        HandlePos();
+        Debug.Log("fixed update");
+
     }
 
     private void HandleSprites()
@@ -69,8 +77,6 @@ public class PlayerAttackState : PlayerState
                 float tSquared = Mathf.Pow(t, 2);
                 float tCubed = Mathf.Pow(t, 3);
 
-                Debug.Log("time1: " + time1 + " time2: " + time2);
-                Debug.Log("T:" + t);
 
                 // Get Bezier control points
                 Vector2 point1 = posKeyFrame1.data.pos;
@@ -84,7 +90,6 @@ public class PlayerAttackState : PlayerState
                     point3 * (-3 * tCubed + 3 * tSquared) +
                     point4 * (tCubed);
 
-                Debug.Log("Pos: (" + pos.x + ", " + pos.y + ")");
 
                 // Set Pos
                 player.transform.position = startPosition + new Vector3(player.transform.localScale.x * pos.x, pos.y, 0);
@@ -98,16 +103,22 @@ public class PlayerAttackState : PlayerState
         // For each hitbox, if its between its start and end time, boxcast at its pos and size and handle hits
         foreach (KeyFrame<HitboxKeyFrameData> hitboxKeyFrame in currentAttack.hitboxKeyFrames)
         {
+            Debug.Log(hitboxKeyFrame.data);
             if (hitboxKeyFrame.time < attackTime && hitboxKeyFrame.time + hitboxKeyFrame.data.length > attackTime)
             {
-                Vector2 hitboxPos = new Vector2(player.transform.position.x, player.transform.position.y) + new Vector2(player.transform.localScale.x * hitboxKeyFrame.data.rect.position.x, hitboxKeyFrame.data.rect.position.y);
-                Vector3 hitboxSize = new Vector2(hitboxKeyFrame.data.rect.size.x, hitboxKeyFrame.data.rect.size.y);
+                Vector2 hitboxPos = (Vector2)player.transform.position + Vector2.Scale(hitboxKeyFrame.data.rect.position, Vector2.right * player.transform.localScale.x);
+                Vector2 hitboxSize = hitboxKeyFrame.data.rect.size;
+                Debug.Log("hitboxPos: " + hitboxPos);
+                Debug.Log("hitboxSize: " + hitboxSize);
+
                 RaycastHit2D[] hits = Physics2D.BoxCastAll(hitboxPos, hitboxSize, 0, Vector2.zero, 0, player.playerLayer);
                 foreach (RaycastHit2D hit in hits)
                 {
+                    Debug.Log(hit);
                     if (hit.collider != null && hit.collider.gameObject.TryGetComponent(out PlayerController playerHit))
                     {
                         if (playerHit != player) OnHit(playerHit);
+                        Debug.Log("Hit a player");
                     }
                 }
             }

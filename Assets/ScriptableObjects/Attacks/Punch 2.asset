@@ -21,60 +21,57 @@ MonoBehaviour:
   - time: 0
     data:
       sprite: {fileID: 1657176726, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 0.3
+  - time: 0.25124472
     data:
       sprite: {fileID: 2093637836, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 0.7200129
+  - time: 0.42968023
     data:
       sprite: {fileID: -1455209982, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 1.5046628
+  - time: 0.5081005
     data:
       sprite: {fileID: -1553007584, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 1.8336122
+  - time: 0.79742175
     data:
       sprite: {fileID: 194092784, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
-  - time: 2.012056
+  - time: 1.3865554
     data:
       sprite: {fileID: 1234539593, guid: 4a5b15f8320136d45859640104d2f799, type: 3}
   hitboxKeyFrames:
-  - time: 0.3
+  - time: 0.4202065
     data:
-      pos: {x: 0.2, y: -0.2}
-      size: {x: 0.5, y: 0.25}
-      length: 0.1
-  - time: 0.3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: -0.29075575
+        width: 0.8722671
+        height: 0.29075575
+      length: 0.22254771
+  - time: 0.25015754
     data:
-      pos: {x: -0.5, y: -0.2}
-      size: {x: 0.25, y: 0.25}
-      length: 0.1
+      rect:
+        serializedVersion: 2
+        x: 1.1696353
+        y: -0.91674113
+        width: -1.2012467
+        height: 0.91674113
+      length: 0.58094954
+  - time: 0.051088624
+    data:
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 0.2
+        height: 0.2
+      length: 0.3842192
   posKeyFrames:
   - time: 0
     data:
       pos: {x: 0, y: 0}
       beforeBezierControlPoint: {x: 2.1926436, y: -0.54047394}
       afterBezierControlPoint: {x: 1.5137408, y: 0.11469734}
-  - time: 1.92
+  - time: 1.4
     data:
       pos: {x: 5.9222345, y: 0.3229549}
       beforeBezierControlPoint: {x: 5.8025284, y: -1.0075469}
-      afterBezierControlPoint: {x: 6.8295903, y: 3.7017887}
-  - time: 2.81
-    data:
-      pos: {x: -0.7590702, y: 0.9205749}
-      beforeBezierControlPoint: {x: -2.5869875, y: 0.8609086}
-      afterBezierControlPoint: {x: 0.9463841, y: 1.0489979}
-  - time: 3.35
-    data:
-      pos: {x: -2.0774364, y: 2.9396641}
-      beforeBezierControlPoint: {x: -1.0774364, y: 2.9396641}
-      afterBezierControlPoint: {x: -3.0774362, y: 2.9396641}
-  - time: 4.12
-    data:
-      pos: {x: 3.6476383, y: 0.9010883}
-      beforeBezierControlPoint: {x: 2.6493607, y: -0.75668055}
-      afterBezierControlPoint: {x: 4.210244, y: 1.7647222}
-  - time: 5.7
-    data:
-      pos: {x: 0.47923565, y: 3.0387082}
-      beforeBezierControlPoint: {x: 1.1312815, y: 3.072607}
-      afterBezierControlPoint: {x: -0.71616554, y: 2.8662953}
+      afterBezierControlPoint: {x: 6.82959, y: 3.2866013}

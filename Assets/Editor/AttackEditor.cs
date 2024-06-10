@@ -252,6 +252,7 @@ public class AttackEditor : UnityEditor.Editor
 
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
+                lastSelectedPosKeyFrame = posKeyFrame;
                 Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
                 posKeyFrame.time += move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration();
                 posKeyFrame.time = Mathf.Clamp(posKeyFrame.time, 0, float.MaxValue);
@@ -269,7 +270,42 @@ public class AttackEditor : UnityEditor.Editor
             KeyFrame<SpriteKeyFrameData> spriteKeyFrame = attack.spriteKeyFrames[i];
             int index = i + posKeyPositionIndexOffset + posKeyAfterControlIndexOffset + posKeyBeforeControlIndexOffset + spriteKeyIndexOffset + posTimelineIndexOffset + spriteTimelineIndexOffset;
             float x = spriteKeyFrame.time / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
-            Vector2 pos = new Vector2(x, data.timelineHeight + data.spriteTimelineOffset); 
+            Vector2 pos = new Vector2(x, data.timelineHeight + data.spriteTimelineOffset);
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                Texture2D texture = GetSlicedSpriteTexture(spriteKeyFrame.data.sprite);
+
+                Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? data.selectedKeyFrameColor : data.spriteKeyFrameColor);
+                CreateDotHandleCap(index, pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+
+
+                Handles.BeginGUI();
+
+                Rect spriteRect = spriteKeyFrame.data.sprite.rect;
+                spriteRect.width /= spriteKeyFrame.data.sprite.pixelsPerUnit;
+                spriteRect.height /= spriteKeyFrame.data.sprite.pixelsPerUnit;
+                spriteRect.center = pos;
+
+                // Calc world rect to screen rect
+                Vector2 minCornerScreenPos = HandleUtility.WorldToGUIPoint(spriteRect.min);
+                Vector2 maxCornerScreenPos = HandleUtility.WorldToGUIPoint(spriteRect.max);
+
+                Rect screenRect = new Rect();
+                screenRect.min = new Vector2(minCornerScreenPos.x, maxCornerScreenPos.y);
+                screenRect.max = new Vector2(maxCornerScreenPos.x, minCornerScreenPos.y);
+
+
+                GUI.DrawTexture(screenRect, texture);
+
+
+                if (GUI.Button(screenRect, "", GUIStyle.none))
+                {
+                    // Handle click interaction here.
+                }
+
+                Handles.EndGUI();
+            }
 
             Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? data.selectedKeyFrameColor : data.spriteKeyFrameColor);
             CreateDotHandleCap(index, pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
@@ -277,10 +313,16 @@ public class AttackEditor : UnityEditor.Editor
 
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
+                lastSelectedSpriteKeyFrame = spriteKeyFrame;
+
+               
+
                 Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
                 spriteKeyFrame.time += move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration();
                 spriteKeyFrame.time = Mathf.Clamp(spriteKeyFrame.time, 0, float.MaxValue);
             }
+
+            
 
         }
 
@@ -296,13 +338,14 @@ public class AttackEditor : UnityEditor.Editor
             float x = hitboxKeyFrame.time / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
 
             // Start point
-            Vector2 pos = new Vector2(x, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
+            Vector2 pos1 = new Vector2(x, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
 
             Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? data.selectedKeyFrameColor : data.hitboxColor);
-            CreateDotHandleCap(index, pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+            CreateDotHandleCap(index, pos1, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
+                lastSelectedHitboxKeyFrame = hitboxKeyFrame;
                 Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
                 hitboxKeyFrame.time += move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration();
                 hitboxKeyFrame.time = Mathf.Clamp(hitboxKeyFrame.time, 0, float.MaxValue);
@@ -313,17 +356,21 @@ public class AttackEditor : UnityEditor.Editor
 
             x = (hitboxKeyFrame.time + hitboxKeyFrame.data.length) / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
 
-            pos = new Vector2(x, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
+            Vector2 pos2 = new Vector2(x, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
 
             Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? data.selectedKeyFrameColor : data.hitboxColor);
-            CreateDotHandleCap(index, pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
+            CreateDotHandleCap(index, pos2, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
+                lastSelectedHitboxKeyFrame = hitboxKeyFrame;
                 Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
                 hitboxKeyFrame.data.length += move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration();
                 hitboxKeyFrame.data.length = Mathf.Clamp(hitboxKeyFrame.data.length, 0, float.MaxValue);
             }
+
+            Handles.color = data.hitboxColor;
+            Handles.DrawLine(pos1, pos2);
 
         }
 
@@ -524,7 +571,7 @@ public class AttackEditor : UnityEditor.Editor
             float timeStep = 0;
             while (data.shouldDrawSecondaryHitboxes && timeStep < hitboxKeyFrame.data.length)
             {
-                timeStep += 0.1f;
+                timeStep += Time.fixedDeltaTime; // increment by the fixed update step size
                 Vector2 currentPos = attack.GetPosAtTime(dummy, hitboxKeyFrame.time + timeStep, Vector2.zero);
                 Handles.DrawWireCube(hitboxKeyFrame.data.rect.position + hitboxKeyFrame.data.rect.size * 0.5f + currentPos, hitboxKeyFrame.data.rect.size); // Use half size and center for drawing
 
