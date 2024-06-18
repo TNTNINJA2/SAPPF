@@ -33,25 +33,25 @@ public class Attack : ScriptableObject
     public virtual void AddSprite()
     {
         KeyFrame<SpriteKeyFrameData> newSpriteKeyFrame = spriteKeyFrames[spriteKeyFrames.Count - 1];
-        newSpriteKeyFrame.time += 0.1f;
+        newSpriteKeyFrame.frame += 1;
         spriteKeyFrames.Add(newSpriteKeyFrame);
     }
 
     [ProButton]
-    public virtual void AddHitboxKeyFrame(float time, float length)
+    public virtual void AddHitboxKeyFrame(int frame, int length)
     {
         KeyFrame<HitboxKeyFrameData> newHitboxKeyFrame = new KeyFrame<HitboxKeyFrameData>();
-        newHitboxKeyFrame.time = time;
+        newHitboxKeyFrame.frame = frame;
         newHitboxKeyFrame.data.length = length;
         newHitboxKeyFrame.data.rect = new Rect(Vector2.zero, Vector2.one * 0.2f);
         hitboxKeyFrames.Add(newHitboxKeyFrame);
     }
 
     [ProButton]
-    public virtual void AddPosKeyFrame(float time, Vector2 pos, Vector2 beforeBezierControlPoint, Vector2 afterBezierControlPoint)
+    public virtual void AddPosKeyFrame(int frame, Vector2 pos, Vector2 beforeBezierControlPoint, Vector2 afterBezierControlPoint)
     {
         KeyFrame<PosKeyFrameData> newPosKeyFrame = new KeyFrame<PosKeyFrameData>();
-        newPosKeyFrame.time = time;
+        newPosKeyFrame.frame = frame;
         newPosKeyFrame.data.pos = pos;
         newPosKeyFrame.data.beforeBezierControlPoint = beforeBezierControlPoint;
         newPosKeyFrame.data.afterBezierControlPoint = afterBezierControlPoint;
@@ -59,22 +59,22 @@ public class Attack : ScriptableObject
         int index = 0;
         for (int i = 0; i < posKeyFrames.Count; i++)
         {
-            if (posKeyFrames[i].time < time) index++;
+            if (posKeyFrames[i].frame < frame) index++;
         }
         posKeyFrames.Insert(index, newPosKeyFrame);
     }
 
 
-    public float GetTotalDuration()
+    public int GetTotalDuration()
     {
-        float lastSpriteFrameTime = (spriteKeyFrames.Count > 0 )? spriteKeyFrames[spriteKeyFrames.Count-1].time: 0;
-        float lastHitboxFrameTime = 0;
+        int lastSpriteFrameTime = (spriteKeyFrames.Count > 0 )? spriteKeyFrames[spriteKeyFrames.Count-1].frame: 0;
+        int lastHitboxFrameTime = 0;
         foreach (KeyFrame<HitboxKeyFrameData> hitboxFrame in hitboxKeyFrames)
         {
-            float lastTime = hitboxFrame.time + hitboxFrame.data.length;
+            int lastTime = hitboxFrame.frame + hitboxFrame.data.length;
             if (lastTime > lastHitboxFrameTime) lastHitboxFrameTime = lastTime;
         }
-        float lastposFrameTime = (posKeyFrames.Count > 0) ? posKeyFrames[posKeyFrames.Count-1].time : 0;
+        int lastposFrameTime = (posKeyFrames.Count > 0) ? posKeyFrames[posKeyFrames.Count-1].frame : 0;
 
         return Mathf.Max(lastSpriteFrameTime, lastHitboxFrameTime, lastposFrameTime);
     }
@@ -82,7 +82,7 @@ public class Attack : ScriptableObject
     private float GetHighestKeyFrameTime<T>(List<KeyFrame<T>> keyFrames) where T: KeyFrameData
     {
 
-        return keyFrames[keyFrames.Count - 1].time;
+        return keyFrames[keyFrames.Count - 1].frame;
     }
 
     public virtual void OnHit(PlayerController player, PlayerController target)
@@ -91,42 +91,45 @@ public class Attack : ScriptableObject
 
     }
 
-    public void DisplayAtTime(PlayerController player, float time, Vector3 startPosition)
+    public void DisplayAtFrame(PlayerController player, int frame, Vector3 startPosition)
     {
-        HandleSprites(player, time, startPosition);
-        HandlePos(player, time, startPosition);
-        HandleHitboxes(player, time, startPosition);
+        HandleSprites(player, frame, startPosition);
+        HandlePos(player, frame, startPosition);
+        HandleHitboxes(player, frame, startPosition);
     }
 
-    private void HandleSprites(PlayerController player, float time, Vector3 startPosition)
+    private void HandleSprites(PlayerController player, float frame, Vector3 startPosition)
     {
         foreach (KeyFrame<SpriteKeyFrameData> spriteKeyFrame in spriteKeyFrames)
         {
-            if (spriteKeyFrame.time > time)
+            Sprite sprite;
+            if (spriteKeyFrame.frame > frame)
             {
-                Sprite sprite = spriteKeyFrames[spriteKeyFrames.IndexOf(spriteKeyFrame) - 1].data.sprite;
+                sprite = spriteKeyFrames[spriteKeyFrames.IndexOf(spriteKeyFrame) - 1].data.sprite;
                 player.spriteRenderer.sprite = sprite;
                 break;
             }
+            sprite = spriteKeyFrames[spriteKeyFrames.Count - 1].data.sprite;
+            player.spriteRenderer.sprite = sprite;
         }
     }
 
-    private void HandlePos(PlayerController player, float time, Vector3 startPosition)
+    private void HandlePos(PlayerController player, int frame, Vector3 startPosition)
     {
-        player.transform.position = GetPosAtTime(player, time, startPosition);
+        player.transform.position = GetPosAtFrame(player, frame, startPosition);
     }
 
-    public Vector3 GetPosAtTime(PlayerController player, float time, Vector3 startPosition)
+    public Vector3 GetPosAtFrame(PlayerController player, int frame, Vector3 startPosition)
     {
         foreach (KeyFrame<PosKeyFrameData> posKeyFrame2 in posKeyFrames)
         {
-            if (posKeyFrame2.time > time)
+            if (posKeyFrame2.frame > frame)
             {
                 KeyFrame<PosKeyFrameData> posKeyFrame1 = posKeyFrames[posKeyFrames.IndexOf(posKeyFrame2) - 1]; // Get the next target keyframe
-                float time1 = posKeyFrame1.time; // Keyframe last passed time
-                float time2 = posKeyFrame2.time; // Next keyframe time
+                float time1 = posKeyFrame1.frame; // Keyframe last passed time
+                float time2 = posKeyFrame2.frame; // Next keyframe time
 
-                float t = (time - time1) / (time2 - time1); // Calculate t (percentage along path between pos1 and 2)
+                float t = (frame - time1) / (time2 - time1); // Calculate t (percentage along path between pos1 and 2)
                 float tSquared = Mathf.Pow(t, 2);
                 float tCubed = Mathf.Pow(t, 3);
 
@@ -155,17 +158,17 @@ public class Attack : ScriptableObject
     }
 
 
-    public Vector3 GetVelocityAtTime(PlayerController player, float time)
+    public Vector3 GetVelocityAtFrame(PlayerController player, float frame)
     {
         foreach (KeyFrame<PosKeyFrameData> posKeyFrame2 in posKeyFrames)
         {
-            if (posKeyFrame2.time > time)
+            if (posKeyFrame2.frame > frame)
             {
-                KeyFrame<PosKeyFrameData> posKeyFrame1 = posKeyFrames[posKeyFrames.IndexOf(posKeyFrame2) - 1]; // Get the next target keyframe
-                float time1 = posKeyFrame1.time; // Keyframe last passed time
-                float time2 = posKeyFrame2.time; // Next keyframe time
+                KeyFrame<PosKeyFrameData> posKeyFrame1 = posKeyFrames[posKeyFrames.IndexOf(posKeyFrame2) - 1]; // Get the previous target keyframe
+                float time1 = posKeyFrame1.frame; // Keyframe last passed time
+                float time2 = posKeyFrame2.frame; // Next keyframe time
 
-                float t = (time - time1) / (time2 - time1); // Calculate t (percentage along path between pos1 and 2)
+                float t = (frame - time1) / (time2 - time1); // Calculate t (percentage along path between pos1 and 2)
                 float tSquared = Mathf.Pow(t, 2);
 
 
@@ -195,7 +198,7 @@ public class Attack : ScriptableObject
         // For each hitbox, if its between its start and end time, boxcast at its pos and size and handle hits
         foreach (KeyFrame<HitboxKeyFrameData> hitboxKeyFrame in hitboxKeyFrames)
         {
-            if (hitboxKeyFrame.time < time && hitboxKeyFrame.time + hitboxKeyFrame.data.length > time)
+            if (hitboxKeyFrame.frame < time && hitboxKeyFrame.frame + hitboxKeyFrame.data.length > time)
             {
                 Vector2 hitboxPos = new Vector2(player.transform.position.x, player.transform.position.y) + new Vector2(player.transform.localScale.x * hitboxKeyFrame.data.rect.position.x, hitboxKeyFrame.data.rect.position.y);
                 Vector3 hitboxSize = new Vector2(hitboxKeyFrame.data.rect.size.x, hitboxKeyFrame.data.rect.size.y);
@@ -215,7 +218,7 @@ public class Attack : ScriptableObject
 [System.Serializable]
 public class KeyFrame<T> where T : KeyFrameData
 {
-    public float time;
+    public int frame;
     public T data;
 }
 
@@ -235,7 +238,7 @@ public struct HitboxKeyFrameData : KeyFrameData
 {
 
     public Rect rect;
-    public float length;
+    public int length;
 
 }
 

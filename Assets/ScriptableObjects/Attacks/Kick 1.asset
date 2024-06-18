@@ -18,61 +18,35 @@ MonoBehaviour:
   ATTACK_ANIMATION_NAME: Kick
   playerController: {fileID: 0}
   spriteKeyFrames:
-  - time: 0
+  - frame: 0
     data:
       sprite: {fileID: -590687176, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.1
+  - frame: 19
     data:
       sprite: {fileID: -1507362442, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.2
-    data:
-      sprite: {fileID: -1254142609, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.3
-    data:
-      sprite: {fileID: 1569528490, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.4
-    data:
-      sprite: {fileID: 1481732725, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.5
-    data:
-      sprite: {fileID: 928602773, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.6
-    data:
-      sprite: {fileID: -1595951259, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.7
-    data:
-      sprite: {fileID: 1974362843, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.8
-    data:
-      sprite: {fileID: 1285550819, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 0.9
-    data:
-      sprite: {fileID: -539085366, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 1
-    data:
-      sprite: {fileID: -103886705, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
-  - time: 1.1
-    data:
-      sprite: {fileID: -1537867730, guid: 02caab1706693e841ab40aaa0b180ff2, type: 3}
   hitboxKeyFrames:
-  - time: 0
+  - frame: 0
     data:
-      pos: {x: 0.08866882, y: 0.010061979}
-      size: {x: 0.45674944, y: 0.5108932}
-      length: 1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 0
+        height: 0
+      length: 42
   posKeyFrames:
-  - time: 0
+  - frame: 0
     data:
       pos: {x: 0, y: 0}
       beforeBezierControlPoint: {x: -1.4745853, y: 0.33144033}
-      afterBezierControlPoint: {x: 2.2800834, y: 0.0024127364}
-  - time: 0.5
+      afterBezierControlPoint: {x: 0.019412756, y: 3.945841}
+  - frame: 13
+    data:
+      pos: {x: 1.0288715, y: 6.4222465}
+      beforeBezierControlPoint: {x: 0.39793968, y: 4.6627936}
+      afterBezierControlPoint: {x: 2.7287703, y: 10.895195}
+  - frame: 24
     data:
       pos: {x: 4.687956, y: 0}
       beforeBezierControlPoint: {x: 2.765835, y: 0.004875958}
       afterBezierControlPoint: {x: 3.2535985, y: 6.171479}
-  - time: 1.1
-    data:
-      pos: {x: 7.843362, y: 3.9013612}
-      beforeBezierControlPoint: {x: 11.388315, y: 3.527457}
-      afterBezierControlPoint: {x: 8.86973, y: 6.3537035}

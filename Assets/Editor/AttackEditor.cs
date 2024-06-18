@@ -25,7 +25,7 @@ using UnityEngine.SceneManagement;
 public class AttackEditor : UnityEditor.Editor
 {
     public AttackEditorData data;
-    public float time;
+    public int frame;
 
     
 
@@ -52,9 +52,9 @@ public class AttackEditor : UnityEditor.Editor
 
     private static bool showMenu = false;
     private static Vector2 menuPosition;
-    private float keyFrameCreationTime = 1;
-    private float hitboxFrameCreationTime = 1;
-    private float hitboxFrameCreationLength = 1;
+    private int keyFrameCreationFrame = 1;
+    private int hitboxFrameCreationTime = 1;
+    private int hitboxFrameCreationLength = 1;
 
     private bool posFrameCreationWindow = false; // Flag to track window visibility
     private bool hitboxFrameCreationWindow = false; // Flag to track window visibility
@@ -71,10 +71,10 @@ public class AttackEditor : UnityEditor.Editor
 
 
 
-        time = EditorGUILayout.Slider(time, 0, attack.GetTotalDuration());
+        frame = (int)EditorGUILayout.Slider(frame, 0, attack.GetTotalDuration());
          
 
-        attack.DisplayAtTime(dummy, time, Vector3.zero);
+        attack.DisplayAtFrame(dummy, frame, Vector3.zero);
 
         data.posKeyFrameColor = EditorGUILayout.ColorField("Pos Keys", data.posKeyFrameColor);
         data.bezierControlColor = EditorGUILayout.ColorField("Bezier Controls", data.bezierControlColor);
@@ -192,7 +192,10 @@ public class AttackEditor : UnityEditor.Editor
                 Sprite draggedSprite = (Sprite)draggedObject;
                 KeyFrame<SpriteKeyFrameData> newSpriteKeyFrame = new KeyFrame<SpriteKeyFrameData>();
                 newSpriteKeyFrame.data.sprite = draggedSprite;
-                newSpriteKeyFrame.time = attack.spriteKeyFrames[attack.spriteKeyFrames.Count - 1].time + 0.1f;
+                if (attack.spriteKeyFrames.Count != 0)
+                    newSpriteKeyFrame.frame = attack.spriteKeyFrames[attack.spriteKeyFrames.Count - 1].frame + 1;
+                else
+                    newSpriteKeyFrame.frame = 0;
                 attack.spriteKeyFrames.Add(newSpriteKeyFrame);
                 Event.current.Use();
 
@@ -243,8 +246,8 @@ public class AttackEditor : UnityEditor.Editor
 
             KeyFrame<PosKeyFrameData> posKeyFrame = attack.posKeyFrames[i];
             int index = i + posKeyPositionIndexOffset + posKeyAfterControlIndexOffset + posKeyBeforeControlIndexOffset + spriteKeyIndexOffset + posTimelineIndexOffset;
-            float x = posKeyFrame.time / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
-            Vector2 pos = new Vector2(x, data.timelineHeight + data.posTimelineOffset);
+            float keyFramePosX = (float)posKeyFrame.frame / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
+            Vector2 pos = new Vector2(keyFramePosX, data.timelineHeight + data.posTimelineOffset);
 
             Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? data.selectedKeyFrameColor : data.posKeyFrameColor);
             CreateDotHandleCap(index, pos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
@@ -253,9 +256,9 @@ public class AttackEditor : UnityEditor.Editor
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
                 lastSelectedPosKeyFrame = posKeyFrame;
-                Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
-                posKeyFrame.time += move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration();
-                posKeyFrame.time = Mathf.Clamp(posKeyFrame.time, 0, float.MaxValue);
+                Vector2 move = (Vector2)SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - pos;
+                posKeyFrame.frame += Mathf.FloorToInt(move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration());
+                posKeyFrame.frame = Mathf.Clamp(posKeyFrame.frame, 0, int.MaxValue);
             }
 
         }
@@ -269,8 +272,8 @@ public class AttackEditor : UnityEditor.Editor
 
             KeyFrame<SpriteKeyFrameData> spriteKeyFrame = attack.spriteKeyFrames[i];
             int index = i + posKeyPositionIndexOffset + posKeyAfterControlIndexOffset + posKeyBeforeControlIndexOffset + spriteKeyIndexOffset + posTimelineIndexOffset + spriteTimelineIndexOffset;
-            float x = spriteKeyFrame.time / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
-            Vector2 pos = new Vector2(x, data.timelineHeight + data.spriteTimelineOffset);
+            float keyFramePosX = (float)spriteKeyFrame.frame / (float)attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
+            Vector2 pos = new Vector2(keyFramePosX, data.timelineHeight + data.spriteTimelineOffset);
 
             if (Event.current.type == EventType.Repaint)
             {
@@ -315,11 +318,12 @@ public class AttackEditor : UnityEditor.Editor
             {
                 lastSelectedSpriteKeyFrame = spriteKeyFrame;
 
-               
-
-                Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
-                spriteKeyFrame.time += move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration();
-                spriteKeyFrame.time = Mathf.Clamp(spriteKeyFrame.time, 0, float.MaxValue);
+                float mouseWorldPosX = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition).x;
+                
+                float timelinePercent = (mouseWorldPosX - data.timelineBeginX) / (data.timelineEndX - data.timelineBeginX);
+                spriteKeyFrame.frame = (int)(timelinePercent * attack.GetTotalDuration());
+                spriteKeyFrame.frame = Mathf.Clamp(spriteKeyFrame.frame, 0, int.MaxValue);
+                Debug.Log("Timeline percent is: " + timelinePercent);
             }
 
             
@@ -335,10 +339,10 @@ public class AttackEditor : UnityEditor.Editor
 
             KeyFrame<HitboxKeyFrameData> hitboxKeyFrame = attack.hitboxKeyFrames[i];
             int index = 2 * i + posKeyPositionIndexOffset + posKeyAfterControlIndexOffset + posKeyBeforeControlIndexOffset + spriteKeyIndexOffset + posTimelineIndexOffset + spriteTimelineIndexOffset + hitboxTimelineIndexOffset;
-            float x = hitboxKeyFrame.time / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
+            float keyFramePosX = (float)hitboxKeyFrame.frame / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
 
             // Start point
-            Vector2 pos1 = new Vector2(x, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
+            Vector2 pos1 = new Vector2(keyFramePosX, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
 
             Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? data.selectedKeyFrameColor : data.hitboxColor);
             CreateDotHandleCap(index, pos1, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
@@ -346,17 +350,17 @@ public class AttackEditor : UnityEditor.Editor
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
                 lastSelectedHitboxKeyFrame = hitboxKeyFrame;
-                Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
-                hitboxKeyFrame.time += move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration();
-                hitboxKeyFrame.time = Mathf.Clamp(hitboxKeyFrame.time, 0, float.MaxValue);
+                Vector2 move = (Vector2)SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - pos1;
+                hitboxKeyFrame.frame += (int)(move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration());
+                hitboxKeyFrame.frame = Mathf.Clamp(hitboxKeyFrame.frame, 0, int.MaxValue);
             }
 
             //End point
             index++;
 
-            x = (hitboxKeyFrame.time + hitboxKeyFrame.data.length) / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
+            keyFramePosX = (hitboxKeyFrame.frame + hitboxKeyFrame.data.length) / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
 
-            Vector2 pos2 = new Vector2(x, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
+            Vector2 pos2 = new Vector2(keyFramePosX, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
 
             Handles.color = new Color(1, 1, 1, 0.5f) * (nearestHandle == index ? data.selectedKeyFrameColor : data.hitboxColor);
             CreateDotHandleCap(index, pos2, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
@@ -364,9 +368,9 @@ public class AttackEditor : UnityEditor.Editor
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
                 lastSelectedHitboxKeyFrame = hitboxKeyFrame;
-                Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
-                hitboxKeyFrame.data.length += move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration();
-                hitboxKeyFrame.data.length = Mathf.Clamp(hitboxKeyFrame.data.length, 0, float.MaxValue);
+                Vector2 move = (Vector2)SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - pos2;
+                hitboxKeyFrame.data.length += (int)(move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration());
+                hitboxKeyFrame.data.length = Mathf.Clamp(hitboxKeyFrame.data.length, 0, int.MaxValue);
             }
 
             Handles.color = data.hitboxColor;
@@ -384,7 +388,7 @@ public class AttackEditor : UnityEditor.Editor
         {
 
             KeyFrame<SpriteKeyFrameData> spriteKeyFrame = attack.spriteKeyFrames[i];
-            Vector3 spritePos = attack.GetPosAtTime(dummy, spriteKeyFrame.time, Vector3.zero);
+            Vector3 spritePos = attack.GetPosAtFrame(dummy, spriteKeyFrame.frame, Vector3.zero);
             int index = i + posKeyPositionIndexOffset + posKeyBeforeControlIndexOffset + posKeyAfterControlIndexOffset + spriteKeyIndexOffset;
 
 
@@ -431,26 +435,48 @@ public class AttackEditor : UnityEditor.Editor
             {
                 lastSelectedSpriteKeyFrame = spriteKeyFrame;
 
+                Vector2 mouseWorldPos =  SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Vector2.Scale(new Vector2(1, -1),Event.current.mousePosition)
+                     + new Vector2(0, SceneView.GetAllSceneCameras()[0].pixelHeight));
+                Handles.DrawSolidDisc(mouseWorldPos, Vector3.back, 1);
+                float minSqrDistance = float.MaxValue;
+                int bestFrame = -1;
+                for (int frame = 0; frame < attack.GetTotalDuration(); frame++)
+                    {
+                        Vector2 potentialNewPos = attack.GetPosAtFrame(dummy, frame, Vector2.zero);
+                        float sqrDistance = (mouseWorldPos - potentialNewPos).sqrMagnitude;
+
+                        Handles.DrawLine(mouseWorldPos, potentialNewPos);
+                        if (sqrDistance < minSqrDistance) {
+                            bestFrame = frame;
+                            minSqrDistance = sqrDistance;
+                        }
+                    }
+
+                Handles.DrawLine(mouseWorldPos, attack.GetPosAtFrame(dummy,bestFrame,Vector3.zero), 5);
                 if (i != 0 && (Event.current.type == EventType.MouseDrag && Event.current.button == 0))
                 {
+                    
 
 
-                    Vector2 move = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
-                    move.y *= -1;
+                    if (bestFrame != -1) {
+                        spriteKeyFrame.frame = bestFrame;
+                    }
+                    // Vector2 move =  - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
+                    // move.y *= -1;
 
-                    Vector2 velocity = attack.GetVelocityAtTime(dummy, spriteKeyFrame.time);
-                    if (velocity.x == 0) velocity.x = 0.0001f;
+                    // Vector2 velocity = attack.GetVelocityAtFrame(dummy, spriteKeyFrame.frame);
+                    // if (velocity.x == 0) velocity.x = 0.0001f;
 
-                    float slope = velocity.y / velocity.x;
+                    // float slope = velocity.y / velocity.x;
 
-                    Vector2 projectedMove = new Vector2((slope * move.y + move.x) / (slope * slope + 1), (slope * slope * move.y + slope * move.x) / (slope * slope + 1));
+                    // Vector2 projectedMove = new Vector2((slope * move.y + move.x) / (slope * slope + 1), (slope * slope * move.y + slope * move.x) / (slope * slope + 1));
 
-                    float direction = Vector2.Dot(velocity.normalized, projectedMove.normalized);
-                    float timeChange = direction * (projectedMove / velocity).magnitude;
+                    // float direction = Vector2.Dot(velocity.normalized, projectedMove.normalized);
+                    // float timeChange = direction * (projectedMove / velocity).magnitude;
 
-                    Debug.Log(projectedMove);
+                    // Debug.Log(projectedMove);
 
-                    spriteKeyFrame.time += timeChange;
+                    // spriteKeyFrame.frame += timeChange;
                 }
 
 
@@ -461,27 +487,27 @@ public class AttackEditor : UnityEditor.Editor
    
 
     private void DrawSpeedIndicators() {
-        float time = 0;
-        float maxTime = attack.GetTotalDuration();
+        int frame = 0;
+        int maxFrame = attack.GetTotalDuration();
         Handles.color = data.speedIndicatorColor;
-        while (time < maxTime)
+        while (frame < maxFrame)
         {
-            Vector2 pos = attack.GetPosAtTime(dummy, time, Vector3.zero);
-            Vector2 normalizedVelocity = attack.GetVelocityAtTime(dummy, time).normalized;
+            Vector2 pos = attack.GetPosAtFrame(dummy, frame, Vector3.zero);
+            Vector2 normalizedVelocity = attack.GetVelocityAtFrame(dummy, frame).normalized;
             Vector2 perpendicular = new Vector2(normalizedVelocity.y, -normalizedVelocity.x);
             Vector2 p1 = pos + perpendicular * data.speedIndicatorWidth;
             Vector2 p2 = pos - perpendicular * data.speedIndicatorWidth;
 
             Handles.DrawLine(p1, p2, 0.1f);
-            time += data.speedIndicatorSpacing;
+            frame ++;
         }
     }
 
     void DrawPosCreator(int windowID)
     {
         // Layout elements for editing the value
-        GUILayout.Label("Current Value: " + keyFrameCreationTime);
-        keyFrameCreationTime = EditorGUILayout.FloatField(keyFrameCreationTime, GUILayout.Width(100));
+        GUILayout.Label("Current Value: " + keyFrameCreationFrame);
+        keyFrameCreationFrame = EditorGUILayout.IntField(keyFrameCreationFrame, GUILayout.Width(100));
 
         // Button to confirm and close window
         if (GUILayout.Button("Create keyframe"))
@@ -502,7 +528,7 @@ public class AttackEditor : UnityEditor.Editor
     {
         // Layout elements for editing the value
         GUILayout.Label("Current Value: " + hitboxFrameCreationTime);
-        keyFrameCreationTime = EditorGUILayout.FloatField(hitboxFrameCreationTime, GUILayout.Width(100));
+        keyFrameCreationFrame = EditorGUILayout.IntField(hitboxFrameCreationTime, GUILayout.Width(100));
 
         // Button to confirm and close window
         if (GUILayout.Button("Create keyframe"))
@@ -561,18 +587,18 @@ public class AttackEditor : UnityEditor.Editor
             int index = 11 * i + posKeyPositionIndexOffset + posKeyAfterControlIndexOffset + posKeyBeforeControlIndexOffset + spriteKeyIndexOffset + hitboxKeyIndexOffset;
             KeyFrame<HitboxKeyFrameData> hitboxKeyFrame = attack.hitboxKeyFrames[i];
 
-            Vector2 currentAttackPos = attack.GetPosAtTime(dummy, hitboxKeyFrame.time, Vector2.zero);
+            Vector2 currentAttackPos = attack.GetPosAtFrame(dummy, hitboxKeyFrame.frame, Vector2.zero);
 
             float handleSize = 0.03f;
 
             // Draw the rectangle
             Handles.color = data.hitboxColor; // Example color
             Handles.DrawWireCube(hitboxKeyFrame.data.rect.position + hitboxKeyFrame.data.rect.size * 0.5f + currentAttackPos, hitboxKeyFrame.data.rect.size); // Use half size and center for drawing
-            float timeStep = 0;
+            int timeStep = 0;
             while (data.shouldDrawSecondaryHitboxes && timeStep < hitboxKeyFrame.data.length)
             {
-                timeStep += Time.fixedDeltaTime; // increment by the fixed update step size
-                Vector2 currentPos = attack.GetPosAtTime(dummy, hitboxKeyFrame.time + timeStep, Vector2.zero);
+                timeStep++; // increment by one frame
+                Vector2 currentPos = attack.GetPosAtFrame(dummy, hitboxKeyFrame.frame + timeStep, Vector2.zero);
                 Handles.DrawWireCube(hitboxKeyFrame.data.rect.position + hitboxKeyFrame.data.rect.size * 0.5f + currentPos, hitboxKeyFrame.data.rect.size); // Use half size and center for drawing
 
             }
@@ -733,28 +759,30 @@ public class AttackEditor : UnityEditor.Editor
                 lastSelectedHitboxKeyFrame = hitboxKeyFrame;
                 if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
                 {
-                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
-                    Vector2 velocity = attack.GetVelocityAtTime(dummy, hitboxKeyFrame.time);
-                    if (velocity.x == 0) velocity.x = 0.0001f;
 
-                    float slope = velocity.y / velocity.x;
+                    Vector2 mouseWorldPos = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition);
+                    float minSqrDistance = float.MaxValue;
+                    int bestFrame = -1;
+                    for (int frame = 0; frame < attack.GetTotalDuration(); frame++)
+                    {
+                        Vector2 potentialNewPos = attack.GetPosAtFrame(dummy, frame, Vector2.zero);
+                        float sqrDistance = (mouseWorldPos - potentialNewPos).sqrMagnitude;
+                        if (sqrDistance < minSqrDistance) {
+                            bestFrame = frame;
+                            minSqrDistance = sqrDistance;
+                        }
+                    }
 
-                    Vector2 projectedMove = new Vector2((slope * move.y + move.x) / (slope * slope + 1), (slope * slope * move.y + slope * move.x) / (slope * slope + 1));
-
-                    float direction = Mathf.Sign(Vector2.Dot(velocity.normalized, projectedMove.normalized));
-                    float speed = velocity.magnitude;
-                    float timeChange = direction * projectedMove.magnitude / (speed);
-
-                    Debug.Log(projectedMove);
-
-                    hitboxKeyFrame.time += timeChange;
+                    if (bestFrame != -1) {
+                        hitboxKeyFrame.frame = bestFrame;
+                    }
                 }
             }
             index++;
 
             // Second Time handle
             Handles.color = nearestHandle == index ? data.selectedKeyFrameColor : data.hitboxColor;
-            handlePos = attack.GetPosAtTime(dummy, hitboxKeyFrame.time + hitboxKeyFrame.data.length, Vector2.zero);
+            handlePos = attack.GetPosAtFrame(dummy, hitboxKeyFrame.frame + hitboxKeyFrame.data.length, Vector2.zero);
 
             CreateDotHandleCap(index, handlePos, Quaternion.LookRotation(Vector3.right, Vector3.up), 0.1f, Event.current.type);
 
@@ -763,20 +791,23 @@ public class AttackEditor : UnityEditor.Editor
                 lastSelectedHitboxKeyFrame = hitboxKeyFrame;
                 if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
                 {
-                    Vector2 move = Vector2.Scale(new Vector2(1, -1), (SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition)));
-                    Vector2 velocity = attack.GetVelocityAtTime(dummy, hitboxKeyFrame.time + hitboxKeyFrame.data.length);
-                    if (velocity.x == 0) velocity.x = 0.0001f;
+                    Vector2 mouseWorldPos = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition);
+                    float minSqrDistance = float.MaxValue;
+                    int bestFrame = -1;
+                    for (int frame = 0; frame < attack.GetTotalDuration(); frame++)
+                    {
+                        Vector2 potentialNewPos = attack.GetPosAtFrame(dummy, frame, Vector2.zero);
+                        float sqrDistance = (mouseWorldPos - potentialNewPos).sqrMagnitude;
+                        if (sqrDistance < minSqrDistance) {
+                            bestFrame = frame;
+                            minSqrDistance = sqrDistance;
+                        }
+                    }
 
-                    float slope = velocity.y / velocity.x;
+                    if (bestFrame != -1) {
+                        hitboxKeyFrame.data.length = bestFrame;
+                    }
 
-                    Vector2 projectedMove = new Vector2((slope * move.y + move.x) / (slope * slope + 1), (slope * slope * move.y + slope * move.x) / (slope * slope + 1));
-
-                    float direction = Vector2.Dot(velocity.normalized, projectedMove.normalized);
-                    float timeChange = direction * (projectedMove / velocity / velocity).magnitude;
-
-                    Debug.Log(projectedMove);
-
-                    hitboxKeyFrame.data.length += timeChange;
                 }
             }
             index++;
@@ -864,86 +895,86 @@ public class AttackEditor : UnityEditor.Editor
 
         EditorGUI.BeginChangeCheck(); // Start checking for changes
 
-        float newTime = EditorGUILayout.FloatField("Time: " + posKeyFrame.time, posKeyFrame.time);
-        newTime = Mathf.Clamp(newTime, 0.001f, float.MaxValue);
+        int newFrame = EditorGUILayout.IntField("Frame: " + posKeyFrame.frame, posKeyFrame.frame);
+        newFrame = Mathf.Clamp(newFrame, 1, int.MaxValue);
         if (posKeyFrameIndex != 0) // Make first frame uneditable
         {
-            float previousPosKeyFrameTime = attack.posKeyFrames[posKeyFrameIndex - 1].time;
-            if (previousPosKeyFrameTime < newTime)
+            int previousPosKeyFrameTime = attack.posKeyFrames[posKeyFrameIndex - 1].frame;
+            if (previousPosKeyFrameTime < newFrame)
             {
                 for (int i = 0; i < attack.spriteKeyFrames.Count; i++)
                 {
                     KeyFrame<SpriteKeyFrameData> spriteKeyFrame = attack.spriteKeyFrames[i];
-                    if (spriteKeyFrame.time > previousPosKeyFrameTime && spriteKeyFrame.time < posKeyFrame.time)
+                    if (spriteKeyFrame.frame > previousPosKeyFrameTime && spriteKeyFrame.frame < posKeyFrame.frame)
                     {
-                        float spriteTimePercentage = (spriteKeyFrame.time - previousPosKeyFrameTime) / (posKeyFrame.time - previousPosKeyFrameTime);
-                        float newSpriteTime = spriteTimePercentage * (newTime - previousPosKeyFrameTime) + previousPosKeyFrameTime;
-                        spriteKeyFrame.time = newSpriteTime;
+                        float spriteTimePercentage = (spriteKeyFrame.frame - previousPosKeyFrameTime) / (posKeyFrame.frame - previousPosKeyFrameTime);
+                        int newSpriteTime = (int)spriteTimePercentage * (newFrame - previousPosKeyFrameTime) + previousPosKeyFrameTime;
+                        //spriteKeyFrame.frame = newSpriteTime;
                     }
                 }
 
                 for (int i = 0; i < attack.hitboxKeyFrames.Count; i++)
                 {
                     KeyFrame<HitboxKeyFrameData> hitboxKeyFrame = attack.hitboxKeyFrames[i];
-                    if (hitboxKeyFrame.time > previousPosKeyFrameTime && hitboxKeyFrame.time < posKeyFrame.time)
+                    if (hitboxKeyFrame.frame > previousPosKeyFrameTime && hitboxKeyFrame.frame < posKeyFrame.frame)
                     {
                         //Start time
-                        float hitboxTimeStartPercentage = (hitboxKeyFrame.time - previousPosKeyFrameTime) / (posKeyFrame.time - previousPosKeyFrameTime);
-                        float newHitboxStartTime = hitboxTimeStartPercentage * (newTime - previousPosKeyFrameTime) + previousPosKeyFrameTime;
-                        hitboxKeyFrame.time = newHitboxStartTime;
+                        float hitboxTimeStartPercentage = (hitboxKeyFrame.frame - previousPosKeyFrameTime) / (posKeyFrame.frame - previousPosKeyFrameTime);
+                        int newHitboxStartTime = (int)hitboxTimeStartPercentage * (newFrame - previousPosKeyFrameTime) + previousPosKeyFrameTime;
+                        hitboxKeyFrame.frame = newHitboxStartTime;
 
                         //End time / length
-                        float hitboxTimeEndPercentage = (hitboxKeyFrame.time + hitboxKeyFrame.data.length - previousPosKeyFrameTime) / (posKeyFrame.time - previousPosKeyFrameTime);
-                        float newHitboxEndTime = hitboxTimeEndPercentage * (newTime - previousPosKeyFrameTime) + previousPosKeyFrameTime;
-                        hitboxKeyFrame.data.length = newHitboxEndTime - hitboxKeyFrame.time;
+                        float hitboxTimeEndPercentage = (hitboxKeyFrame.frame + hitboxKeyFrame.data.length - previousPosKeyFrameTime) / (posKeyFrame.frame - previousPosKeyFrameTime);
+                        int newHitboxEndTime = (int)hitboxTimeEndPercentage * (newFrame - previousPosKeyFrameTime) + previousPosKeyFrameTime;
+                        hitboxKeyFrame.data.length = newHitboxEndTime - hitboxKeyFrame.frame;
                     }
                 }
             }
 
             if (attack.posKeyFrames.Count > posKeyFrameIndex + 1)
             {
-                float nextPosKeyFrameTime = attack.posKeyFrames[posKeyFrameIndex + 1].time;
-                if (nextPosKeyFrameTime > newTime)
+                int nextPosKeyFrameTime = attack.posKeyFrames[posKeyFrameIndex + 1].frame;
+                if (nextPosKeyFrameTime > newFrame)
                 {
                     for (int i = 0; i < attack.spriteKeyFrames.Count; i++)
                     {
                         KeyFrame<SpriteKeyFrameData> spriteKeyFrame = attack.spriteKeyFrames[i];
-                        if (spriteKeyFrame.time < nextPosKeyFrameTime && spriteKeyFrame.time > posKeyFrame.time)
+                        if (spriteKeyFrame.frame < nextPosKeyFrameTime && spriteKeyFrame.frame > posKeyFrame.frame)
                         {
-                            float spriteTimePercentage = (spriteKeyFrame.time - posKeyFrame.time) / (nextPosKeyFrameTime - posKeyFrame.time);
-                            float newSpriteTime = spriteTimePercentage * (nextPosKeyFrameTime - newTime) + newTime;
+                            float spriteTimePercentage = (spriteKeyFrame.frame - posKeyFrame.frame) / (nextPosKeyFrameTime - posKeyFrame.frame);
+                            int newSpriteTime = (int)spriteTimePercentage * (nextPosKeyFrameTime - newFrame) + newFrame;
                             Debug.Log(newSpriteTime);
-                            spriteKeyFrame.time = newSpriteTime;
+                            //spriteKeyFrame.frame = newSpriteTime;
                         }
                     }
 
                     for (int i = 0; i < attack.hitboxKeyFrames.Count; i++)
                     {
                         KeyFrame<HitboxKeyFrameData> hitboxKeyFrame = attack.hitboxKeyFrames[i];
-                        if (hitboxKeyFrame.time < nextPosKeyFrameTime && hitboxKeyFrame.time > posKeyFrame.time)
+                        if (hitboxKeyFrame.frame < nextPosKeyFrameTime && hitboxKeyFrame.frame > posKeyFrame.frame)
                         {
                             //Start time
-                            float hitboxTimeStartPercentage = (hitboxKeyFrame.time - posKeyFrame.time) / (nextPosKeyFrameTime - posKeyFrame.time );
-                            float newHitboxStartTime = hitboxTimeStartPercentage * (nextPosKeyFrameTime - newTime) + posKeyFrame.time;
-                            hitboxKeyFrame.time = newHitboxStartTime;
+                            float hitboxTimeStartPercentage = (hitboxKeyFrame.frame - posKeyFrame.frame) / (nextPosKeyFrameTime - posKeyFrame.frame );
+                            int newHitboxStartTime = (int)hitboxTimeStartPercentage * (nextPosKeyFrameTime - newFrame) + posKeyFrame.frame;
+                            hitboxKeyFrame.frame = newHitboxStartTime;
 
                             //End time / length
-                            float hitboxTimeEndPercentage = ((hitboxKeyFrame.time + hitboxKeyFrame.data.length) - posKeyFrame.time) / (nextPosKeyFrameTime - posKeyFrame.time);
-                            float newHitboxEndTime = hitboxTimeEndPercentage * (nextPosKeyFrameTime - newTime ) + posKeyFrame.time;
-                            hitboxKeyFrame.data.length = newHitboxEndTime - hitboxKeyFrame.time;
+                            float hitboxTimeEndPercentage = ((hitboxKeyFrame.frame + hitboxKeyFrame.data.length) - posKeyFrame.frame) / (nextPosKeyFrameTime - posKeyFrame.frame);
+                            int newHitboxEndTime = (int)hitboxTimeEndPercentage * (nextPosKeyFrameTime - newFrame ) + posKeyFrame.frame;
+                            hitboxKeyFrame.data.length = newHitboxEndTime - hitboxKeyFrame.frame;
                         }
                     }
                 }
 
             }
 
-            posKeyFrame.time = newTime; 
+            posKeyFrame.frame = newFrame; 
         }
 
         if (EditorGUI.EndChangeCheck()) // Check if the value changed
         {
             Undo.RecordObject(target, "Modified Time Value");
-            posKeyFrame.time = Mathf.Clamp(posKeyFrame.time, 0, float.MaxValue);
+            posKeyFrame.frame = Mathf.Clamp(posKeyFrame.frame, 0, int.MaxValue);
         }
         
 
@@ -967,7 +998,7 @@ public class AttackEditor : UnityEditor.Editor
             {
                 KeyFrame<PosKeyFrameData> posKeyFrame1 = attack.posKeyFrames[i];
                 KeyFrame<PosKeyFrameData> posKeyFrame2 = attack.posKeyFrames[i + 1];
-                if (posKeyFrame1.time > posKeyFrame2.time) {
+                if (posKeyFrame1.frame > posKeyFrame2.frame) {
                     attack.posKeyFrames[i] = posKeyFrame2;
                     attack.posKeyFrames[i + 1] = posKeyFrame1;
                     swapped = true;
@@ -986,7 +1017,7 @@ public class AttackEditor : UnityEditor.Editor
             {
                 KeyFrame<SpriteKeyFrameData> spriteKeyFrame1 = attack.spriteKeyFrames[i];
                 KeyFrame<SpriteKeyFrameData> spriteKeyFrame2 = attack.spriteKeyFrames[i + 1];
-                if (spriteKeyFrame1.time > spriteKeyFrame2.time)
+                if (spriteKeyFrame1.frame > spriteKeyFrame2.frame)
                 {
                     attack.spriteKeyFrames[i] = spriteKeyFrame2;
                     attack.spriteKeyFrames[i + 1] = spriteKeyFrame1;
@@ -1030,7 +1061,7 @@ public class AttackEditor : UnityEditor.Editor
 
     private void OpenPosFrameCreationWindow()
     {
-        keyFrameCreationTime = attack.posKeyFrames[attack.posKeyFrames.Count - 1].time + 0.1f;
+        keyFrameCreationFrame = attack.posKeyFrames[attack.posKeyFrames.Count - 1].frame + 1;
         posFrameCreationWindow = true;
     }
 
@@ -1049,8 +1080,8 @@ public class AttackEditor : UnityEditor.Editor
             + new Vector2(0, SceneView.GetAllSceneCameras()[0].pixelHeight));
         Vector2 afterBezierControlPoint = pos + Vector2.right;
         Vector2 beforeBezierControlPoint = pos + Vector2.left;
-        float time = keyFrameCreationTime;
-        attack.AddPosKeyFrame(time, pos, beforeBezierControlPoint, afterBezierControlPoint);
+        int frame = keyFrameCreationFrame;
+        attack.AddPosKeyFrame(frame, pos, beforeBezierControlPoint, afterBezierControlPoint);
     }
 
     private void CreateNewHitboxKeyFrame()
@@ -1065,7 +1096,7 @@ public class AttackEditor : UnityEditor.Editor
     {
         if (lastSelectedPosKeyFrame != null) { attack.posKeyFrames.Remove(lastSelectedPosKeyFrame); }
         else { Debug.Log("Keyframe is null :("); }
-        Debug.Log("Trying to delete " + lastSelectedPosKeyFrame.time);
+        Debug.Log("Trying to delete " + lastSelectedPosKeyFrame.frame);
         
     }
     private void DeleteSelectedSpriteKeyFrame()

@@ -46,7 +46,6 @@ public class PlayerAttackState : PlayerState
     {
         base.FixedUpdate();
         HandlePos();
-        Debug.Log("fixed update");
 
     }
 
@@ -54,7 +53,7 @@ public class PlayerAttackState : PlayerState
     {
         foreach (KeyFrame<SpriteKeyFrameData> spriteKeyFrame in currentAttack.spriteKeyFrames)
         {
-            if (spriteKeyFrame.time > attackTime)
+            if (spriteKeyFrame.frame > attackTime)
             {
                 Sprite sprite = currentAttack.spriteKeyFrames[currentAttack.spriteKeyFrames.IndexOf(spriteKeyFrame) - 1].data.sprite;
                 player.spriteRenderer.sprite = sprite;
@@ -65,36 +64,12 @@ public class PlayerAttackState : PlayerState
 
     private void HandlePos()
     {
-        foreach (KeyFrame<PosKeyFrameData> posKeyFrame2 in currentAttack.posKeyFrames)
-        {
-            if (posKeyFrame2.time > attackTime)
-            {
-                KeyFrame<PosKeyFrameData> posKeyFrame1 = currentAttack.posKeyFrames[currentAttack.posKeyFrames.IndexOf(posKeyFrame2) - 1]; // Get the next target keyframe
-                float time1 = posKeyFrame1.time; // Keyframe last passed time
-                float time2 = posKeyFrame2.time; // Next keyframe time
-
-                float t = (attackTime - time1) / (time2 - time1); // Calculate t (percentage along path between pos1 and 2)
-                float tSquared = Mathf.Pow(t, 2);
-                float tCubed = Mathf.Pow(t, 3);
-
-
-                // Get Bezier control points
-                Vector2 point1 = posKeyFrame1.data.pos;
-                Vector2 point2 = posKeyFrame1.data.afterBezierControlPoint;
-                Vector2 point3 = posKeyFrame2.data.beforeBezierControlPoint;
-                Vector2 point4 = posKeyFrame2.data.pos;
-
-                // Calculate position on bezier curve
-                Vector2 pos = point1 * (-tCubed + 3 * tSquared - 3 * t + 1) +
-                    point2 * (3 * tCubed - 6 * tSquared + 3 * t) +
-                    point3 * (-3 * tCubed + 3 * tSquared) +
-                    point4 * (tCubed);
-
-
-                // Set Pos
-                player.transform.position = startPosition + new Vector3(player.transform.localScale.x * pos.x, pos.y, 0);
-                break;
-            }
+        player.transform.position = currentAttack.GetPosAtFrame(player, (int)(attackTime / Time.fixedDeltaTime), startPosition);
+        float lastposFrameTime = currentAttack.posKeyFrames.Count;
+        if (attackTime > lastposFrameTime) {
+            Vector2 newVelocity = currentAttack.GetVelocityAtFrame(player, lastposFrameTime);
+            player.rb2D.velocity = newVelocity;
+            Debug.Log("new velocity: " + newVelocity);
         }
     }
 
@@ -104,7 +79,7 @@ public class PlayerAttackState : PlayerState
         foreach (KeyFrame<HitboxKeyFrameData> hitboxKeyFrame in currentAttack.hitboxKeyFrames)
         {
             Debug.Log(hitboxKeyFrame.data);
-            if (hitboxKeyFrame.time < attackTime && hitboxKeyFrame.time + hitboxKeyFrame.data.length > attackTime)
+            if (hitboxKeyFrame.frame < attackTime && hitboxKeyFrame.frame + hitboxKeyFrame.data.length > attackTime)
             {
                 Vector2 hitboxPos = (Vector2)player.transform.position + Vector2.Scale(hitboxKeyFrame.data.rect.position, Vector2.right * player.transform.localScale.x);
                 Vector2 hitboxSize = hitboxKeyFrame.data.rect.size;
@@ -138,7 +113,7 @@ public class PlayerAttackState : PlayerState
 
         foreach (KeyFrame<HitboxKeyFrameData> hitboxKeyFrame in currentAttack.hitboxKeyFrames)
         {
-            if (hitboxKeyFrame.time < attackTime && hitboxKeyFrame.time + hitboxKeyFrame.data.length > attackTime)
+            if (hitboxKeyFrame.frame < attackTime && hitboxKeyFrame.frame + hitboxKeyFrame.data.length > attackTime)
             {
                 Vector3 hitboxPos = player.transform.position + new Vector3(player.transform.localScale.x * hitboxKeyFrame.data.rect.position.x, hitboxKeyFrame.data.rect.position.y, 0);
                 Vector3 hitboxSize = new Vector3(hitboxKeyFrame.data.rect.size.x, hitboxKeyFrame.data.rect.size.y, 0);
@@ -180,6 +155,7 @@ public class PlayerAttackState : PlayerState
     public override void EndAttack()
     {
         base.EndAttack();
+
         if (player.isOnGound)
         {
             player.ChangeState(player.idleState);

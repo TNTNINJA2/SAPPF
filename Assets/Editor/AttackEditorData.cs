@@ -19,7 +19,7 @@ public class AttackEditorData : ScriptableObject
     public bool shouldDrawSpeedIndicators = true;
     public bool shouldDrawHitboxes = true;
     public bool shouldDrawSecondaryHitboxes = true;
-    public float speedIndicatorSpacing = 0.1f;
+    public float speedIndicatorSpacing = 0.2f;
     public float speedIndicatorWidth = 0.1f;
     public float timelineHeight = -2;
     public float timelineBeginX = 0;

@@ -55,8 +55,10 @@ Material:
     m_Floats: []
     m_Colors:
     - _Color: {r: 0.45579004, g: 0.8867924, b: 0.26352793, a: 0}
+    - _PantsColor: {r: 0.05242075, g: 0.18381846, b: 0.5849056, a: 1}
     - _PlayerColor: {r: 0.1745283, g: 1, b: 0.415978, a: 1}
     - _PlayerOutline: {r: 0, g: 0, b: 0, a: 0}
+    - _ShirtColor: {r: 0.5902309, g: 0.7176471, b: 0.05098039, a: 1}
     - _StreakColor1: {r: 0, g: 1, b: 0.9725938, a: 0}
     - _StreakColor2: {r: 1, g: 0, b: 0.63888884, a: 0}
   m_BuildTextureStacks: []
