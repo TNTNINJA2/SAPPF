@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1224dab0da1273549ad4ae18ae87d19e, type: 3}
+  m_Name: AttackData
+  m_EditorClassIdentifier: 
+  frames:
+  - position: {x: 1.6502404, y: 0.43174225}
+    sprite: {fileID: 1219377672, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - serializedVersion: 2
+      x: 1.5761888
+      y: 0.92812794
+      width: 0.15571809
+      height: 0.11520487
+    - serializedVersion: 2
+      x: 2.0600646
+      y: 0.88481635
+      width: 0.33001518
+      height: 0.71348387
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - position: {x: 2.491669, y: 0.022164285}
+    sprite: {fileID: 1219377672, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - serializedVersion: 2
+      x: 2.440732
+      y: 0.19208038
+      width: 1.1244297
+      height: 1.4083772
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - position: {x: 1.7252845, y: -1.0736318}
+    sprite: {fileID: 1219377672, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - position: {x: 0.17434692, y: -0.7847662}
+    sprite: {fileID: 1219377672, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - position: {x: -0.5218482, y: -0.54120994}
+    sprite: {fileID: -1236136963, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0.55
+      y: 1.34
+      width: 0.51
+      height: 0.64
+  - position: {x: -0.79481816, y: 0.55716324}
+    sprite: {fileID: -1236136963, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0.55
+      y: 1.34
+      width: 0.51
+      height: 0.64
+  - position: {x: 0.5083289, y: 0.7039272}
+    sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - position: {x: 0.95199573, y: 2.3555844}
+    sprite: {fileID: -1901617874, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0.4
+      y: 3
+      width: 0
+      height: 0
+  - position: {x: -0.29582262, y: 2.602872}
+    sprite: {fileID: -231151290, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0.7
+      height: 0.47
+    hurtbox:
+      serializedVersion: 2
+      x: 0.4
+      y: 0
+      width: 0.55
+      height: 0.56

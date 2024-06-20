@@ -17,6 +17,51 @@ MonoBehaviour:
   launchDirection: {x: 0, y: 0}
   ATTACK_ANIMATION_NAME: 
   playerController: {fileID: 0}
-  spriteKeyFrames: []
-  hitboxKeyFrames: []
-  posKeyFrames: []
+  spriteKeyFrames:
+  - frame: 0
+    data:
+      sprite: {fileID: -935565734, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - frame: 1
+    data:
+      sprite: {fileID: 1219377672, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - frame: 3
+    data:
+      sprite: {fileID: -1236136963, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - frame: 12
+    data:
+      sprite: {fileID: -320526188, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - frame: 16
+    data:
+      sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - frame: 24
+    data:
+      sprite: {fileID: -1901617874, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - frame: 29
+    data:
+      sprite: {fileID: -231151290, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  hitboxKeyFrames:
+  - frame: 15
+    data:
+      rect:
+        serializedVersion: 2
+        x: 0.1146577
+        y: -0.26900506
+        width: 0.34111732
+        height: 0.8967675
+      length: 8
+  posKeyFrames:
+  - frame: 0
+    data:
+      pos: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: -0.27728438, y: -0.015251875}
+      afterBezierControlPoint: {x: 0, y: 0}
+  - frame: 11
+    data:
+      pos: {x: 0.0032192469, y: -0.0059121847}
+      beforeBezierControlPoint: {x: -0.024992228, y: -0.0059121847}
+      afterBezierControlPoint: {x: 0.8887749, y: 0.019519687}
+  - frame: 31
+    data:
+      pos: {x: 1.2811346, y: 2.71363}
+      beforeBezierControlPoint: {x: 1.6417537, y: 2.2431345}
+      afterBezierControlPoint: {x: 2.2811346, y: 2.71363}

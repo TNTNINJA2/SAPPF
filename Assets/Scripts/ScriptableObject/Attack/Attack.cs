@@ -8,7 +8,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 [CreateAssetMenu(fileName = "Attack", menuName = "ScriptableObjects/Attacks/Attack", order = 1)]
 
@@ -98,7 +97,7 @@ public class Attack : ScriptableObject
         HandleHitboxes(player, frame, startPosition);
     }
 
-    private void HandleSprites(PlayerController player, float frame, Vector3 startPosition)
+    private void HandleSprites(PlayerController player, int frame, Vector3 startPosition)
     {
         foreach (KeyFrame<SpriteKeyFrameData> spriteKeyFrame in spriteKeyFrames)
         {
@@ -117,6 +116,13 @@ public class Attack : ScriptableObject
     private void HandlePos(PlayerController player, int frame, Vector3 startPosition)
     {
         player.transform.position = GetPosAtFrame(player, frame, startPosition);
+        int lastposFrameTime = posKeyFrames.Count;
+        if (frame > lastposFrameTime)
+        {
+            Vector2 newVelocity = GetVelocityAtFrame(player, lastposFrameTime);
+            player.rb2D.velocity = newVelocity;
+            Debug.Log("new velocity: " + newVelocity);
+        }
     }
 
     public Vector3 GetPosAtFrame(PlayerController player, int frame, Vector3 startPosition)

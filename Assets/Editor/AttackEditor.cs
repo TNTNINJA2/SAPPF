@@ -256,9 +256,9 @@ public class AttackEditor : UnityEditor.Editor
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
                 lastSelectedPosKeyFrame = posKeyFrame;
-                Vector2 move = (Vector2)SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - pos;
-                posKeyFrame.frame += Mathf.FloorToInt(move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration());
-                posKeyFrame.frame = Mathf.Clamp(posKeyFrame.frame, 0, int.MaxValue);
+
+                float mouseWorldPosX = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition).x;
+                posKeyFrame.frame = CalculateFrameFromTimelinePos(mouseWorldPosX);
             }
 
         }
@@ -272,7 +272,7 @@ public class AttackEditor : UnityEditor.Editor
 
             KeyFrame<SpriteKeyFrameData> spriteKeyFrame = attack.spriteKeyFrames[i];
             int index = i + posKeyPositionIndexOffset + posKeyAfterControlIndexOffset + posKeyBeforeControlIndexOffset + spriteKeyIndexOffset + posTimelineIndexOffset + spriteTimelineIndexOffset;
-            float keyFramePosX = (float)spriteKeyFrame.frame / (float)attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
+            float keyFramePosX = CalculateTimelineXFromFrame(spriteKeyFrame.frame);
             Vector2 pos = new Vector2(keyFramePosX, data.timelineHeight + data.spriteTimelineOffset);
 
             if (Event.current.type == EventType.Repaint)
@@ -319,11 +319,8 @@ public class AttackEditor : UnityEditor.Editor
                 lastSelectedSpriteKeyFrame = spriteKeyFrame;
 
                 float mouseWorldPosX = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition).x;
-                
-                float timelinePercent = (mouseWorldPosX - data.timelineBeginX) / (data.timelineEndX - data.timelineBeginX);
-                spriteKeyFrame.frame = (int)(timelinePercent * attack.GetTotalDuration());
-                spriteKeyFrame.frame = Mathf.Clamp(spriteKeyFrame.frame, 0, int.MaxValue);
-                Debug.Log("Timeline percent is: " + timelinePercent);
+
+                spriteKeyFrame.frame = CalculateFrameFromTimelinePos(mouseWorldPosX);
             }
 
             
@@ -339,7 +336,7 @@ public class AttackEditor : UnityEditor.Editor
 
             KeyFrame<HitboxKeyFrameData> hitboxKeyFrame = attack.hitboxKeyFrames[i];
             int index = 2 * i + posKeyPositionIndexOffset + posKeyAfterControlIndexOffset + posKeyBeforeControlIndexOffset + spriteKeyIndexOffset + posTimelineIndexOffset + spriteTimelineIndexOffset + hitboxTimelineIndexOffset;
-            float keyFramePosX = (float)hitboxKeyFrame.frame / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
+            float keyFramePosX = CalculateTimelineXFromFrame(hitboxKeyFrame.frame);
 
             // Start point
             Vector2 pos1 = new Vector2(keyFramePosX, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
@@ -350,15 +347,20 @@ public class AttackEditor : UnityEditor.Editor
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
                 lastSelectedHitboxKeyFrame = hitboxKeyFrame;
-                Vector2 move = (Vector2)SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - pos1;
-                hitboxKeyFrame.frame += (int)(move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration());
-                hitboxKeyFrame.frame = Mathf.Clamp(hitboxKeyFrame.frame, 0, int.MaxValue);
+
+                float mouseWorldPosX = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Vector2.Scale(new Vector2(1, -1), Event.current.mousePosition)
+                        + new Vector2(0, SceneView.GetAllSceneCameras()[0].pixelHeight)).x;
+
+                hitboxKeyFrame.frame = CalculateFrameFromTimelinePos(mouseWorldPosX);
+
+
+
             }
 
             //End point
             index++;
 
-            keyFramePosX = (hitboxKeyFrame.frame + hitboxKeyFrame.data.length) / attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
+            keyFramePosX = CalculateTimelineXFromFrame(hitboxKeyFrame.frame + hitboxKeyFrame.data.length);
 
             Vector2 pos2 = new Vector2(keyFramePosX, data.timelineHeight + data.hitboxTimelineOffset + i * data.hitboxTimelineVerticalSpacing);
 
@@ -368,9 +370,12 @@ public class AttackEditor : UnityEditor.Editor
             if (nearestHandle == index && Event.current.type == EventType.MouseDrag && Event.current.button == 0)
             {
                 lastSelectedHitboxKeyFrame = hitboxKeyFrame;
-                Vector2 move = (Vector2)SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition) - pos2;
-                hitboxKeyFrame.data.length += (int)(move.x / (data.timelineEndX - data.timelineBeginX) * attack.GetTotalDuration());
-                hitboxKeyFrame.data.length = Mathf.Clamp(hitboxKeyFrame.data.length, 0, int.MaxValue);
+
+                float mouseWorldPosX = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Vector2.Scale(new Vector2(1, -1), Event.current.mousePosition)
+                        + new Vector2(0, SceneView.GetAllSceneCameras()[0].pixelHeight)).x;
+
+                hitboxKeyFrame.data.length =  Mathf.Clamp(CalculateFrameFromTimelinePos(mouseWorldPosX) - hitboxKeyFrame.frame,
+                    0, attack.GetTotalDuration() - hitboxKeyFrame.frame);
             }
 
             Handles.color = data.hitboxColor;
@@ -378,6 +383,19 @@ public class AttackEditor : UnityEditor.Editor
 
         }
 
+    }
+
+    private int CalculateFrameFromTimelinePos(float mouseWorldPosX)
+    {
+        float timelinePercent = (mouseWorldPosX - data.timelineBeginX) / (data.timelineEndX - data.timelineBeginX);
+        int frame = (int)(timelinePercent * attack.GetTotalDuration());
+        frame = Mathf.Clamp(frame, 0, int.MaxValue);
+        return frame;
+    }
+
+    private float CalculateTimelineXFromFrame(int frame)
+    {
+        return (float)frame / (float)attack.GetTotalDuration() * (data.timelineEndX - data.timelineBeginX) + data.timelineBeginX;
     }
 
 
@@ -435,31 +453,16 @@ public class AttackEditor : UnityEditor.Editor
             {
                 lastSelectedSpriteKeyFrame = spriteKeyFrame;
 
-                Vector2 mouseWorldPos =  SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Vector2.Scale(new Vector2(1, -1),Event.current.mousePosition)
-                     + new Vector2(0, SceneView.GetAllSceneCameras()[0].pixelHeight));
-                Handles.DrawSolidDisc(mouseWorldPos, Vector3.back, 1);
-                float minSqrDistance = float.MaxValue;
-                int bestFrame = -1;
-                for (int frame = 0; frame < attack.GetTotalDuration(); frame++)
-                    {
-                        Vector2 potentialNewPos = attack.GetPosAtFrame(dummy, frame, Vector2.zero);
-                        float sqrDistance = (mouseWorldPos - potentialNewPos).sqrMagnitude;
+                
 
-                        Handles.DrawLine(mouseWorldPos, potentialNewPos);
-                        if (sqrDistance < minSqrDistance) {
-                            bestFrame = frame;
-                            minSqrDistance = sqrDistance;
-                        }
-                    }
-
-                Handles.DrawLine(mouseWorldPos, attack.GetPosAtFrame(dummy,bestFrame,Vector3.zero), 5);
                 if (i != 0 && (Event.current.type == EventType.MouseDrag && Event.current.button == 0))
                 {
-                    
+                    Vector2 mouseWorldPos = GetMouseWorldPos();
 
+                    int nearestFrame = FindNearestFrameToPos(mouseWorldPos);
 
-                    if (bestFrame != -1) {
-                        spriteKeyFrame.frame = bestFrame;
+                    if (nearestFrame != -1) {
+                        spriteKeyFrame.frame = nearestFrame;
                     }
                     // Vector2 move =  - SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(previousMousePosition);
                     // move.y *= -1;
@@ -482,6 +485,30 @@ public class AttackEditor : UnityEditor.Editor
 
             }
         }
+    }
+
+    private Vector2 GetMouseWorldPos() {
+        return SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Vector2.Scale(new Vector2(1, -1), Event.current.mousePosition)
+                        + new Vector2(0, SceneView.GetAllSceneCameras()[0].pixelHeight));
+    }
+
+        private int FindNearestFrameToPos(Vector2 worldPos)
+    {
+        float minSqrDistance = float.MaxValue;
+        int bestFrame = -1;
+        for (int frame = 0; frame < attack.GetTotalDuration(); frame++)
+        {
+            Vector2 potentialNewPos = attack.GetPosAtFrame(dummy, frame, Vector2.zero);
+            float sqrDistance = (worldPos - potentialNewPos).sqrMagnitude;
+
+            Handles.DrawLine(worldPos, potentialNewPos);
+            if (sqrDistance < minSqrDistance)
+            {
+                bestFrame = frame;
+                minSqrDistance = sqrDistance;
+            }
+        }
+        return bestFrame;
     }
 
    
@@ -760,18 +787,8 @@ public class AttackEditor : UnityEditor.Editor
                 if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
                 {
 
-                    Vector2 mouseWorldPos = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition);
-                    float minSqrDistance = float.MaxValue;
-                    int bestFrame = -1;
-                    for (int frame = 0; frame < attack.GetTotalDuration(); frame++)
-                    {
-                        Vector2 potentialNewPos = attack.GetPosAtFrame(dummy, frame, Vector2.zero);
-                        float sqrDistance = (mouseWorldPos - potentialNewPos).sqrMagnitude;
-                        if (sqrDistance < minSqrDistance) {
-                            bestFrame = frame;
-                            minSqrDistance = sqrDistance;
-                        }
-                    }
+                    Vector2 mouseWorldPos = GetMouseWorldPos();
+                    int bestFrame = FindNearestFrameToPos(mouseWorldPos);
 
                     if (bestFrame != -1) {
                         hitboxKeyFrame.frame = bestFrame;
@@ -791,21 +808,12 @@ public class AttackEditor : UnityEditor.Editor
                 lastSelectedHitboxKeyFrame = hitboxKeyFrame;
                 if (Event.current.type == EventType.MouseDrag && Event.current.button == 0)
                 {
-                    Vector2 mouseWorldPos = SceneView.GetAllSceneCameras()[0].ScreenToWorldPoint(Event.current.mousePosition);
-                    float minSqrDistance = float.MaxValue;
-                    int bestFrame = -1;
-                    for (int frame = 0; frame < attack.GetTotalDuration(); frame++)
-                    {
-                        Vector2 potentialNewPos = attack.GetPosAtFrame(dummy, frame, Vector2.zero);
-                        float sqrDistance = (mouseWorldPos - potentialNewPos).sqrMagnitude;
-                        if (sqrDistance < minSqrDistance) {
-                            bestFrame = frame;
-                            minSqrDistance = sqrDistance;
-                        }
-                    }
+                    Vector2 mouseWorldPos = GetMouseWorldPos();
+                    int bestFrame = FindNearestFrameToPos(mouseWorldPos);
 
-                    if (bestFrame != -1) {
-                        hitboxKeyFrame.data.length = bestFrame;
+                    if (bestFrame != -1)
+                    {
+                        hitboxKeyFrame.data.length = bestFrame - hitboxKeyFrame.frame;
                     }
 
                 }
@@ -921,12 +929,12 @@ public class AttackEditor : UnityEditor.Editor
                         //Start time
                         float hitboxTimeStartPercentage = (hitboxKeyFrame.frame - previousPosKeyFrameTime) / (posKeyFrame.frame - previousPosKeyFrameTime);
                         int newHitboxStartTime = (int)hitboxTimeStartPercentage * (newFrame - previousPosKeyFrameTime) + previousPosKeyFrameTime;
-                        hitboxKeyFrame.frame = newHitboxStartTime;
+                        //hitboxKeyFrame.frame = newHitboxStartTime;
 
                         //End time / length
                         float hitboxTimeEndPercentage = (hitboxKeyFrame.frame + hitboxKeyFrame.data.length - previousPosKeyFrameTime) / (posKeyFrame.frame - previousPosKeyFrameTime);
                         int newHitboxEndTime = (int)hitboxTimeEndPercentage * (newFrame - previousPosKeyFrameTime) + previousPosKeyFrameTime;
-                        hitboxKeyFrame.data.length = newHitboxEndTime - hitboxKeyFrame.frame;
+                        //hitboxKeyFrame.data.length = newHitboxEndTime - hitboxKeyFrame.frame;
                     }
                 }
             }
@@ -956,12 +964,12 @@ public class AttackEditor : UnityEditor.Editor
                             //Start time
                             float hitboxTimeStartPercentage = (hitboxKeyFrame.frame - posKeyFrame.frame) / (nextPosKeyFrameTime - posKeyFrame.frame );
                             int newHitboxStartTime = (int)hitboxTimeStartPercentage * (nextPosKeyFrameTime - newFrame) + posKeyFrame.frame;
-                            hitboxKeyFrame.frame = newHitboxStartTime;
+                            //hitboxKeyFrame.frame = newHitboxStartTime;
 
                             //End time / length
                             float hitboxTimeEndPercentage = ((hitboxKeyFrame.frame + hitboxKeyFrame.data.length) - posKeyFrame.frame) / (nextPosKeyFrameTime - posKeyFrame.frame);
                             int newHitboxEndTime = (int)hitboxTimeEndPercentage * (nextPosKeyFrameTime - newFrame ) + posKeyFrame.frame;
-                            hitboxKeyFrame.data.length = newHitboxEndTime - hitboxKeyFrame.frame;
+                            //hitboxKeyFrame.data.length = newHitboxEndTime - hitboxKeyFrame.frame;
                         }
                     }
                 }
@@ -1061,7 +1069,11 @@ public class AttackEditor : UnityEditor.Editor
 
     private void OpenPosFrameCreationWindow()
     {
-        keyFrameCreationFrame = attack.posKeyFrames[attack.posKeyFrames.Count - 1].frame + 1;
+        if (attack.posKeyFrames.Count > 0)
+        {
+            keyFrameCreationFrame = attack.posKeyFrames[attack.posKeyFrames.Count - 1].frame + 1;
+        }
+        else keyFrameCreationFrame = 0;
         posFrameCreationWindow = true;
     }
 

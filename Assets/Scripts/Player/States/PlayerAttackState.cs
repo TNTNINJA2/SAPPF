@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Matchmaker.Models;
@@ -8,10 +9,12 @@ using UnityEngine;
 
 public class PlayerAttackState : PlayerState
 {
-    private Attack currentAttack;
     private Vector3 startPosition;
-    private float attackTime;
-    private float attackLength;
+    public AttackSegmentData currentAttack;
+    public int currentFrame;
+    public float frameDuration = 0.02f; // 50 FPS
+
+    private bool hasHit = false;
 
     public PlayerAttackState(PlayerController playerController, Animator animator) : base(playerController, animator)
     {
@@ -26,18 +29,6 @@ public class PlayerAttackState : PlayerState
 
     public override void Update()
     {
-        attackTime = Time.time - startTime;
-
-        HandleSprites();
-        HandleHitboxes();
-
-
-
-        // End attack if past attack length
-        if (attackTime >= attackLength)
-        {
-            player.EndAttack();
-        }
 
 
     }
@@ -45,83 +36,72 @@ public class PlayerAttackState : PlayerState
     public override void FixedUpdate()
     {
         base.FixedUpdate();
-        HandlePos();
-
-    }
-
-    private void HandleSprites()
-    {
-        foreach (KeyFrame<SpriteKeyFrameData> spriteKeyFrame in currentAttack.spriteKeyFrames)
+        if (currentAttack != null)
         {
-            if (spriteKeyFrame.frame > attackTime)
+            // Ensure frame index is within bounds
+            currentFrame = Mathf.Clamp(currentFrame, 0, currentAttack.frames.Count - 1);
+
+            AttackFrame frameData = currentAttack.frames[currentFrame];
+
+            // Update sprite and position
+            player.spriteRenderer.sprite = frameData.sprite;
+            player.transform.position = (Vector2)startPosition + Vector2.Scale(frameData.position, new Vector2(player.transform.localScale.x, 1)); 
+
+            // TODO: Hitboxes
+            // ...
+
+            currentFrame++;
+
+            // Check for attack end and reset
+            if (currentFrame >= currentAttack.frames.Count)
             {
-                Sprite sprite = currentAttack.spriteKeyFrames[currentAttack.spriteKeyFrames.IndexOf(spriteKeyFrame) - 1].data.sprite;
-                player.spriteRenderer.sprite = sprite;
-                break;
-            }
-        }
-    }
-
-    private void HandlePos()
-    {
-        player.transform.position = currentAttack.GetPosAtFrame(player, (int)(attackTime / Time.fixedDeltaTime), startPosition);
-        float lastposFrameTime = currentAttack.posKeyFrames.Count;
-        if (attackTime > lastposFrameTime) {
-            Vector2 newVelocity = currentAttack.GetVelocityAtFrame(player, lastposFrameTime);
-            player.rb2D.velocity = newVelocity;
-            Debug.Log("new velocity: " + newVelocity);
-        }
-    }
-
-    private void HandleHitboxes()
-    {
-        // For each hitbox, if its between its start and end time, boxcast at its pos and size and handle hits
-        foreach (KeyFrame<HitboxKeyFrameData> hitboxKeyFrame in currentAttack.hitboxKeyFrames)
-        {
-            Debug.Log(hitboxKeyFrame.data);
-            if (hitboxKeyFrame.frame < attackTime && hitboxKeyFrame.frame + hitboxKeyFrame.data.length > attackTime)
-            {
-                Vector2 hitboxPos = (Vector2)player.transform.position + Vector2.Scale(hitboxKeyFrame.data.rect.position, Vector2.right * player.transform.localScale.x);
-                Vector2 hitboxSize = hitboxKeyFrame.data.rect.size;
-                Debug.Log("hitboxPos: " + hitboxPos);
-                Debug.Log("hitboxSize: " + hitboxSize);
-
-                RaycastHit2D[] hits = Physics2D.BoxCastAll(hitboxPos, hitboxSize, 0, Vector2.zero, 0, player.playerLayer);
-                foreach (RaycastHit2D hit in hits)
+                if (!TryTransitionToNewAttackSegment())
                 {
-                    Debug.Log(hit);
-                    if (hit.collider != null && hit.collider.gameObject.TryGetComponent(out PlayerController playerHit))
-                    {
-                        if (playerHit != player) OnHit(playerHit);
-                        Debug.Log("Hit a player");
-                    }
+                    currentAttack = null;
+                    currentFrame = 0;
+
+                    player.EndAttack();
                 }
             }
         }
     }
 
-    public override void OnDrawGizmos()
+    public bool TryTransitionToNewAttackSegment()
     {
-        base.OnDrawGizmos();
-
-        DrawHitboxGizmos();
-    }
-
-    private void DrawHitboxGizmos()
-    {
-        // For each hitbox, if its between its start and end time, draw the hitbox
-
-        foreach (KeyFrame<HitboxKeyFrameData> hitboxKeyFrame in currentAttack.hitboxKeyFrames)
+        bool hasTransitioned = false;
+        foreach (AttackTransition transition in currentAttack.transitions)
         {
-            if (hitboxKeyFrame.frame < attackTime && hitboxKeyFrame.frame + hitboxKeyFrame.data.length > attackTime)
+            if (transition.condition == AttackTransitionCondition.hit && hasHit)
             {
-                Vector3 hitboxPos = player.transform.position + new Vector3(player.transform.localScale.x * hitboxKeyFrame.data.rect.position.x, hitboxKeyFrame.data.rect.position.y, 0);
-                Vector3 hitboxSize = new Vector3(hitboxKeyFrame.data.rect.size.x, hitboxKeyFrame.data.rect.size.y, 0);
-                Gizmos.color = Color.red;
-                Gizmos.DrawCube(hitboxPos, hitboxSize);
+                EnterAttackSegment(transition.nextAttackSegment);
+                hasTransitioned = true;
+                break;
+            }
+            if (transition.condition == AttackTransitionCondition.missed && !hasHit)
+            {
+                EnterAttackSegment(transition.nextAttackSegment);
+                hasTransitioned = true;
+                break;
+            }
+            if (transition.condition == AttackTransitionCondition.grounded && player.isOnGound)
+            {
+                EnterAttackSegment(transition.nextAttackSegment);
+                hasTransitioned = true;
+                break;
+            }
+            if (transition.condition == AttackTransitionCondition.inAir && !player.isOnGound)
+            {
+                EnterAttackSegment(transition.nextAttackSegment);
+                hasTransitioned = true;
+                break;
             }
         }
+        return hasTransitioned;
     }
+
+ 
+
+
 
     public override void LeftClickPerformed()
     {
@@ -148,6 +128,7 @@ public class PlayerAttackState : PlayerState
     public override void ExitState()
     {
         base.ExitState();
+        currentFrame = 0;
         player.animationPositionController.ResetTargetPos();
 
     }
@@ -170,15 +151,15 @@ public class PlayerAttackState : PlayerState
     {
         if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Up || player.roundedInputDirection == PlayerController.RoundedInputDirection.None)
         {
-            StartAttack(player.data.upLeft);
+            EnterAttackSegment(player.data.upLeft);
         }
         else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Down)
         {
-            StartAttack(player.data.downLeft);
+            EnterAttackSegment(player.data.downLeft);
         }
         else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Side)
         {
-            StartAttack(player.data.sideLeft);
+            EnterAttackSegment(player.data.sideLeft);
         }
     }
 
@@ -186,15 +167,15 @@ public class PlayerAttackState : PlayerState
     {
         if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Up || player.roundedInputDirection == PlayerController.RoundedInputDirection.None)
         {
-            StartAttack(player.data.upRight);
+            EnterAttackSegment(player.data.upRight);
         }
         else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Down)
         {
-            StartAttack(player.data.downRight);
+            EnterAttackSegment(player.data.downRight);
         }
         else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Side)
         {
-            StartAttack(player.data.sideRight);
+            EnterAttackSegment(player.data.sideRight);
         }
     }
 
@@ -202,15 +183,15 @@ public class PlayerAttackState : PlayerState
     {
         if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Up || player.roundedInputDirection == PlayerController.RoundedInputDirection.None)
         {
-            StartAttack(player.data.upAirLeft);
+            EnterAttackSegment(player.data.upAirLeft);
         }
         else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Down)
         {
-            StartAttack(player.data.downAirLeft);
+            EnterAttackSegment(player.data.downAirLeft);
         }
         else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Side)
         {
-            StartAttack(player.data.sideAirLeft);
+            EnterAttackSegment(player.data.sideAirLeft);
         }
     }
 
@@ -218,30 +199,29 @@ public class PlayerAttackState : PlayerState
     {
         if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Up || player.roundedInputDirection == PlayerController.RoundedInputDirection.None)
         {
-            StartAttack(player.data.upAirRight);
+            EnterAttackSegment(player.data.upAirRight);
         }
         else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Down)
         {
-            StartAttack(player.data.downAirRight);
+            EnterAttackSegment(player.data.downAirRight);
         }
         else if (player.roundedInputDirection == PlayerController.RoundedInputDirection.Side)
         {
-            StartAttack(player.data.sideAirRight);
+            EnterAttackSegment(player.data.sideAirRight);
         }
     }
 
-    private void StartAttack(Attack newAttack)
+    private void EnterAttackSegment(AttackSegmentData newAttack)
     {
         currentAttack = newAttack;
         player.activeAttack = newAttack;
-        player.activeAttack.StartAttack(player);
-        attackLength = currentAttack.GetTotalDuration();
+        currentFrame = 0;
+        
     }
 
     public override void OnHit(PlayerController target)
     {
         base.OnHit(target);
-        player.activeAttack.OnHit(player, target);
     }
 
     public override bool ShouldTryJump()

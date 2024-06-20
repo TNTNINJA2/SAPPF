@@ -6,19 +6,19 @@ using UnityEngine;
 
 public class PlayerData : ScriptableObject
 {
-    [SerializeField] public Attack upLeft;
-    [SerializeField] public Attack downLeft;
-    [SerializeField] public Attack sideLeft;
-    [SerializeField] public Attack upAirLeft;
-    [SerializeField] public Attack downAirLeft;
-    [SerializeField] public Attack sideAirLeft;
+    [SerializeField] public AttackSegmentData upLeft;
+    [SerializeField] public AttackSegmentData downLeft;
+    [SerializeField] public AttackSegmentData sideLeft;
+    [SerializeField] public AttackSegmentData upAirLeft;
+    [SerializeField] public AttackSegmentData downAirLeft;
+    [SerializeField] public AttackSegmentData sideAirLeft;
 
-    [SerializeField] public Attack upRight;
-    [SerializeField] public Attack downRight;
-    [SerializeField] public Attack sideRight;
-    [SerializeField] public Attack upAirRight;
-    [SerializeField] public Attack downAirRight;
-    [SerializeField] public Attack sideAirRight;
+    [SerializeField] public AttackSegmentData upRight;
+    [SerializeField] public AttackSegmentData downRight;
+    [SerializeField] public AttackSegmentData sideRight;
+    [SerializeField] public AttackSegmentData upAirRight;
+    [SerializeField] public AttackSegmentData downAirRight;
+    [SerializeField] public AttackSegmentData sideAirRight;
 
 
     [SerializeField] public float movementThreshold = 0.1f;

@@ -89,7 +89,7 @@ public class PlayerController : NetworkBehaviour
     public PlayerWallClingState wallClingState;
 
 
-    public Attack activeAttack;
+    public AttackSegmentData activeAttack;
 
     #endregion
 

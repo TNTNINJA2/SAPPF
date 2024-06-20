@@ -6,11 +6,23 @@ using UnityEngine;
 
 public class AttackEditorData : ScriptableObject
 { 
-    public Color posKeyFrameColor = Color.red;
+    public bool showAllFrames = true;
+    public int numberOfSurroundingFrames = 2;
+    public float unselectedFade = 0.7f;
+    public float hitboxOpacity = 0.4f;
+    public Color unselectedColor
+    {
+        get
+        {
+            return new Color(unselectedFade,unselectedFade,unselectedFade,unselectedFade);
+        }
+    }
+
+    public Color posKeyFrameColor = Color.white;
     public Color bezierControlColor = Color.Lerp(Color.red, Color.yellow, 0.5f);
     public Color spriteKeyFrameColor = Color.cyan;
     public Color speedIndicatorColor = Color.yellow;
-    public Color hitboxColor = Color.blue;
+    public Color hitboxColor = Color.red;
     public Color timelineColor = Color.green;
     public Color selectedKeyFrameColor = Color.magenta;
     public bool shouldDrawBezierControls = true;

@@ -16,3 +16,49 @@ MonoBehaviour:
   stunDuration: 2
   launchDirection: {x: 7, y: 1.5}
   ATTACK_ANIMATION_NAME: Punch
+  playerController: {fileID: 0}
+  spriteKeyFrames:
+  - frame: 0
+    data:
+      sprite: {fileID: 738799688, guid: 4688d3fdf46217649976e42cc2ee10ee, type: 3}
+  - frame: 1
+    data:
+      sprite: {fileID: 1474654530, guid: 4688d3fdf46217649976e42cc2ee10ee, type: 3}
+  - frame: 2
+    data:
+      sprite: {fileID: 631460498, guid: 4688d3fdf46217649976e42cc2ee10ee, type: 3}
+  - frame: 4
+    data:
+      sprite: {fileID: 666729229, guid: 4688d3fdf46217649976e42cc2ee10ee, type: 3}
+  - frame: 6
+    data:
+      sprite: {fileID: 1334815193, guid: 4688d3fdf46217649976e42cc2ee10ee, type: 3}
+  - frame: 7
+    data:
+      sprite: {fileID: 530104368, guid: 4688d3fdf46217649976e42cc2ee10ee, type: 3}
+  hitboxKeyFrames:
+  - frame: 6
+    data:
+      rect:
+        serializedVersion: 2
+        x: 0.10282576
+        y: -0.19585857
+        width: 0.6994396
+        height: 0.2
+      length: 3
+  posKeyFrames:
+  - frame: 0
+    data:
+      pos: {x: 0, y: 0}
+      beforeBezierControlPoint: {x: 0.53275037, y: 1.132451}
+      afterBezierControlPoint: {x: 0.2709986, y: -0.013938665}
+  - frame: 6
+    data:
+      pos: {x: 0.7521696, y: -0.012773156}
+      beforeBezierControlPoint: {x: 0.4662726, y: -0.012773156}
+      afterBezierControlPoint: {x: 1.7521696, y: -0.012773156}
+  - frame: 10
+    data:
+      pos: {x: 3.4285684, y: -0.0050401688}
+      beforeBezierControlPoint: {x: 2.4285684, y: -0.0050401688}
+      afterBezierControlPoint: {x: 4.4285707, y: -0.0050401688}

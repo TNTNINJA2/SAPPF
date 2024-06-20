@@ -59,7 +59,7 @@ Material:
     - _PlayerColor: {r: 0.1745283, g: 1, b: 0.415978, a: 1}
     - _PlayerOutline: {r: 0, g: 0, b: 0, a: 0}
     - _ShirtColor: {r: 0.5902309, g: 0.7176471, b: 0.05098039, a: 1}
-    - _StreakColor1: {r: 0, g: 1, b: 0.9725938, a: 0}
+    - _StreakColor1: {r: 0.7830189, g: 0.114498034, b: 0.72533774, a: 0}
     - _StreakColor2: {r: 1, g: 0, b: 0.63888884, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &1787768084569267953
