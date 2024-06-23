@@ -492,7 +492,7 @@ public class AttackEditor : UnityEditor.Editor
                         + new Vector2(0, SceneView.GetAllSceneCameras()[0].pixelHeight));
     }
 
-        private int FindNearestFrameToPos(Vector2 worldPos)
+    private int FindNearestFrameToPos(Vector2 worldPos)
     {
         float minSqrDistance = float.MaxValue;
         int bestFrame = -1;

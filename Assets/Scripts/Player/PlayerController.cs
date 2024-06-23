@@ -298,6 +298,12 @@ public class PlayerController : NetworkBehaviour
         if (health <= 0) Destroy(gameObject);
     }
 
+    public void Stun(float amount)
+    {
+        stunTime += amount;
+        ChangeState(stunState);
+    }
+
     #endregion
 
     private void OnLand()

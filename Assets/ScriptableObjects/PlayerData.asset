@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   upLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
-  downLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
-  sideLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
+  downLeft: {fileID: 11400000, guid: 76ca7e15cb63443c885e598338836775, type: 2}
+  sideLeft: {fileID: 11400000, guid: 76ca7e15cb63443c885e598338836775, type: 2}
   upAirLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   downAirLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   sideAirLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   upRight: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
-  downRight: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
+  downRight: {fileID: 11400000, guid: 4e6ad4ee290a6fd4b9044028c2e5c3a2, type: 2}
   sideRight: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   upAirRight: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   downAirRight: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}

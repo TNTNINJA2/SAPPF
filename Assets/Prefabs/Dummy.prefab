@@ -16,12 +16,14 @@ GameObject:
   - component: {fileID: 6547309207642369613}
   - component: {fileID: 267570677358393839}
   - component: {fileID: 8706233658372441741}
+  - component: {fileID: 8364791176276846104}
+  - component: {fileID: 7948257014318207301}
   - component: {fileID: 4542114547846512820}
   - component: {fileID: 1342300946272170042}
   - component: {fileID: 3849774264300089163}
   - component: {fileID: 2341118708519915253}
   - component: {fileID: 3726281633109637617}
-  - component: {fileID: -2417738415797181228}
+  - component: {fileID: 5289082464875863978}
   m_Layer: 7
   m_Name: Dummy
   m_TagString: Untagged
@@ -57,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1417180295
+  GlobalObjectIdHash: 2948445664
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -78,10 +80,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b93bc7f5c4919494ca983ad8c5b2da22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDummy: 1
+  isDummy: 0
   networkAnimator: {fileID: 0}
   collistionsHitbox: {fileID: 267570677358393839}
-  groundDetectionHitbox: {fileID: 267570677358393839}
+  groundDetectionHitbox: {fileID: 8706233658372441741}
+  wallDetectionHitboxFront: {fileID: 8364791176276846104}
+  wallDetectionHitboxBack: {fileID: 7948257014318207301}
   rb2D: {fileID: 6547309207642369613}
   attackHitbox: {fileID: 8252381614973913596}
   spriteRenderer: {fileID: 955274732367071491}
@@ -93,6 +97,8 @@ MonoBehaviour:
   animationPositionController: {fileID: 0}
   airJumps: 0
   stunTime: 0
+  dodgeTime: 0
+  dodgeDirection: {x: 0, y: 0}
   inputDirection: {x: 0, y: 0}
   roundedInputDirection: 0
   activeAttackType: 0
@@ -118,7 +124,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 36291efd13b6fda48a9cacb23e270f1f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -139,12 +145,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ace2bea2fb87cdb4ca679142fa882c92, type: 3}
-  m_Color: {r: 0.8392157, g: 0.6378622, b: 0.12156861, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 556c934548b28d349915e213b593083f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.64, y: 0.64}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -158,7 +164,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 284973921162056684}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 2390ab6a264705e449258dcef2ae0ed1, type: 2}
   m_CullingMode: 0
@@ -234,8 +240,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.64, y: 0.64}
-    newSize: {x: 0.64, y: 0.64}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -275,18 +281,108 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.5}
+  m_Offset: {x: -0.003797993, y: -0.48029494}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.64, y: 0.64}
-    newSize: {x: 0.64, y: 0.64}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.1}
+  m_Size: {x: 0.2911258, y: 0.06058991}
+  m_EdgeRadius: 0
+--- !u!61 &8364791176276846104
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284973921162056684}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.125, y: 0.023737878}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.25, y: 0.94814605}
+  m_EdgeRadius: 0
+--- !u!61 &7948257014318207301
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284973921162056684}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.125, y: 0.023737878}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.25, y: 0.94814605}
   m_EdgeRadius: 0
 --- !u!96 &4542114547846512820
 TrailRenderer:
@@ -488,7 +584,7 @@ MonoBehaviour:
     TriggerNameHash: 859106820
     TransitionIndex: 0
   m_Animator: {fileID: 4735154298517168032}
---- !u!114 &-2417738415797181228
+--- !u!114 &5289082464875863978
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -584,3 +680,12 @@ MonoBehaviour:
   targetLayers:
     serializedVersion: 2
     m_Bits: 128
+  nums: 
+  hitboxes: []
+  hitbox2:
+    enabled: 0
+    position: {x: 0, y: 0}
+    type: 0
+    radius: 0
+    width: 0
+    height: 0

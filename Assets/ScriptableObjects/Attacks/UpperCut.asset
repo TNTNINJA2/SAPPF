@@ -1,0 +1,366 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1224dab0da1273549ad4ae18ae87d19e, type: 3}
+  m_Name: UpperCut
+  m_EditorClassIdentifier: 
+  spritePalette:
+  - {fileID: -935565734, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - {fileID: 1219377672, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - {fileID: -1236136963, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - {fileID: -320526188, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - {fileID: -1901617874, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  - {fileID: -231151290, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+  frames:
+  - position: {x: 0, y: 0}
+    sprite: {fileID: -935565734, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: 0, y: 0}
+    sprite: {fileID: 1219377672, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: 0, y: 0}
+    sprite: {fileID: 1219377672, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: -0.005457133, y: -0.004809439}
+    sprite: {fileID: -1236136963, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: -0.005457133, y: -0.004809439}
+    sprite: {fileID: -1236136963, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: -0.005457133, y: -0.004809439}
+    sprite: {fileID: -1236136963, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: 0.12816007, y: 0.0025856197}
+    sprite: {fileID: -320526188, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.22998643, y: 0.055676997}
+    sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: 0.15957326
+        y: -0.13077843
+        width: 0.267855
+        height: 0.61845505
+      hitVector: {x: 0.37568521, y: 0.5909213}
+      isGrab: 1
+      damage: 0
+      stun: 0
+    - rect:
+        serializedVersion: 2
+        x: 0.3455844
+        y: 0.09952098
+        width: 0.26785493
+        height: 0.61845505
+      hitVector: {x: 0.14088166, y: 0.37959868}
+      isGrab: 1
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.5420838, y: 0.45513427}
+    sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: 0.15957326
+        y: -0.13077843
+        width: 0.267855
+        height: 0.61845505
+      hitVector: {x: 0.1643613, y: 0.5283069}
+      isGrab: 1
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.6883293, y: 0.74672323}
+    sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: 0.15957326
+        y: -0.13077843
+        width: 0.267855
+        height: 0.61845505
+      hitVector: {x: 0.09783369, y: 0.53222054}
+      isGrab: 1
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.7837349, y: 1.0275674}
+    sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: 0.15957326
+        y: -0.13077843
+        width: 0.267855
+        height: 0.61845505
+      hitVector: {x: 0.03521979, y: 0.5752678}
+      isGrab: 1
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.8136271, y: 1.3330079}
+    sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: 0.15957326
+        y: -0.13077843
+        width: 0.267855
+        height: 0.61845505
+      hitVector: {x: 0.027392864, y: 0.52048004}
+      isGrab: 1
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.8512553, y: 1.5754248}
+    sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: 0.15957326
+        y: -0.13077843
+        width: 0.267855
+        height: 0.61845505
+      hitVector: {x: 0.03913319, y: 0.46177948}
+      isGrab: 1
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.87343687, y: 1.776025}
+    sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: 0.15957326
+        y: -0.13077843
+        width: 0.267855
+        height: 0.61845505
+      hitVector: {x: -0.0000008940697, y: 0.4617796}
+      isGrab: 1
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.858668, y: 1.9717472}
+    sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: 0.15957326
+        y: -0.13077843
+        width: 0.267855
+        height: 0.61845505
+      hitVector: {x: 0.03130704, y: 0.17218876}
+      isGrab: 0
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.87002826, y: 2.1535063}
+    sprite: {fileID: -1901617874, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0.55
+      y: 1.34
+      width: 0.51
+      height: 0.64
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.8499344, y: 2.3156753}
+    sprite: {fileID: -1901617874, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0.55
+      y: 1.34
+      width: 0.51
+      height: 0.64
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.8304372, y: 2.4357274}
+    sprite: {fileID: -1901617874, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0.55
+      y: 1.34
+      width: 0.51
+      height: 0.64
+    pauseDuration: 0
+    controlsPosition: 1
+    isHoldFrame: 0
+  - position: {x: 0.8175433, y: 2.491222}
+    sprite: {fileID: -231151290, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0.55
+      y: 1.34
+      width: 0.51
+      height: 0.64
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: 0.77217925, y: 2.539639}
+    sprite: {fileID: -231151290, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0.55
+      y: 1.34
+      width: 0.51
+      height: 0.64
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: 0.87384194, y: 2.5758562}
+    sprite: {fileID: -231151290, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0.55
+      y: 1.34
+      width: 0.51
+      height: 0.64
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  endVelocity: {x: -0.045717895, y: 0.009874821}

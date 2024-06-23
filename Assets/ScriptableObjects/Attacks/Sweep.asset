@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1224dab0da1273549ad4ae18ae87d19e, type: 3}
+  m_Name: Sweep
+  m_EditorClassIdentifier: 
+  spritePalette:
+  - {fileID: 1394531593, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+  - {fileID: -944372889, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+  - {fileID: -1596487051, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+  - {fileID: 353150672, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+  - {fileID: -750760777, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+  - {fileID: 1998051526, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+  frames:
+  - position: {x: 0, y: 0}
+    sprite: {fileID: -944372889, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 3
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: 0, y: 0}
+    sprite: {fileID: -1596487051, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: -0.124269605
+        y: -0.64046776
+        width: 1.127988
+        height: 0.35369122
+      hitVector: {x: 0.31545466, y: 0.28677648}
+      isGrab: 1
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 1
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: 0, y: 0}
+    sprite: {fileID: 353150672, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+    hitboxes:
+    - rect:
+        serializedVersion: 2
+        x: 0.3058946
+        y: -0.038236976
+        width: 0.66914546
+        height: -0.5544348
+      hitVector: {x: 0.05735457, y: 0.15294719}
+      isGrab: 0
+      damage: 0
+      stun: 0
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 1
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: 0, y: 0}
+    sprite: {fileID: -750760777, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 3
+    controlsPosition: 0
+    isHoldFrame: 0
+  - position: {x: 0, y: 0}
+    sprite: {fileID: 1998051526, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
+    hitboxes: []
+    hurtbox:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    pauseDuration: 0
+    controlsPosition: 0
+    isHoldFrame: 0
+  endVelocity: {x: 0, y: 0}

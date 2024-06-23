@@ -11,8 +11,11 @@ public class PlayerAttackState : PlayerState
 {
     private Vector3 startPosition;
     public AttackSegmentData currentAttack;
-    public int currentFrame;
+    public int currentFrameIndex;
+    public int currentFrameStep = 0; // sub frames throughg a pause frame
     public float frameDuration = 0.02f; // 50 FPS
+
+    private AttackInput currentAttackInput = AttackInput.none;
 
     private bool hasHit = false;
 
@@ -39,32 +42,122 @@ public class PlayerAttackState : PlayerState
         if (currentAttack != null)
         {
             // Ensure frame index is within bounds
-            currentFrame = Mathf.Clamp(currentFrame, 0, currentAttack.frames.Count - 1);
+            currentFrameIndex = Mathf.Clamp(currentFrameIndex, 0, currentAttack.frames.Count - 1);
 
-            AttackFrame frameData = currentAttack.frames[currentFrame];
+            AttackFrame frame = currentAttack.frames[currentFrameIndex];
 
             // Update sprite and position
-            player.spriteRenderer.sprite = frameData.sprite;
-            player.transform.position = (Vector2)startPosition + Vector2.Scale(frameData.position, new Vector2(player.transform.localScale.x, 1)); 
+            player.spriteRenderer.sprite = frame.sprite;
 
-            // TODO: Hitboxes
-            // ...
+            UpdatePlayerPositionOrVelocity(frame);
+            
+            HandleHitboxes(frame);
+            
 
-            currentFrame++;
+
+            if (frame.pauseDuration > 1 && currentFrameStep <= frame.pauseDuration)
+            {
+                currentFrameStep++;
+            } else if (frame.isHoldFrame && (currentAttackInput == AttackInput.leftClick && player.controls.Player.LeftAttack.ReadValue<float>() == 1 ||
+                currentAttackInput == AttackInput.leftClick && player.controls.Player.RightAttack.ReadValue<float>() == 1)) {
+                // Do nothing, hold the frame
+            } else {
+                currentFrameIndex++;
+                currentFrameStep = 0;
+            }
 
             // Check for attack end and reset
-            if (currentFrame >= currentAttack.frames.Count)
+            if (currentFrameIndex >= currentAttack.frames.Count && currentFrameStep <= frame.pauseDuration)
             {
                 if (!TryTransitionToNewAttackSegment())
                 {
-                    currentAttack = null;
-                    currentFrame = 0;
-
-                    player.EndAttack();
+                    EndAttack();
                 }
             }
         }
     }
+
+    private void UpdatePlayerPositionOrVelocity(AttackFrame frame)
+    {
+        if (frame.controlsPosition)
+        {
+            player.rb2D.velocity = Vector2.zero;
+            Vector2 move = new Vector2();
+            if (currentFrameIndex == 0)
+                move = frame.position;
+            else
+                move = frame.position - currentAttack.frames[currentFrameIndex - 1].position;
+
+            move *= player.transform.localScale;
+
+            player.transform.position += (Vector3)move;
+
+            if (currentFrameIndex == currentAttack.frames.Count - 1)
+            {
+                // Set velocity based on previousframe
+                AttackFrame frame1 = currentAttack.frames[currentFrameIndex - 1];
+                AttackFrame frame2 = frame;
+
+                Vector2 difference = frame2.position - frame1.position;
+                difference /= Mathf.Max(1, frame2.pauseDuration);
+                difference /= Time.fixedDeltaTime;
+                player.rb2D.velocity = difference * player.transform.localScale;
+            }
+        }
+        if (!frame.controlsPosition && currentFrameIndex > 1 && currentAttack.frames[currentFrameIndex - 1].controlsPosition) // if previous frame controled position, but current doesn't or if it is the last frame
+        {
+            // Set velocity based on last two frames
+            AttackFrame frame1 = currentAttack.frames[currentFrameIndex - 2];
+            AttackFrame frame2 = currentAttack.frames[currentFrameIndex - 1];
+
+            Vector2 difference = frame2.position - frame1.position;
+            difference /= Mathf.Max(1, frame2.pauseDuration);
+            difference /= Time.fixedDeltaTime;
+            player.rb2D.velocity = difference * player.transform.localScale;
+
+        }
+    }
+
+    private void HandleHitboxes(AttackFrame frame)
+    {
+        foreach (Hitbox hitbox in frame.hitboxes)
+        {
+            Rect rect = hitbox.rect;
+            rect.center *= (Vector2)player.transform.localScale;
+            rect.center += (Vector2)player.transform.position;
+            
+
+
+            Collider2D[] hitColliders = Physics2D.OverlapAreaAll(rect.min, rect.max, LayerMask.GetMask("Player")); // Filter by layer
+            foreach (Collider2D hitCollider in hitColliders)
+            {
+                if (hitCollider.gameObject != player.gameObject) // Exclude self
+                {
+                    PlayerController otherPlayer = hitCollider.GetComponent<PlayerController>();
+                    if (otherPlayer != null)
+                    {
+                        // Hit!
+                        HitPlayer(otherPlayer, hitbox);
+                    }
+                }
+            }
+        }
+    }
+
+    private void HitPlayer(PlayerController target, Hitbox hitbox)
+    {
+        if (hitbox.isGrab)
+        {
+            target.transform.position = (hitbox.hitVector + hitbox.rect.center) * player.transform.localScale + (Vector2)player.transform.position;
+        } else
+        {
+            target.rb2D.velocity = hitbox.hitVector * player.transform.localScale / Time.fixedDeltaTime;
+        }
+        target.TakeDamage(hitbox.damage);
+        target.Stun(hitbox.stun);
+        Debug.Log("Hit " + target);
+    }
+
 
     public bool TryTransitionToNewAttackSegment()
     {
@@ -112,6 +205,7 @@ public class PlayerAttackState : PlayerState
         {
             LeftAirAttack();
         }
+        currentAttackInput = AttackInput.leftClick;
     }
 
     public override void RightClickPerformed()
@@ -123,12 +217,14 @@ public class PlayerAttackState : PlayerState
         {
             RightAirAttack();
         }
+        currentAttackInput = AttackInput.rightClick;
+
     }
 
     public override void ExitState()
     {
         base.ExitState();
-        currentFrame = 0;
+        currentFrameIndex = 0;
         player.animationPositionController.ResetTargetPos();
 
     }
@@ -137,6 +233,11 @@ public class PlayerAttackState : PlayerState
     {
         base.EndAttack();
 
+        //player.rb2D.velocity = Vector2.Scale(currentAttack.endVelocity / Time.fixedDeltaTime, new Vector2(player.transform.localScale.x, 1));
+
+        currentAttack = null;
+        currentFrameIndex = 0;
+
         if (player.isOnGound)
         {
             player.ChangeState(player.idleState);
@@ -144,6 +245,7 @@ public class PlayerAttackState : PlayerState
         {
             player.ChangeState(player.aerialState);
         }
+        currentAttackInput = AttackInput.none;
     }
 
 
@@ -215,14 +317,29 @@ public class PlayerAttackState : PlayerState
     {
         currentAttack = newAttack;
         player.activeAttack = newAttack;
-        currentFrame = 0;
+        currentFrameIndex = 0;
         
     }
 
-    public override void OnHit(PlayerController target)
+    public override void OnDrawGizmos()
     {
-        base.OnHit(target);
+        base.OnDrawGizmos();
+        DrawHitboxGizmos();
     }
+
+    private void DrawHitboxGizmos()
+    {
+        foreach (Hitbox hitbox in currentAttack.frames[currentFrameIndex].hitboxes)
+        {
+            Rect rect = hitbox.rect;
+            rect.center *= (Vector2)player.transform.localScale;
+            rect.center += (Vector2)player.transform.position;
+            Gizmos.color = Color.red;
+            Gizmos.DrawCube(rect.center, rect.size);
+        } 
+    }
+
+
 
     public override bool ShouldTryJump()
     {
@@ -232,6 +349,13 @@ public class PlayerAttackState : PlayerState
     public override bool ShouldTryAttack()
     {
         return false;
+    }
+
+    public enum AttackInput
+    {
+        none,
+        rightClick,
+        leftClick
     }
 }
 
