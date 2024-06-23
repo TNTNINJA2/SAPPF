@@ -464,8 +464,9 @@ public class AttackDataEditor : UnityEditor.Editor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("frames").GetArrayElementAtIndex(selectedFrameIndex).FindPropertyRelative("hitboxes"), true);
             if (GUILayout.Button("Create Hitbox")) CreateHitbox();
             EditorGUILayout.PropertyField(serializedObject.FindProperty("frames").GetArrayElementAtIndex(selectedFrameIndex).FindPropertyRelative("hurtbox"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("frames").GetArrayElementAtIndex(selectedFrameIndex).FindPropertyRelative("transitions"));
 
-          
+
         }
         DrawSpritePalette();
 

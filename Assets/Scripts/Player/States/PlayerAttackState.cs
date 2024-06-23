@@ -18,6 +18,10 @@ public class PlayerAttackState : PlayerState
     private AttackInput currentAttackInput = AttackInput.none;
 
     private bool hasHit = false;
+    public bool HasHit
+    {
+        get { return hasHit; }
+    }
 
     public PlayerAttackState(PlayerController playerController, Animator animator) : base(playerController, animator)
     {
@@ -53,7 +57,7 @@ public class PlayerAttackState : PlayerState
             
             HandleHitboxes(frame);
             
-
+            TryTransitionToNewAttackSegment(frame);
 
             if (frame.pauseDuration > 1 && currentFrameStep <= frame.pauseDuration)
             {
@@ -69,10 +73,9 @@ public class PlayerAttackState : PlayerState
             // Check for attack end and reset
             if (currentFrameIndex >= currentAttack.frames.Count && currentFrameStep <= frame.pauseDuration)
             {
-                if (!TryTransitionToNewAttackSegment())
-                {
-                    EndAttack();
-                }
+
+                EndAttack();
+                
             }
         }
     }
@@ -138,6 +141,7 @@ public class PlayerAttackState : PlayerState
                     {
                         // Hit!
                         HitPlayer(otherPlayer, hitbox);
+                        hasHit = true;
                     }
                 }
             }
@@ -159,33 +163,15 @@ public class PlayerAttackState : PlayerState
     }
 
 
-    public bool TryTransitionToNewAttackSegment()
+    public bool TryTransitionToNewAttackSegment(AttackFrame frame)
     {
         bool hasTransitioned = false;
-        foreach (AttackTransition transition in currentAttack.transitions)
+        foreach (AttackTransition transition in frame.transitions)
         {
-            if (transition.condition == AttackTransitionCondition.hit && hasHit)
+            if (transition.condition.CheckCondition(this))
             {
-                EnterAttackSegment(transition.nextAttackSegment);
                 hasTransitioned = true;
-                break;
-            }
-            if (transition.condition == AttackTransitionCondition.missed && !hasHit)
-            {
                 EnterAttackSegment(transition.nextAttackSegment);
-                hasTransitioned = true;
-                break;
-            }
-            if (transition.condition == AttackTransitionCondition.grounded && player.isOnGound)
-            {
-                EnterAttackSegment(transition.nextAttackSegment);
-                hasTransitioned = true;
-                break;
-            }
-            if (transition.condition == AttackTransitionCondition.inAir && !player.isOnGound)
-            {
-                EnterAttackSegment(transition.nextAttackSegment);
-                hasTransitioned = true;
                 break;
             }
         }
@@ -318,6 +304,7 @@ public class PlayerAttackState : PlayerState
         currentAttack = newAttack;
         player.activeAttack = newAttack;
         currentFrameIndex = 0;
+        hasHit = false;
         
     }
 

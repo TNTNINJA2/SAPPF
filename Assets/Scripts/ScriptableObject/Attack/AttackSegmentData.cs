@@ -10,7 +10,6 @@ public class AttackSegmentData : ScriptableObject
 
     public List<AttackFrame> frames;
 
-    public List<AttackTransition> transitions = new List<AttackTransition>();
 
     public Vector2 endVelocity;
 
@@ -32,21 +31,24 @@ public class AttackFrame
     public int pauseDuration;
     public bool controlsPosition = true;
     public bool isHoldFrame = false; // If attack should hold on frame while player is holding attack button
+    public List<AttackTransition> transitions = new List<AttackTransition>();
 
-    public AttackFrame(Vector2 position, Sprite sprite, List<Hitbox> hitboxes, Rect hurtbox, int pauseDuration, bool controlsPosition, bool isHoldFrame)
+
+    public AttackFrame(Vector2 position, Sprite sprite, List<Hitbox> hitboxes, Rect hurtbox, int pauseDuration, bool controlsPosition, bool isHoldFrame, List<AttackTransition> transitions)
     {
         this.position = position;
         this.sprite = sprite;
-        this.hitboxes = hitboxes.ToArray().ToList<Hitbox>(); // Make sure the list of hitboxes is separate (create a new instance with same data)
+        this.hitboxes = hitboxes.ToArray().ToList(); // Make sure the list of hitboxes is separate (create a new instance with same data)
         this.hurtbox = hurtbox;
         this.pauseDuration = pauseDuration;
         this.controlsPosition = controlsPosition;
         this.isHoldFrame = isHoldFrame;
+        this.transitions = transitions.ToArray().ToList(); // Make sure the list of hitboxes is separate (create a new instance with same data)
     }
      
     public AttackFrame Duplicate()
     {
-        AttackFrame newFrame = new AttackFrame(position, sprite, hitboxes, hurtbox, pauseDuration, controlsPosition, isHoldFrame);
+        AttackFrame newFrame = new AttackFrame(position, sprite, hitboxes, hurtbox, pauseDuration, controlsPosition, isHoldFrame, transitions);
         return newFrame;
     }
 }
@@ -61,16 +63,11 @@ public struct Hitbox
     public float stun;
 }
 
+[System.Serializable]
 public struct AttackTransition
 {
     public AttackTransitionCondition condition;
     public AttackSegmentData nextAttackSegment;
 }
 
-public enum AttackTransitionCondition
-{
-    hit,
-    missed,
-    grounded,
-    inAir
-}
+
