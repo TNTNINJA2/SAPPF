@@ -32,6 +32,7 @@ MonoBehaviour:
     pauseDuration: 3
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: -1596487051, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
     hitboxes:
@@ -51,9 +52,10 @@ MonoBehaviour:
       y: 0
       width: 0
       height: 0
-    pauseDuration: 1
+    pauseDuration: 2
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: 353150672, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
     hitboxes:
@@ -76,6 +78,7 @@ MonoBehaviour:
     pauseDuration: 1
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: -750760777, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
     hitboxes: []
@@ -88,6 +91,9 @@ MonoBehaviour:
     pauseDuration: 3
     controlsPosition: 0
     isHoldFrame: 0
+    transitions:
+    - condition: {fileID: 11400000, guid: 7b33c681b7c049b4a8b17e5896a53fee, type: 2}
+      nextAttackSegment: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   - position: {x: 0, y: 0}
     sprite: {fileID: 1998051526, guid: c6e51bae6044ca04a801b3bfd185e7dc, type: 3}
     hitboxes: []
@@ -100,4 +106,5 @@ MonoBehaviour:
     pauseDuration: 0
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   endVelocity: {x: 0, y: 0}

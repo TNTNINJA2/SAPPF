@@ -1146,6 +1146,4 @@ public class AttackEditor : UnityEditor.Editor
 
         return slicedTex;
     }
-
-
 }

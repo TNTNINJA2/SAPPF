@@ -36,6 +36,7 @@ MonoBehaviour:
     pauseDuration: 0
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: -652488960, guid: d51a6ab4a7e7642168fb9d8c48c2f474, type: 3}
     hitboxes: []
@@ -48,6 +49,7 @@ MonoBehaviour:
     pauseDuration: 0
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: 370305772, guid: d51a6ab4a7e7642168fb9d8c48c2f474, type: 3}
     hitboxes: []
@@ -60,6 +62,7 @@ MonoBehaviour:
     pauseDuration: 0
     controlsPosition: 0
     isHoldFrame: 1
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: 27599967, guid: d51a6ab4a7e7642168fb9d8c48c2f474, type: 3}
     hitboxes: []
@@ -72,6 +75,7 @@ MonoBehaviour:
     pauseDuration: 2
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: -324032193, guid: d51a6ab4a7e7642168fb9d8c48c2f474, type: 3}
     hitboxes:
@@ -94,6 +98,7 @@ MonoBehaviour:
     pauseDuration: 1
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: -298219627, guid: d51a6ab4a7e7642168fb9d8c48c2f474, type: 3}
     hitboxes:
@@ -116,6 +121,7 @@ MonoBehaviour:
     pauseDuration: 1
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: 1619314719, guid: d51a6ab4a7e7642168fb9d8c48c2f474, type: 3}
     hitboxes: []
@@ -128,6 +134,7 @@ MonoBehaviour:
     pauseDuration: 5
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: 1026012530, guid: d51a6ab4a7e7642168fb9d8c48c2f474, type: 3}
     hitboxes: []
@@ -140,6 +147,7 @@ MonoBehaviour:
     pauseDuration: 0
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: -1156656167, guid: d51a6ab4a7e7642168fb9d8c48c2f474, type: 3}
     hitboxes: []
@@ -152,4 +160,5 @@ MonoBehaviour:
     pauseDuration: 0
     controlsPosition: 0
     isHoldFrame: 0
+    transitions: []
   endVelocity: {x: 0, y: 0}
