@@ -20,7 +20,7 @@ MonoBehaviour:
   sideAirLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   upRight: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   downRight: {fileID: 11400000, guid: 4e6ad4ee290a6fd4b9044028c2e5c3a2, type: 2}
-  sideRight: {fileID: 11400000, guid: 49fec673ee33be74d9db1517ad34dab9, type: 2}
+  sideRight: {fileID: 11400000, guid: a23cefeb6d13de041a171c9416a7dec1, type: 2}
   upAirRight: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   downAirRight: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   sideAirRight: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}

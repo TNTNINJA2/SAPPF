@@ -47,7 +47,7 @@ MonoBehaviour:
         y: -0.25277486
         width: 0.40577006
         height: 0.28603488
-      hitVector: {x: 0.139691, y: 0.12638761}
+      hitVector: {x: 0.06725711, y: 0.07370848}
       isGrab: 0
       damage: 5
       stun: 2
