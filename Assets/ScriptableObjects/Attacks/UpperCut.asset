@@ -22,7 +22,7 @@ MonoBehaviour:
   - {fileID: -231151290, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
   frames:
   - position: {x: 0, y: 0}
-    sprite: {fileID: -935565734, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
+    sprite: {fileID: -320526188, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
     hitboxes: []
     hurtbox:
       serializedVersion: 2
@@ -168,7 +168,7 @@ MonoBehaviour:
     controlsPosition: 1
     isHoldFrame: 0
     transitions: []
-  - position: {x: 0.6883293, y: 0.74672323}
+  - position: {x: 0.6717831, y: 0.70535845}
     sprite: {fileID: 1890485315, guid: cd25c2056356c9544bbdaee62f75d23c, type: 3}
     hitboxes:
     - rect:
