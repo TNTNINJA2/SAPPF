@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   downLeft: {fileID: 11400000, guid: 76ca7e15cb63443c885e598338836775, type: 2}
-  sideLeft: {fileID: 11400000, guid: 76ca7e15cb63443c885e598338836775, type: 2}
+  sideLeft: {fileID: 11400000, guid: a23cefeb6d13de041a171c9416a7dec1, type: 2}
   upAirLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   downAirLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
   sideAirLeft: {fileID: 11400000, guid: 4e4690e8a0904e546bac6149fae6a8bf, type: 2}
