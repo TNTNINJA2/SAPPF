@@ -63,7 +63,7 @@ public class PlayerAttackState : PlayerState
             {
                 currentFrameStep++;
             } else if (frame.isHoldFrame && (currentAttackInput == AttackInput.leftClick && player.controls.Player.LeftAttack.ReadValue<float>() == 1 ||
-                currentAttackInput == AttackInput.leftClick && player.controls.Player.RightAttack.ReadValue<float>() == 1)) {
+                currentAttackInput == AttackInput.rightClick && player.controls.Player.RightAttack.ReadValue<float>() == 1)) {
                 // Do nothing, hold the frame
             } else {
                 currentFrameIndex++;
