@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f215af017a5901f42a71055cc282436b, type: 3}
   m_Name: AttackEditorData
   m_EditorClassIdentifier: 
-  posKeyFrameColor: {r: 1, g: 0, b: 0, a: 1}
-  bezierControlColor: {r: 1, g: 0.46078432, b: 0.007843138, a: 1}
+  showAllFrames: 0
+  numberOfSurroundingFrames: 1
+  unselectedFade: 0.3
+  hitboxOpacity: 0.4
+  posKeyFrameColor: {r: 0, g: 0.39272022, b: 1, a: 1}
+  bezierControlColor: {r: 0, g: 0, b: 0, a: 1}
   spriteKeyFrameColor: {r: 0, g: 1, b: 1, a: 1}
   speedIndicatorColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  hitboxColor: {r: 0, g: 0, b: 1, a: 1}
+  hitboxColor: {r: 1, g: 0.1660024, b: 0, a: 1}
   timelineColor: {r: 0, g: 1, b: 0, a: 1}
   selectedKeyFrameColor: {r: 1, g: 0, b: 1, a: 1}
   shouldDrawBezierControls: 1

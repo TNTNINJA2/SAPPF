@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using static Codice.CM.WorkspaceServer.DataStore.WkTree.WriteWorkspaceTree;
 using static PlasticPipe.Server.MonitorStats;
+using Unity.VisualScripting;
 
 [CustomEditor(typeof(AttackSegmentData))]
 public class AttackDataEditor : UnityEditor.Editor
@@ -114,7 +115,7 @@ public class AttackDataEditor : UnityEditor.Editor
 
                 DrawHitboxesForFrame(selectedFrameIndex);
 
-
+                if (selectedFrame.controlsHurtbox) DrawHurtbox(selectedFrameIndex);
             }
         }
 
@@ -352,6 +353,56 @@ public class AttackDataEditor : UnityEditor.Editor
         }
     }
 
+    private void DrawHurtbox(int frameIndex)
+    {
+        AttackFrame frame = attackData.frames[frameIndex];
+        Rect hitboxRect = frame.hurtbox;
+
+
+        float handleSize = 0.05f;
+
+        Handles.color = data.posKeyFrameColor;
+        EditorGUI.BeginChangeCheck();
+
+        // Center
+        hitboxRect.center = Handles.FreeMoveHandle(hitboxRect.center + frame.position, ConvertHandleSize(handleSize), Vector3.zero, Handles.CircleHandleCap) - (Vector3)frame.position;
+
+        // Min and Max corners
+        hitboxRect.min = Handles.FreeMoveHandle(hitboxRect.min + frame.position, ConvertHandleSize(handleSize), Vector3.zero, Handles.CircleHandleCap) - (Vector3)frame.position;
+        hitboxRect.max = Handles.FreeMoveHandle(hitboxRect.max + frame.position, ConvertHandleSize(handleSize), Vector3.zero, Handles.CircleHandleCap) - (Vector3)frame.position;
+
+        // Other corners
+        Vector2 newBottomRight = Handles.FreeMoveHandle(new Vector2(hitboxRect.xMax, hitboxRect.yMin) + frame.position, ConvertHandleSize(handleSize), Vector3.zero, Handles.CircleHandleCap) - (Vector3)frame.position;
+        hitboxRect.xMax = newBottomRight.x;
+        hitboxRect.yMin = newBottomRight.y;
+
+        Vector2 newTopLeft = Handles.FreeMoveHandle(new Vector2(hitboxRect.xMin, hitboxRect.yMax) + frame.position, ConvertHandleSize(handleSize), Vector3.zero, Handles.CircleHandleCap) - (Vector3)frame.position;
+        hitboxRect.xMin = newTopLeft.x;
+        hitboxRect.yMax = newTopLeft.y;
+
+        // Edges
+        hitboxRect.xMin = Handles.FreeMoveHandle(new Vector2(hitboxRect.xMin, hitboxRect.y + hitboxRect.height * 0.5f) + frame.position, ConvertHandleSize(handleSize), Vector3.zero, Handles.CircleHandleCap).x - frame.position.x;
+        hitboxRect.xMax = Handles.FreeMoveHandle(new Vector2(hitboxRect.xMax, hitboxRect.y + hitboxRect.height * 0.5f) + frame.position, ConvertHandleSize(handleSize), Vector3.zero, Handles.CircleHandleCap).x - frame.position.x;
+        hitboxRect.yMin = Handles.FreeMoveHandle(new Vector2(hitboxRect.x + hitboxRect.width * 0.5f, hitboxRect.yMin) + frame.position, ConvertHandleSize(handleSize), Vector3.zero, Handles.CircleHandleCap).y - frame.position.y;
+        hitboxRect.yMax = Handles.FreeMoveHandle(new Vector2(hitboxRect.x + hitboxRect.width * 0.5f, hitboxRect.yMax) + frame.position, ConvertHandleSize(handleSize), Vector3.zero, Handles.CircleHandleCap).y - frame.position.y;
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(target, "Modified Hitbox");
+            frame.hurtbox = hitboxRect;
+            EditorUtility.SetDirty(target);
+        }
+        // Draw the hitbox outline
+        Rect visualRect = hitboxRect;
+        visualRect.center += frame.position;
+        Handles.DrawSolidRectangleWithOutline(visualRect, data.posKeyFrameColor * new Color(1, 1, 1, data.hitboxOpacity), data.posKeyFrameColor);
+
+        //Draw Line to Frame Pos
+
+        Handles.DrawLine(visualRect.center, frame.position);
+
+    }
+
     private void DrawHitboxLaunchArrow(int frameIndex, int hitboxIndex)
     {
         AttackFrame frame = attackData.frames[frameIndex];
@@ -432,6 +483,7 @@ public class AttackDataEditor : UnityEditor.Editor
 
         serializedObject.Update(); // Sync editor with object
 
+        EditorGUI.BeginChangeCheck();
         // Display basic attack properties
         EditorGUILayout.PropertyField(serializedObject.FindProperty("frames"), true);
 
@@ -443,6 +495,11 @@ public class AttackDataEditor : UnityEditor.Editor
         data.hitboxColor = EditorGUILayout.ColorField("Hitboxes", data.hitboxColor);
         data.unselectedFade = EditorGUILayout.Slider("Unselected Fade", data.unselectedFade, 0, 1);
         data.hitboxOpacity = EditorGUILayout.Slider("Hitbox Opacity", data.hitboxOpacity, 0, 1);
+        if (EditorGUI.EndChangeCheck())
+        {
+            AssetDatabase.SaveAssets();
+
+        }
 
 
         // Frame Selection and Visualization
@@ -464,8 +521,8 @@ public class AttackDataEditor : UnityEditor.Editor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("frames").GetArrayElementAtIndex(selectedFrameIndex).FindPropertyRelative("hitboxes"), true);
             if (GUILayout.Button("Create Hitbox")) CreateHitbox();
             EditorGUILayout.PropertyField(serializedObject.FindProperty("frames").GetArrayElementAtIndex(selectedFrameIndex).FindPropertyRelative("hurtbox"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("frames").GetArrayElementAtIndex(selectedFrameIndex).FindPropertyRelative("controlsHurtbox"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("frames").GetArrayElementAtIndex(selectedFrameIndex).FindPropertyRelative("transitions"));
-
 
         }
         DrawSpritePalette();

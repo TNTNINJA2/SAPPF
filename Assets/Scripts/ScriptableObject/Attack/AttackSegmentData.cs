@@ -31,10 +31,11 @@ public class AttackFrame
     public int pauseDuration;
     public bool controlsPosition = true;
     public bool isHoldFrame = false; // If attack should hold on frame while player is holding attack button
+    public bool controlsHurtbox = false; 
     public List<AttackTransition> transitions = new List<AttackTransition>();
 
 
-    public AttackFrame(Vector2 position, Sprite sprite, List<Hitbox> hitboxes, Rect hurtbox, int pauseDuration, bool controlsPosition, bool isHoldFrame, List<AttackTransition> transitions)
+    public AttackFrame(Vector2 position, Sprite sprite, List<Hitbox> hitboxes, Rect hurtbox, int pauseDuration, bool controlsPosition, bool isHoldFrame, bool controlsHurtbox, List<AttackTransition> transitions)
     {
         this.position = position;
         this.sprite = sprite;
@@ -43,12 +44,13 @@ public class AttackFrame
         this.pauseDuration = pauseDuration;
         this.controlsPosition = controlsPosition;
         this.isHoldFrame = isHoldFrame;
+        this.controlsHurtbox = controlsHurtbox;
         this.transitions = transitions.ToArray().ToList(); // Make sure the list of hitboxes is separate (create a new instance with same data)
     }
      
     public AttackFrame Duplicate()
     {
-        AttackFrame newFrame = new AttackFrame(position, sprite, hitboxes, hurtbox, pauseDuration, controlsPosition, isHoldFrame, transitions);
+        AttackFrame newFrame = new AttackFrame(position, sprite, hitboxes, hurtbox, pauseDuration, controlsPosition, isHoldFrame, controlsHurtbox, transitions);
         return newFrame;
     }
 }
