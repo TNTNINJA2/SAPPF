@@ -87,10 +87,25 @@ public class PlayerAttackState : PlayerState
             player.rb2D.velocity = Vector2.zero;
             Vector2 move = new Vector2();
             if (currentFrameIndex == 0)
+            {
                 move = frame.position;
-            else
-                move = frame.position - currentAttack.frames[currentFrameIndex - 1].position;
+            }
 
+            else
+            {
+                if (frame.pauseDuration < 2)
+                {
+                    move = frame.position - currentAttack.frames[currentFrameIndex - 1].position;
+                }
+                else
+                {
+                    if (currentFrameStep == 0)
+                    {
+                        move = frame.position - currentAttack.frames[currentFrameIndex - 1].position;
+                    }
+                }
+
+            }
             move *= player.transform.localScale;
 
             player.transform.position += (Vector3)move;

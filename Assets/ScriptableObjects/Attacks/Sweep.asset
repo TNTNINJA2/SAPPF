@@ -63,10 +63,10 @@ MonoBehaviour:
     hitboxes:
     - rect:
         serializedVersion: 2
-        x: 0.3058946
-        y: -0.038236976
-        width: 0.66914546
-        height: -0.5544348
+        x: 0.30589426
+        y: 0.031800628
+        width: 0.9142771
+        height: -0.62447184
       hitVector: {x: 0.05735457, y: 0.15294719}
       isGrab: 0
       damage: 0
