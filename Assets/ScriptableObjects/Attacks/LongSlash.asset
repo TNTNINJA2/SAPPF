@@ -33,32 +33,35 @@ MonoBehaviour:
     pauseDuration: 2
     controlsPosition: 0
     isHoldFrame: 0
+    controlsHurtbox: 0
     transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: -150473728, guid: ec1f075eec8e8264399c244ee85c0f6a, type: 3}
     hitboxes: []
     hurtbox:
       serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
+      x: -0.34493542
+      y: -0.48384082
+      width: 0.7171023
+      height: 0.67720985
     pauseDuration: 3
     controlsPosition: 0
     isHoldFrame: 0
+    controlsHurtbox: 1
     transitions: []
   - position: {x: 0, y: 0}
     sprite: {fileID: -950442297, guid: ec1f075eec8e8264399c244ee85c0f6a, type: 3}
     hitboxes: []
     hurtbox:
       serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
+      x: -0.28593338
+      y: -0.4765553
+      width: 0.8532611
+      height: 0.5355574
     pauseDuration: 5
     controlsPosition: 0
     isHoldFrame: 1
+    controlsHurtbox: 1
     transitions: []
   - position: {x: 2.3471088, y: 0}
     sprite: {fileID: -217257361, guid: ec1f075eec8e8264399c244ee85c0f6a, type: 3}
@@ -75,26 +78,28 @@ MonoBehaviour:
       stun: 0
     hurtbox:
       serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
-    pauseDuration: 0
+      x: -0.5623807
+      y: 0.19969946
+      width: 0.8813051
+      height: -0.69440913
+    pauseDuration: 3
     controlsPosition: 1
     isHoldFrame: 0
+    controlsHurtbox: 1
     transitions: []
   - position: {x: 2.5524814, y: 0}
     sprite: {fileID: 1533496526, guid: ec1f075eec8e8264399c244ee85c0f6a, type: 3}
     hitboxes: []
     hurtbox:
       serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
+      x: -0.42857194
+      y: -0.48243862
+      width: 0.5400958
+      height: 0.7806431
     pauseDuration: 6
     controlsPosition: 1
     isHoldFrame: 0
+    controlsHurtbox: 1
     transitions: []
   - position: {x: 2.6796167, y: 0}
     sprite: {fileID: 275662958, guid: ec1f075eec8e8264399c244ee85c0f6a, type: 3}
@@ -108,6 +113,7 @@ MonoBehaviour:
     pauseDuration: 3
     controlsPosition: 1
     isHoldFrame: 0
+    controlsHurtbox: 0
     transitions: []
   - position: {x: 2.748074, y: 0}
     sprite: {fileID: 1472001828, guid: ec1f075eec8e8264399c244ee85c0f6a, type: 3}
@@ -121,5 +127,6 @@ MonoBehaviour:
     pauseDuration: 2
     controlsPosition: 1
     isHoldFrame: 0
+    controlsHurtbox: 0
     transitions: []
   endVelocity: {x: 0, y: 0}

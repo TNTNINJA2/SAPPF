@@ -15,6 +15,9 @@ public class PlayerAttackState : PlayerState
     public int currentFrameStep = 0; // sub frames throughg a pause frame
     public float frameDuration = 0.02f; // 50 FPS
 
+    private Vector2 normalHurtboxSize;
+    private Vector2 normalHurtboxPosition;
+
     private AttackInput currentAttackInput = AttackInput.none;
 
     private bool hasHit = false;
@@ -32,6 +35,7 @@ public class PlayerAttackState : PlayerState
         base.EnterState();
         Debug.Log("Enter Attack State");
         startPosition = player.transform.position;
+        
     }
 
     public override void Update()
@@ -171,6 +175,11 @@ public class PlayerAttackState : PlayerState
             player.collistionsHitbox.size = new Vector2(Mathf.Abs(frame.hurtbox.size.x), Mathf.Abs(frame.hurtbox.size.x));
             player.collistionsHitbox.offset = frame.hurtbox.center;
         }
+    }
+
+    private void ResetHitboxToNormal()
+    {
+
     }
 
     private void HitPlayer(PlayerController target, Hitbox hitbox)
@@ -330,7 +339,9 @@ public class PlayerAttackState : PlayerState
         player.activeAttack = newAttack;
         currentFrameIndex = 0;
         hasHit = false;
-        
+        normalHurtboxSize = player.collistionsHitbox.size;
+        normalHurtboxPosition = player.collistionsHitbox.size;
+
     }
 
     public override void OnDrawGizmos()
