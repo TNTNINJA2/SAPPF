@@ -56,6 +56,8 @@ public class PlayerAttackState : PlayerState
             UpdatePlayerPositionOrVelocity(frame);
             
             HandleHitboxes(frame);
+
+            UpdateHurtbox(frame);
             
             TryTransitionToNewAttackSegment(frame);
 
@@ -160,6 +162,14 @@ public class PlayerAttackState : PlayerState
                     }
                 }
             }
+        }
+    }
+
+    private void UpdateHurtbox(AttackFrame frame)
+    {
+        if (frame.controlsHurtbox) {
+            player.collistionsHitbox.size = new Vector2(Mathf.Abs(frame.hurtbox.size.x), Mathf.Abs(frame.hurtbox.size.x));
+            player.collistionsHitbox.offset = frame.hurtbox.center;
         }
     }
 
